@@ -1,7 +1,6 @@
 options = {}
 EOSPATH = '/tmp/joknolle/eos/cms/store/group'
 OUTPATH = '/afs/cern.ch/user/j/joknolle/lsc/results'
-STOPATH = '/tmp/joknolle'
 
 def VdM2015():
     """Set common parameters of 2015 Van der Meer scan program"""
@@ -43,11 +42,17 @@ def VdM2015():
            zip(posBeam1[scanname], posBeam2[scanname])] for scanname in \
            options['scans']]))
 
+def PCC():
+    """Set common parameters of PCC data sets"""
+    options['detector'] = ['pcc', 'PCC']
+    options['treename'] = {'fulltrees': 'lumi/tree', 'minitrees': 'pccminitree'}
+
 def PCCPromptReco2015():
     """Set parameters of 2015 PCC Prompt Reco"""
     print '<<<< Initialize PCC PromptReco 2015'
     options.clear()
     VdM2015()
+    PCC()
     
     options['fulltrees'] = ['/comm_luminosity/PCC/VdM/0150825/ZeroBias1/PCC_ZeroBias1_VdMScans_150825_nVtxFix/150831_134443/0000',
                             '/comm_luminosity/PCC/VdM/0150825/ZeroBias2/PCC_ZeroBias2_VdMScans_150825_nVtxFix/150831_134510/0000',
@@ -58,14 +63,14 @@ def PCCPromptReco2015():
                             '/comm_luminosity/PCC/VdM/0150825/ZeroBias7/PCC_ZeroBias7_VdMScans_150825_nVtxFix/150831_134731/0000',
                             '/comm_luminosity/PCC/VdM/0150825/ZeroBias8/PCC_ZeroBias8_VdMScans_150825_nVtxFix/150831_134748/0000']
     options['minitrees'] = [s+'_noveto' for s in options['fulltrees']]
-    options['detector'] = ['pcc', 'PCC']
-    options['dataset'] = ['promtreco15', 'Prompt Reco 2015']
+    options['dataset'] = ['promptreco15', 'Prompt Reco 2015']
 
 def PCCReRecoOct2015():
     """Set parameters of October 2015 PCC ReReco"""
     print '<<<< Initialize PCC ReReco Oct 2015'
     options.clear()
     VdM2015()
+    PCC()
     
     options['fulltrees'] = ['/comm_luminosity/PCC/VdM/0150825_05Oct2015ReRecoV2/ZeroBias1/PCC_ZeroBias1_ReRecoV2/160104_232532/0000',
                             '/comm_luminosity/PCC/VdM/0150825_05Oct2015ReRecoV2/ZeroBias2/PCC_ZeroBias2_ReRecoV2/160104_232550/0000',
@@ -76,7 +81,6 @@ def PCCReRecoOct2015():
                             '/comm_luminosity/PCC/VdM/0150825_05Oct2015ReRecoV2/ZeroBias7/PCC_ZeroBias7_ReRecoV2/160104_232707/0000',
                             '/comm_luminosity/PCC/VdM/0150825_05Oct2015ReRecoV2/ZeroBias8/PCC_ZeroBias8_ReRecoV2/160104_232722/0000']
     options['minitrees'] = [s+'_noveto' for s in options['fulltrees']]
-    options['detector'] = ['pcc', 'PCC']
     options['dataset'] = ['rereco_oct15', 'ReReco Oct 2015']
 
 def PCCReRecoDec2015():
@@ -84,6 +88,7 @@ def PCCReRecoDec2015():
     print '<<<< Initialize PCC ReReco Dec 2015'
     options.clear()
     VdM2015()
+    PCC()
     
     options['fulltrees'] = ['/comm_luminosity/PCC/VdM/0150825_Dec2015ReReco/ZeroBias1/PCC_VdM_ZeroBias1_4266_DecRereco_Event/161026_153235/0000',
                             '/comm_luminosity/PCC/VdM/0150825_Dec2015ReReco/ZeroBias2/PCC_VdM_ZeroBias2_4266_DecRereco_Event/161026_153318/0000',
@@ -94,12 +99,11 @@ def PCCReRecoDec2015():
                             '/comm_luminosity/PCC/VdM/0150825_Dec2015ReReco/ZeroBias7/PCC_VdM_ZeroBias7_4266_DecRereco_Event/161026_153907/0000',
                             '/comm_luminosity/PCC/VdM/0150825_Dec2015ReReco/ZeroBias8/PCC_VdM_ZeroBias8_4266_DecRereco_Event/161026_153950/0000']
     options['minitrees'] = [s+'_vdmminitrees' for s in options['fulltrees']]
-    options['detector'] = ['pcc', 'PCC']
     options['dataset'] = ['rereco_dec15', 'ReReco Dec 2015']
 
 def VdM2016():
     """Set common parameters of 2016 Van der Meer scan program"""
-    options['scans'] = ['X1', 'Y1']#, 'X2']
+    options['scans'] = ['X1', 'Y1', 'X2']
     options['runs'] = {'X1': 274100, 'Y1': 274100, 'X2': 274100}
     options['lumisections'] = {'X1': [640, 715], 'Y1': [715, 820], \
                                'X2': [200, 300]}
@@ -143,6 +147,7 @@ def PCCPromptReco2016():
     print '<<<< Initialize PCC PromptReco 2016'
     options.clear()
     VdM2016()
+    PCC()
     
     options['fulltrees'] = ['/comm_luminosity/PCC/VdM/May182016_274100/ZeroBias1/PCC_VdM_ZeroBias1_274100_ProMay312016_Event_AlwaysTrue/160531_211313/0000',
                             '/comm_luminosity/PCC/VdM/May182016_274100/ZeroBias2/PCC_VdM_ZeroBias2_274100_ProMay312016_Event_AlwaysTrue/160531_211331/0000',
@@ -153,6 +158,5 @@ def PCCPromptReco2016():
                             '/comm_luminosity/PCC/VdM/May182016_274100/ZeroBias7/PCC_VdM_ZeroBias7_274100_ProMay312016_Event_AlwaysTrue/160531_211507/0000',
                             '/comm_luminosity/PCC/VdM/May182016_274100/ZeroBias8/PCC_VdM_ZeroBias8_274100_ProMay312016_Event_AlwaysTrue/160531_211529/0000']
     options['minitrees'] = [s+'_vdmminitrees' for s in options['fulltrees']]
-    options['detector'] = ['pcc', 'PCC']
     options['dataset'] = ['promptreco16', 'Prompt Reco 2016']
     

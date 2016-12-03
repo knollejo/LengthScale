@@ -1,1 +1,1 @@
-__all__ = ['analyze', 'config', 'plot', 'tools']
+__all__ = ['analyze', 'config', 'fit', 'gather', 'plot', 'prepare', 'tools']

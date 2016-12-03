@@ -1,6 +1,7 @@
 from config import options as O, EOSPATH as eos
 from os import listdir, stat
 from tools import writeFiles
+import ROOT
 
 def findRootFiles(fileset):
     """Check all ROOT files for relevant lumisections in tree"""

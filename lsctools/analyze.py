@@ -1,74 +1,77 @@
-from config import options as O, EOSPATH as eos
-from tools import plotName, plotTitle, dataDir, dataName, loadFiles
-from os import listdir
+from config import options as O
+from tools import openRootFileR, openRootFileW, closeRootFile, plotName, \
+                  plotTitle
+from array import array
+
 import ROOT
 
-def chain(filelist, scan, tree):
-    """Create chain of all files belonging to a scan"""
-    files = loadFiles(filelist)
-    chain = ROOT.TChain(tree)
-    for filename in files[scan]:
-        chain.Add(eos+'/'+filename)
-    return chain
+def scale(s=1.0):
+    return lambda a: s*a
 
-def miniCondition(scan, bx, step):
-    return 'timeStamp >= ' + str(O['begin'][scan][step]) + \
-           ' && timeStamp <= ' + str(O['end'][scan][step]) + \
-           ' && BXid == ' + str(bx)
-
-def doPerBxStep(options):
-    c = chain(options['filelist'], options['scan'], options['tree'])
+def collectPerDirectionBx(options):
     nSteps = len(O['nominalPos'][options['scan']])
-    nCross = len(O['crossings'])
-    fname = dataDir() + '/' + dataName(options['scan']+'_'+options['name']) \
-            + '.root'
-    print '<<<< Open file:', fname
-    f = ROOT.TFile(fname, 'RECREATE')
-    for i, bx in enumerate(O['crossings']):
+    for i in range(nSteps):
+        if O['nominalPos'][options['scan']][i+1] == \
+           O['nominalPos'][options['scan']][i]:
+            break
+    name = options['scan']+'_'+options['name']+options['fitted']
+    f = openRootFileR(name)
+    g = openRootFileW(name+'_collected')
+    for bx in O['crossings']:
+        average = [0 for j in range(nSteps)]
+        averror = [0 for j in range(nSteps)]
         for step in range(nSteps):
-            print '<<<< Analyze:', options['scan'], bx, 'step', step
-            histname = plotName(options['scan']+'_'+options['name']+'_bx'+\
-                                str(bx)+'_step'+str(step))
-            histtitl = plotTitle(options['scan']+' BX '+str(bx)+', Step '+\
-                                str(step))
-            hist = options['histo'](histname, histtitl, options['bin'], \
-                                    options['min'], options['max'])
-            hist.StatOverflows(True)
-            c.Draw(options['field'](options['scan'])+'>>'+histname, \
-                   options['condition'](options['scan'], bx, step), 'goff')
-            hist.Write()
-    print '<<<< Close file:', fname
-    f.Close()
-    return fname
+            print 'Access:', options['scan'], bx, 'step', step
+            histname = plotName(name+'_bx'+str(bx)+'_step'+str(step), \
+                                timestamp=False)
+            hist = f.Get(histname)
+            if options['custom']:
+                average[step], averror[step] = options['custom'](hist)
+            else:
+                average[step] = hist.GetMean()
+                averror[step] = hist.GetMeanError()
+        plotname = plotName(name+'_collected_bx'+str(bx), timestamp=False)
+        plottitl = plotTitle(options['scan']+' BX '+str(bx))
+        print '<<<< Create plot:', plotname
+        graphs = ROOT.TMultiGraph(plotname, plottitl)
+        residuals = ROOT.TMultiGraph(plotname+'_residuals', '')
+        def range1(l):
+            return l[:i+1]
+        def range2(l):
+            return l[i+1:]
+        for n, rnge in zip([i+1, nSteps-i-1], [range1, range2]):
+            graph = ROOT.TGraphErrors(n, \
+                    array('d', [options['x'](a) for a in \
+                          rnge(O['nominalPos'][options['scan']])]), \
+                    array('d', [options['y'](a) for a in rnge(average)]), \
+                    array('d', [0]*n), \
+                    array('d', [options['e'](a) for a in rnge(averror)]))
+            graph.Fit(options['fit'])
+            residual = ROOT.TGraphErrors(n, \
+                       array('d', [options['x'](a) for a in \
+                             rnge(O['nominalPos'][options['scan']])]), \
+                       array('d', [options['y'](a) - graph.GetFunction( \
+                             options['fit']).Eval(options['x'](b)) for a, b \
+                             in zip(rnge(average), \
+                             rnge(O['nominalPos'][options['scan']]))]),
+                       array('d', [0]*n), \
+                       array('d', [options['e'](a) for a in rnge(averror)]))
+            graphs.Add(graph)
+            residuals.Add(residual)
+        graphs.Write('', ROOT.TObject.kOverwrite)
+        residuals.Write('', ROOT.TObject.kOverwrite)
+    closeRootFile(g, name+'collected')
+    closeRootFile(f, name)
 
-def numberClusters(scan, filelist):
-    def field(s):
-        return 'nCluster'
-    options = {'min': 0, 'max': 1000, 'bin': 1000, 'histo': ROOT.TH1I, \
-               'tree': 'pccminitree', 'name': 'nCluster', 'field': field, \
-               'condition': miniCondition, 'scan': scan, \
-               'filelist': filelist}
-    return doPerBxStep(options)
-
-def numberVertices(scan, filelist):
-    def field(s):
-        return 'nVtx'
-    options = {'min': 0, 'max': 10, 'bin': 10, 'histo': ROOT.TH1I, \
-               'tree': 'pccminitree', 'name': 'nVtx', 'field': field, \
-               'condition': miniCondition, 'scan': scan, 'filelist': filelist}
-    return doPerBxStep(options)
-
-def vertexPosition(scan, filelist):
-    def field(s):
-        if 'X' in scan:
-            return 'vtx_x'
-        else:
-            return 'vtx_y'
-    def condition(s, bx, step):
-        return 'timeStamp_begin >= ' + str(O['begin'][s][step]) + \
-               ' && timeStamp_begin <= ' + str(O['end'][s][step]) + \
-               ' && vtx_isGood && bunchCrossing == ' + str(bx)
-    options = {'min': -0.3, 'max': 0.3, 'bin': 500, 'histo': ROOT.TH1F, \
-               'tree': 'lumi/tree', 'name': 'vtxPos', 'field': field, \
-               'condition': condition, 'scan': scan, 'filelist': filelist}
-    return doPerBxStep(options)
+def vertexPosition(scan, fitted=''):
+    def custom(hist):
+        average = hist.GetFunction('gaus').GetParameter(1)
+        averror = hist.GetFunction('gaus').GetParError(1)
+        return average, averror
+    options = {'name': 'vtxPos', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
+               'y': scale(1e4), 'e': scale(1e4), 'fitted': fitted}
+    if fitted:
+        options['custom'] = custom
+    else:
+        options['custom'] = False
+    collectPerDirectionBx(options)
