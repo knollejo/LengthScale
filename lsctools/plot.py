@@ -1,26 +1,26 @@
 from config import options as O
 from tools import openRootFileR, closeRootFile, plotName, plotPath
-import ROOT
+from ROOT import TCanvas, gStyle, TPad, gPad, TLine
 
 def plotPerBxStep(options):
-    nSteps = len(O['nominalPos'][options['scan']])
+    """Save histograms (per BX and step) to PDF files"""
     name = options['scan'] + '_' + options['name'] + options['extra']
     f = openRootFileR(name)
     for bx in O['crossings']:
-        for step in range(nSteps):
-            histname = plotName(options['scan']+'_'+options['name']+\
-                                options['extra']+'_bx'+str(bx)+'_step'+\
+        for step in range(len(O['nominalPos'][options['scan']])):
+            histname = plotName(options['scan']+'_'+options['name']+ \
+                                options['extra']+'_bx'+str(bx)+'_step'+ \
                                 str(step), timestamp=False)
-            filename = plotPath(options['scan']+'_'+options['name']+\
-                                options['extra']+'_bx'+str(bx)+'_step'+\
+            filename = plotPath(options['scan']+'_'+options['name']+ \
+                                options['extra']+'_bx'+str(bx)+'_step'+ \
                                 str(step), timestamp=True)
-            print '<<<< Save plot:', filename
+            print '<<< Save plot:', filename
             hist = f.Get(histname)
-            canvas = ROOT.TCanvas()
+            canvas = TCanvas()
             canvas.SetLogx(options['logx'])
             canvas.SetLogy(options['logy'])
-            ROOT.gStyle.SetOptStat(options['optstat'])
-            ROOT.gStyle.SetOptFit(options['optfit'])
+            gStyle.SetOptStat(options['optstat'])
+            gStyle.SetOptFit(options['optfit'])
             hist.Draw()
             hist.GetXaxis().SetTitle(options['xtitle'])
             hist.GetXaxis().SetRangeUser(options['xmin'], options['xmax'])
@@ -30,6 +30,7 @@ def plotPerBxStep(options):
     closeRootFile(f, name)
 
 def numberVerticesPerBxStep(scan):
+    """Save vertex number histograms to PDF files"""
     options = {'name': 'nVtx', 'scan': scan, 'xmin': -0.5, 'xmax': 6.5, 'logx': 0, \
                'logy': 1, 'xtitle': 'Number of Vertices', \
                'ytitle': 'Number of Events', 'optstat': 1110, 'optfit': 0, \

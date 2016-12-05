@@ -1,19 +1,24 @@
-from sys import path as __SYSPATH__
+from sys import path as __SYSPATH__, argv as __ARGV__
 __SYSPATH__.append('..')
+__ARGV__.append('-b')
 
 from argparse import ArgumentParser
-from importlib import import_module
-from lsctools import config, prepare
 
 def main():
-    parser = ArgumentParser()
+    parser = ArgumentParser(description='Scan over ROOT files to find those '+ \
+                                        'belonging to a lumisection interval.')
+    parser.add_argument('-b', action='store_true', help='enable batch mode')
     parser.add_argument('--dataset', required=True, choices=['PromptReco2015', \
-                        'ReRecoOct2015', 'ReRecoDec2015', 'PromptReco2016'])
+                        'ReRecoOct2015', 'ReRecoDec2015', 'PromptReco2016'], \
+                        help='specify data-taking period and reconstruction')
     parser.add_argument('-mini', dest='actions', action='append_const', \
-                        const='minitrees')
+                        const='minitrees', help='look for minitrees')
     parser.add_argument('-full', dest='actions', action='append_const', \
-                        const='fulltrees')
+                        const='fulltrees', help='look for full trees')
     args = parser.parse_args()
+    
+    from importlib import import_module
+    from lsctools import config, prepare
     getattr(config, 'PCC'+args.dataset)()
     for action in args.actions:
         prepare.findRootFiles(action)

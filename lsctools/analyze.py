@@ -2,13 +2,14 @@ from config import options as O
 from tools import openRootFileR, openRootFileW, closeRootFile, plotName, \
                   plotTitle
 from array import array
-
-import ROOT
+from ROOT import TMultiGraph, TGraphErrors, TObject
 
 def scale(s=1.0):
+    """Generate a function that multiplies the argument with a constant"""
     return lambda a: s*a
 
 def collectPerDirectionBx(options):
+    """Fit PCC data in both directions of a scan"""
     nSteps = len(O['nominalPos'][options['scan']])
     for i in range(nSteps):
         if O['nominalPos'][options['scan']][i+1] == \
@@ -21,7 +22,7 @@ def collectPerDirectionBx(options):
         average = [0 for j in range(nSteps)]
         averror = [0 for j in range(nSteps)]
         for step in range(nSteps):
-            print 'Access:', options['scan'], bx, 'step', step
+            print '<<< Access data from:', options['scan'], bx, 'step', step
             histname = plotName(name+'_bx'+str(bx)+'_step'+str(step), \
                                 timestamp=False)
             hist = f.Get(histname)
@@ -32,22 +33,19 @@ def collectPerDirectionBx(options):
                 averror[step] = hist.GetMeanError()
         plotname = plotName(name+'_collected_bx'+str(bx), timestamp=False)
         plottitl = plotTitle(options['scan']+' BX '+str(bx))
-        print '<<<< Create plot:', plotname
-        graphs = ROOT.TMultiGraph(plotname, plottitl)
-        residuals = ROOT.TMultiGraph(plotname+'_residuals', '')
-        def range1(l):
-            return l[:i+1]
-        def range2(l):
-            return l[i+1:]
-        for n, rnge in zip([i+1, nSteps-i-1], [range1, range2]):
-            graph = ROOT.TGraphErrors(n, \
+        print '<<< Create plot:', plotname
+        graphs = TMultiGraph(plotname, plottitl)
+        residuals = TMultiGraph(plotname+'_residuals', '')
+        for n, rnge in zip([i+1, nSteps-i-1], [lambda l: l[:i+1], \
+                                               lambda l: l[i+1:]]):
+            graph = TGraphErrors(n, \
                     array('d', [options['x'](a) for a in \
                           rnge(O['nominalPos'][options['scan']])]), \
                     array('d', [options['y'](a) for a in rnge(average)]), \
                     array('d', [0]*n), \
                     array('d', [options['e'](a) for a in rnge(averror)]))
             graph.Fit(options['fit'])
-            residual = ROOT.TGraphErrors(n, \
+            residual = TGraphErrors(n, \
                        array('d', [options['x'](a) for a in \
                              rnge(O['nominalPos'][options['scan']])]), \
                        array('d', [options['y'](a) - graph.GetFunction( \
@@ -58,12 +56,25 @@ def collectPerDirectionBx(options):
                        array('d', [options['e'](a) for a in rnge(averror)]))
             graphs.Add(graph)
             residuals.Add(residual)
-        graphs.Write('', ROOT.TObject.kOverwrite)
-        residuals.Write('', ROOT.TObject.kOverwrite)
+        graphs.Write('', TObject.kOverwrite)
+        residuals.Write('', TObject.kOverwrite)
     closeRootFile(g, name+'collected')
     closeRootFile(f, name)
 
+def numberCluster(scan):
+    """Fit pixel cluster number in both directions of a scan"""
+    options = {'name': nCluster, 'scan': scan, 'fit': 'pol1', 'x': scale(), \
+               'y': scale(), 'e': scale(), 'fitted': '', 'custom': False}
+    collectPerDirectionBx(options)
+
+def numberVertices(scan):
+    """Fit vertex number in both directions of a scan"""
+    options = {'name': nVtx, 'scan': scan, 'fit': 'pol1', 'x': scale(), \
+               'y': scale(), 'e': scale(), 'fitted': '', 'custom': False}
+    collectPerDirectionBx(options)
+
 def vertexPosition(scan, fitted=''):
+    """Fit vertex positions in both directions of a scan"""
     def custom(hist):
         average = hist.GetFunction('gaus').GetParameter(1)
         averror = hist.GetFunction('gaus').GetParError(1)
