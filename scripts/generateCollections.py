@@ -21,7 +21,8 @@ def main():
     parser.add_argument('-plot', action='store_true', help='save plot to PDF')
     parser.add_argument('-fitted', action='append', nargs=1, help='use fit '+ \
                         'parameters instead of mean, mean error, give F for '+ \
-                        'standard fit or L for log-likelihood fit')
+                        'standard fit or L for log-likelihood fit, add R for'+ \
+                        'fits with restricted range')
     parser.add_argument('-nCluster', dest='actions', action='append_const', \
                         const='numberClusters', help='evaluate number of '+ \
                         'pixel clusters')

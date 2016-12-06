@@ -22,7 +22,8 @@ def main():
     parser.add_argument('-combine', action='store_true', help='combine data '+ \
                         'of all bunch crossings')
     parser.add_argument('-fit', action='append', nargs='?', const='F', \
-                        help='fit histogram, give L for log-likelihood fit')
+                        help='fit histogram, give L for log-likelihood fit, '+ \
+                        'add R for restricted range')
     parser.add_argument('-plot', action='store_true', help='save histograms '+ \
                         'to PDF')
     parser.add_argument('-nCluster', dest='actions', action='append_const', \
