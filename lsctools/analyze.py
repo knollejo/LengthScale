@@ -18,7 +18,11 @@ def collectPerDirectionBx(options):
     name = options['scan']+'_'+options['name']+options['fitted']
     f = openRootFileR(name)
     g = openRootFileW(name+'_collected')
-    for bx in O['crossings']:
+    if options['combine']:
+        crossings = ['all']
+    else:
+        crossings = O['crossings']
+    for bx in crossings:
         average = [0 for j in range(nSteps)]
         averror = [0 for j in range(nSteps)]
         for step in range(nSteps):
@@ -61,26 +65,29 @@ def collectPerDirectionBx(options):
     closeRootFile(g, name+'collected')
     closeRootFile(f, name)
 
-def numberCluster(scan):
+def numberCluster(scan, combine=False):
     """Fit pixel cluster number in both directions of a scan"""
     options = {'name': nCluster, 'scan': scan, 'fit': 'pol1', 'x': scale(), \
-               'y': scale(), 'e': scale(), 'fitted': '', 'custom': False}
+               'y': scale(), 'e': scale(), 'fitted': '', 'custom': False, \
+               'combine': combine}
     collectPerDirectionBx(options)
 
-def numberVertices(scan):
+def numberVertices(scan, combine=False):
     """Fit vertex number in both directions of a scan"""
     options = {'name': nVtx, 'scan': scan, 'fit': 'pol1', 'x': scale(), \
-               'y': scale(), 'e': scale(), 'fitted': '', 'custom': False}
+               'y': scale(), 'e': scale(), 'fitted': '', 'custom': False, \
+               'combine': combine}
     collectPerDirectionBx(options)
 
-def vertexPosition(scan, fitted=''):
+def vertexPosition(scan, fitted='', combine=False):
     """Fit vertex positions in both directions of a scan"""
     def custom(hist):
         average = hist.GetFunction('gaus').GetParameter(1)
         averror = hist.GetFunction('gaus').GetParError(1)
         return average, averror
     options = {'name': 'vtxPos', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
-               'y': scale(1e4), 'e': scale(1e4), 'fitted': fitted}
+               'y': scale(1e4), 'e': scale(1e4), 'fitted': fitted, \
+               'combine': combine}
     if fitted:
         options['custom'] = custom
     else:

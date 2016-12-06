@@ -6,6 +6,10 @@ def plotPerBxStep(options):
     """Save histograms (per BX and step) to PDF files"""
     name = options['scan'] + '_' + options['name'] + options['extra']
     f = openRootFileR(name)
+    if options['combine']:
+        crossings = ['all']
+    else:
+        crossings = O['crossings']
     for bx in O['crossings']:
         for step in range(len(O['nominalPos'][options['scan']])):
             histname = plotName(options['scan']+'_'+options['name']+ \
@@ -29,19 +33,19 @@ def plotPerBxStep(options):
             canvas.Close()
     closeRootFile(f, name)
 
-def numberVerticesPerBxStep(scan):
+def numberVerticesPerBxStep(scan, combine=False):
     """Save vertex number histograms to PDF files"""
     options = {'name': 'nVtx', 'scan': scan, 'xmin': -0.5, 'xmax': 6.5, 'logx': 0, \
                'logy': 1, 'xtitle': 'Number of Vertices', \
                'ytitle': 'Number of Events', 'optstat': 1110, 'optfit': 0, \
-               'extra': ''}
+               'extra': '', 'combine': combine}
     plotPerBxStep(options)
 
-def vertexPositionPerBxStep(scan, fit=''):
+def vertexPositionPerBxStep(scan, fit='', combine=False):
     options = {'name': 'vtxPos', 'scan': scan, 'xmin': -0.1, 'xmax': 0.3, \
                'logx': 0, 'logy': 0, 'xtitle': 'Measured Vertex Position [#mum]', \
                'ytitle': 'Number of Events','optstat': 1110, 'optfit': 101,
-               'extra': fit}
+               'extra': fit, 'combine': combine}
     plotPerBxStep(options)
 
 def plotPerDirectionBx(options):

@@ -11,21 +11,21 @@ def fitPerBxStep(options):
         extra = 'F'
     f = openRootFileU(name)
     g = openRootFileW(name+extra)
-    def fit(bx, step):
-        print '<<< Fit:', options['scan'], bx, 'step', step
-        histname = plotName(options['scan']+'_'+options['name']+'_bx'+\
-                            str(bx)+'_step'+str(step), timestamp=False)
-        newname = plotName(options['scan']+'_'+options['name']+extra+'_bx'+\
-                           str(bx)+'_step'+str(step), timestamp=False)
-        hist = f.Get(histname)
-        hist.SetName(newname)
-        hist.Fit(options['fit'], options['fitopt'])
-        hist.Write('', TObject.kOverwrite)
-    for step in range(len(O['nominalPos'][options['scan']])):
-        if options['combine']:
-            fit(bx, 'all')
-        for bx in O['crossings']:
-            fit(bx, step)
+    if options['combine']:
+        crossings = ['all']
+    else:
+        crossings = O['crossings']
+    for bx in crossings:
+        for step in range(len(O['nominalPos'][options['scan']])):
+            print '<<< Fit:', options['scan'], bx, 'step', step
+            histname = plotName(options['scan']+'_'+options['name']+'_bx'+\
+                                str(bx)+'_step'+str(step), timestamp=False)
+            newname = plotName(options['scan']+'_'+options['name']+extra+'_bx'+\
+                               str(bx)+'_step'+str(step), timestamp=False)
+            hist = f.Get(histname)
+            hist.SetName(newname)
+            hist.Fit(options['fit'], options['fitopt'])
+            hist.Write('', TObject.kOverwrite)
     closeRootFile(g, name+extra)
     closeRootFile(f, name)
 
