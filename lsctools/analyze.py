@@ -81,14 +81,14 @@ def numberVertices(scan, combine=False):
 
 def vertexPosition(scan, fitted='', combine=False):
     """Fit vertex positions in both directions of a scan"""
-    def custom(hist):
-        average = hist.GetFunction('gaus').GetParameter(1)
-        averror = hist.GetFunction('gaus').GetParError(1)
-        return average, averror
     options = {'name': 'vtxPos', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
                'y': scale(), 'e': scale(), 'fitted': fitted, \
                'combine': combine}
     if fitted:
+        def custom(hist):
+            average = hist.GetFunction('gaus').GetParameter(1)
+            averror = hist.GetFunction('gaus').GetParError(1)
+            return average, averror
         options['custom'] = custom
     else:
         options['custom'] = False

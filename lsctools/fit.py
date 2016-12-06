@@ -9,6 +9,8 @@ def fitPerBxStep(options):
         extra = options['fitopt']
     else:
         extra = 'F'
+    if options['range']:
+        extra = extra + 'R'
     f = openRootFileU(name)
     g = openRootFileW(name+extra)
     if options['combine']:
@@ -24,7 +26,11 @@ def fitPerBxStep(options):
                                str(bx)+'_step'+str(step), timestamp=False)
             hist = f.Get(histname)
             hist.SetName(newname)
-            hist.Fit(options['fit'], options['fitopt'])
+            if options['range']:
+                hist.Fit(options['fit'], options['fitopt'], '', \
+                         options['rangemin'](hist), options['rangemax'](hist))
+            else:
+                hist.Fit(options['fit'], options['fitopt'])
             hist.Write('', TObject.kOverwrite)
     closeRootFile(g, name+extra)
     closeRootFile(f, name)
@@ -33,8 +39,15 @@ def vertexPosition(scan, fitmethod='F', combine=False):
     """Fit vertex position with a Gaussian (standard or log-likelihood)"""
     options = {'name': 'vtxPos', 'scan': scan, 'fit': 'gaus', \
                'combine': combine}
-    if fitmethod == 'L':
+    if fitmethod.startswith('L'):
         options['fitopt'] = 'L'
     else:
         options['fitopt'] = ''
+    if fitmethod.endswith('R'):
+        options['range'] = True
+        options['rangemin'] = lambda hist: hist.GetMean()-2*hist.GetMeanError()
+        options['rangemax'] = lambda hist: hist.GetMean()+2*hist.GetMeanError()
+    else:
+        options['fit'] = 'gaus'
+        options['range'] = False
     fitPerBxStep(options)
