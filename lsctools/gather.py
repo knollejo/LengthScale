@@ -65,7 +65,7 @@ def numberClusters(scan, combine=False):
     else:
         options['condition'] = miniCondition
         options['fileset'] = 'minitrees'
-        options['field'] = lambda s: return 'nCluster'
+        options['field'] = lambda s: 'nCluster'
         pccPerBxStep(options)
 
 def numberVertices(scan, combine=False):
@@ -77,7 +77,7 @@ def numberVertices(scan, combine=False):
     else:
         options['condition'] = miniCondition
         options['fileset'] = 'minitrees'
-        options['field'] = lambda s: return 'nVtx'
+        options['field'] = lambda s: 'nVtx'
         pccPerBxStep(options)
 
 def vertexPosition(scan, combine=False):
