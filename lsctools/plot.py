@@ -42,7 +42,7 @@ def numberVerticesPerBxStep(scan, combine=False):
     plotPerBxStep(options)
 
 def vertexPositionPerBxStep(scan, fit='', combine=False):
-    options = {'name': 'vtxPos', 'scan': scan, 'xmin': -0.1, 'xmax': 0.3, \
+    options = {'name': 'vtxPos', 'scan': scan, 'xmin': -1e3, 'xmax':3e3, \
                'logx': 0, 'logy': 0, 'xtitle': 'Measured Vertex Position [#mum]', \
                'ytitle': 'Number of Events','optstat': 1110, 'optfit': 101,
                'extra': fit, 'combine': combine}

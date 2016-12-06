@@ -86,7 +86,7 @@ def vertexPosition(scan, fitted='', combine=False):
         averror = hist.GetFunction('gaus').GetParError(1)
         return average, averror
     options = {'name': 'vtxPos', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
-               'y': scale(1e4), 'e': scale(1e4), 'fitted': fitted, \
+               'y': scale(), 'e': scale(), 'fitted': fitted, \
                'combine': combine}
     if fitted:
         options['custom'] = custom

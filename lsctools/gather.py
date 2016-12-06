@@ -82,16 +82,16 @@ def numberVertices(scan, combine=False):
 
 def vertexPosition(scan, combine=False):
     """Extract vertex position from ROOT files sorted by BX and step"""
-    options = {'min': -0.3, 'max': 0.3, 'bin': 500, 'histo': TH1F, \
+    options = {'min': -3e3, 'max': 3e3, 'bin': 500, 'histo': TH1F, \
                'name': 'vtxPos', 'scan': scan}
     if combine:
         combinePccPerStep(options)
     else:
         def field(s):
             if 'X' in scan:
-                return 'vtx_x'
+                return 'vtx_x*1e4'
             else:
-                return 'vtx_y'
+                return 'vtx_y*1e4'
         def condition(s, bx, step):
             return 'timeStamp_begin >= ' + str(O['begin'][s][step]) + \
                    ' && timeStamp_begin <= ' + str(O['end'][s][step]) + \
