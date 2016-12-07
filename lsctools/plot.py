@@ -10,7 +10,7 @@ def plotPerBxStep(options):
         crossings = ['all']
     else:
         crossings = O['crossings']
-    for bx in O['crossings']:
+    for bx in crossings:
         for step in range(len(O['nominalPos'][options['scan']])):
             histname = plotName(options['scan']+'_'+options['name']+ \
                                 options['extra']+'_bx'+str(bx)+'_step'+ \
@@ -33,10 +33,18 @@ def plotPerBxStep(options):
             canvas.Close()
     closeRootFile(f, name)
 
+def numberClusterPerBxStep(scan, combine=False):
+    """Save cluster number histograms to PDF files"""
+    options = {'name': 'nCluster', 'scan': scan, 'xmin': -0.5, 'xmax': 5000.5, \
+               'logx': 0, 'logy': 1, 'xtitle': 'Number of Pixel Clusters (per event)', \
+               'ytitle': 'Number of Events', 'optstat': 101110, 'optfit': 0, \
+               'extra': '', 'combine': combine}
+    plotPerBxStep(options)
+
 def numberVerticesPerBxStep(scan, combine=False):
     """Save vertex number histograms to PDF files"""
     options = {'name': 'nVtx', 'scan': scan, 'xmin': -0.5, 'xmax': 6.5, 'logx': 0, \
-               'logy': 1, 'xtitle': 'Number of Vertices', \
+               'logy': 1, 'xtitle': 'Number of Vertices (per event)', \
                'ytitle': 'Number of Events', 'optstat': 1110, 'optfit': 0, \
                'extra': '', 'combine': combine}
     plotPerBxStep(options)
