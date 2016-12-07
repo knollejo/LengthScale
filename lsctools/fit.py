@@ -45,8 +45,8 @@ def vertexPosition(scan, fitmethod='F', combine=False):
         options['fitopt'] = ''
     if fitmethod.endswith('R'):
         options['range'] = True
-        options['rangemin'] = lambda hist: hist.GetMean()-2*hist.GetMeanError()
-        options['rangemax'] = lambda hist: hist.GetMean()+2*hist.GetMeanError()
+        options['rangemin'] = lambda hist: hist.GetMean()-2*hist.GetRMS()
+        options['rangemax'] = lambda hist: hist.GetMean()+2*hist.GetRMS()
     else:
         options['fit'] = 'gaus'
         options['range'] = False
