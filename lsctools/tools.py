@@ -3,7 +3,7 @@ from os import mkdir
 from os.path import exists
 from time import strftime
 from pickle import load as pklload, dump as pkldump
-from ROOT import TFile
+from ROOT import TFile, TText
 
 def timeStamp():
     return strftime('%y%m%d_%H%M%S')
@@ -88,3 +88,11 @@ def plotTitle(title):
     """Give title for a plot"""
     titlename = O['detector'][1] + ' ' + O['dataset'][1] + ' ' + title
     return titlename
+
+def drawSignature(signature):
+    """Write an unique identifier in the lower left canvas corner"""
+    l = TText()
+    l.SetTextAlign(11)
+    l.SetTextSize(0.02)
+    l.SetTextFont(82)
+    l.DrawTextNDC(0.01, 0.01, signature)
