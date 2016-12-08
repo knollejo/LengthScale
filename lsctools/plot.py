@@ -66,6 +66,9 @@ def plotPerDirectionBx(options):
     name = options['scan'] + '_'+ options['name'] + options['fitted'] \
            + '_collected'
     f = openRootFileR(name)
+    crossings = O['crossings'][:]
+    if options['combine']:
+        crossings.append('all')
     for bx in O['crossings']:
         plotname = plotName(name+'_bx'+str(bx), timestamp=False)
         filename = plotName(name+'_bx'+str(bx), timestamp=True)

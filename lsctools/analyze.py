@@ -18,10 +18,9 @@ def collectPerDirectionBx(options):
     name = options['scan']+'_'+options['name']+options['fitted']
     f = openRootFileR(name)
     g = openRootFileW(name+'_collected')
+    crossings = O['crossings'][:]
     if options['combine']:
-        crossings = ['all']
-    else:
-        crossings = O['crossings']
+        crossings.append('all')
     for bx in crossings:
         average = [0 for j in range(nSteps)]
         averror = [0 for j in range(nSteps)]
