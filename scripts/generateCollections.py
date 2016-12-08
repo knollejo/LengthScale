@@ -16,6 +16,8 @@ def main():
                         help='apply to LSC scan X1')
     parser.add_argument('-X2', dest='scans', action='append_const', const='X2', \
                         help='apply to LSC scan X1')
+    parser.add_argument('-combined', action='store_true', help='use '+ \
+                        'combined data of all bunch crossings')
     parser.add_argument('-analyze', action='store_true', help='collect mean '+ \
                         'and mean error from histograms')
     parser.add_argument('-plot', action='store_true', help='save plot to PDF')
@@ -42,7 +44,8 @@ def main():
             for scan in args.scans:
                 if args.fitted:
                     for fitted in args.fitted:
-                        getattr(analyze, action)(scan, fitted[0])
+                        getattr(analyze, action)(scan, fitted=fitted[0], \
+                                combine=args.combined)
                 else:
                     getattr(analyze, action)(scan)
     if args.plot:
@@ -50,7 +53,8 @@ def main():
             for scan in args.scans:
                 if args.fitted:
                     for fitted in args.fitted:
-                        getattr(plot, action+'PerDirectionBx')(scan, fitted[0])
+                        getattr(plot, action+'PerDirectionBx')(scan, \
+                                fitted=fitted[0], combine=args.combined)
                 else:
                     getattr(plot, action+'PerDirectionBx')(scan)
 
