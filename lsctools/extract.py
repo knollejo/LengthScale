@@ -1,5 +1,5 @@
 from config import options as O
-from tools import openRootFileR
+from tools import openRootFileR, plotName
 
 def si(value, error):
     return '\\si{' + str(value) + ' \\pm ' + str(error) + '}'
@@ -9,15 +9,17 @@ def extractPerDirectionBx(options):
     name = options['scan'] + '_'+ options['name'] + options['fitted'] \
            + '_collected'
     f = openRootFileR(name)
-    crossings = O['crossings']
-    average = dict(zip(crossings, [[0, 0] for i in len(crossings)]))
-    averror = dict(zip(crossings, [[0, 0] for i in len(crossings)]))
+    crossings = O['crossings'][:]
+    if options['combine']:
+        crossings.append('all')
+    average = dict(zip(crossings, [[0, 0] for i in range(len(crossings))]))
+    averror = dict(zip(crossings, [[0, 0] for i in range(len(crossings))]))
     for bx in crossings:
         plotname = plotName(name+'_bx'+str(bx), timestamp=False)
         print '<<< Access plot:', plotname
         graphs = f.Get(plotname)
         for j, graph in enumerate(graphs.GetListOfGraphs()):
-            function = graph.GetListOfFunctions().FindObject(options['fit'])
+            function = graph.GetFunction(options['fit'])
             average[bx][j] = function.GetParameter(options['parameter'])
             averror[bx][j] = function.GetParError(options['parameter'])
     return average, averror
@@ -52,7 +54,7 @@ def makeTexTablePerDirectionBx(average, averror, options):
     return s
 
 def vertexPositionTexTable(scan, fitted='', combined=False):
-    options = {'scan': scan, 'name': 'vtxPos', 'fitted': fitted, 'fit': 'gaus', \
+    options = {'scan': scan, 'name': 'vtxPos', 'fitted': fitted, 'fit': 'pol1', \
                'parameter': 1, 'combine': combined}
     average, averror = extractPerDirectionBx(options)
     return makeTexTablePerDirectionBx(average, averror, options)

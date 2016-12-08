@@ -5,7 +5,8 @@ __ARGV__.append('-b')
 from argparse import ArgumentParser
 
 def main():
-    parser = ArgumentParser()
+    parser = ArgumentParser(description='Store results from plots to a tex '+ \
+                            'table')
     parser.add_argument('-b', action='store_true', help='enable batch mode')
     parser.add_argument('--dataset', required=True, choices=['PromptReco2015', \
                         'ReRecoOct2015', 'ReRecoDec2015', 'PromptReco2016'], \
@@ -37,8 +38,11 @@ def main():
     from lsctools import config, extract
     getattr(config, 'PCC'+args.dataset)()
     table = getattr(extract, args.action+'TexTable')(args.scan, \
-                    fitted=args.fitted, combined=args.combined)
-    print '<<< Save to file:', args.output
-    f = open(args.output, 'w')
+                    fitted=args.fitted[0], combined=args.combined)
+    print '<<< Save to file:', args.output[0]
+    f = open(args.output[0], 'w')
     f.write(table)
     f.close()
+
+if __name__ == '__main__':
+    main()
