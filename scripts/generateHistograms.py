@@ -46,19 +46,25 @@ def main():
                 getattr(gather, action)(scan)
                 if args.combine:
                     getattr(gather, action)(scan, combine=True)
+    if args.combine and not args.gather:
+        for action in args.actions:
+            for scan in args.scans:
+                getattr(gather, action)(scan, combine=True)
     if args.fit:
         for action in args.actions:
             for scan in args.scans:
                 for method in args.fit:
-                    getattr(fit, action)(scan, fitmethod=method)
+                    getattr(fit, action)(scan, fitmethod=method, \
+                            combine=args.combine)
     if args.plot:
         for action in args.actions:
             for scan in args.scans:
                 if args.fit:
                     for method in args.fit:
-                        getattr(plot, action+'PerBxStep')(scan, fit=method)
+                        getattr(plot, action+'PerBxStep')(scan, fit=method, \
+                                                          combine=args.combine)
                 else:
-                    getattr(plot, action+'PerBxStep')(scan)
+                    getattr(plot, action+'PerBxStep')(scan, combine=args.combine)
 
 if __name__ == '__main__':
     main()

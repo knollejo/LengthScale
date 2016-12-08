@@ -1,5 +1,6 @@
 from config import options as O, EOSPATH as eos
-from tools import plotName, plotTitle, openRootFileW, closeRootFile, loadFiles
+from tools import plotName, plotTitle, openRootFileW, openRootFileU, \
+                  closeRootFile, loadFiles
 from ROOT import TChain, TH1I, TH1F, TObject
 
 def chain(fileset, scan):

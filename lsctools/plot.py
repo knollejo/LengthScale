@@ -7,10 +7,9 @@ def plotPerBxStep(options):
     """Save histograms (per BX and step) to PDF files"""
     name = options['scan'] + '_' + options['name'] + options['extra']
     f = openRootFileR(name)
+    crossings = O['crossings']
     if options['combine']:
-        crossings = ['all']
-    else:
-        crossings = O['crossings']
+        crossings.append('all')
     for bx in crossings:
         for step in range(len(O['nominalPos'][options['scan']])):
             histname = plotName(options['scan']+'_'+options['name']+ \
