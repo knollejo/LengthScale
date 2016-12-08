@@ -62,9 +62,10 @@ def main():
                 if args.fit:
                     for method in args.fit:
                         getattr(plot, action+'PerBxStep')(scan, fit=method, \
-                                                          combine=args.combine)
+                                combine=args.combine)
                 else:
-                    getattr(plot, action+'PerBxStep')(scan, combine=args.combine)
+                    getattr(plot, action+'PerBxStep')(scan, \
+                            combine=args.combine)
 
 if __name__ == '__main__':
     main()

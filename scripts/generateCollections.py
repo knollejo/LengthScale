@@ -56,7 +56,8 @@ def main():
                         getattr(plot, action+'PerDirectionBx')(scan, \
                                 fitted=fitted[0], combine=args.combined)
                 else:
-                    getattr(plot, action+'PerDirectionBx')(scan)
+                    getattr(plot, action+'PerDirectionBx')(scan, \
+                            combine=args.combined)
 
 if __name__ == '__main__':
     main()
