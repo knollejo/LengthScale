@@ -13,7 +13,7 @@ def fitPerBxStep(options):
         extra = extra + 'R'
     f = openRootFileU(name)
     g = openRootFileW(name+extra)
-    crossings = O['crossings']
+    crossings = O['crossings'][:]
     if options['combine']:
         crossings.append('all')
     for bx in crossings:
