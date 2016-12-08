@@ -1,5 +1,6 @@
 from config import options as O
-from tools import openRootFileR, closeRootFile, plotName, plotPath
+from tools import openRootFileR, closeRootFile, plotName, plotPath, \
+                  drawSignature
 from ROOT import TCanvas, gStyle, TPad, gPad, TLine
 
 def plotPerBxStep(options):
@@ -10,7 +11,7 @@ def plotPerBxStep(options):
         crossings = ['all']
     else:
         crossings = O['crossings']
-    for bx in O['crossings']:
+    for bx in crossings:
         for step in range(len(O['nominalPos'][options['scan']])):
             histname = plotName(options['scan']+'_'+options['name']+ \
                                 options['extra']+'_bx'+str(bx)+'_step'+ \
@@ -29,19 +30,29 @@ def plotPerBxStep(options):
             hist.GetXaxis().SetTitle(options['xtitle'])
             hist.GetXaxis().SetRangeUser(options['xmin'], options['xmax'])
             hist.GetYaxis().SetTitle(options['ytitle'])
+            drawSignature(histname)
             canvas.Print(filename)
             canvas.Close()
     closeRootFile(f, name)
 
+def numberClusterPerBxStep(scan, combine=False):
+    """Save cluster number histograms to PDF files"""
+    options = {'name': 'nCluster', 'scan': scan, 'xmin': -0.5, 'xmax': 5000.5, \
+               'logx': 0, 'logy': 1, 'xtitle': 'Number of Pixel Clusters (per event)', \
+               'ytitle': 'Number of Events', 'optstat': 101110, 'optfit': 0, \
+               'extra': '', 'combine': combine}
+    plotPerBxStep(options)
+
 def numberVerticesPerBxStep(scan, combine=False):
     """Save vertex number histograms to PDF files"""
     options = {'name': 'nVtx', 'scan': scan, 'xmin': -0.5, 'xmax': 6.5, 'logx': 0, \
-               'logy': 1, 'xtitle': 'Number of Vertices', \
+               'logy': 1, 'xtitle': 'Number of Vertices (per event)', \
                'ytitle': 'Number of Events', 'optstat': 1110, 'optfit': 0, \
                'extra': '', 'combine': combine}
     plotPerBxStep(options)
 
 def vertexPositionPerBxStep(scan, fit='', combine=False):
+    """Save vertex position histograms to PDF files"""
     options = {'name': 'vtxPos', 'scan': scan, 'xmin': -1e3, 'xmax':3e3, \
                'logx': 0, 'logy': 0, 'xtitle': 'Measured Vertex Position [#mum]', \
                'ytitle': 'Number of Events','optstat': 1110, 'optfit': 101,
@@ -49,13 +60,15 @@ def vertexPositionPerBxStep(scan, fit='', combine=False):
     plotPerBxStep(options)
 
 def plotPerDirectionBx(options):
+    """Save directional fit plots (per BX) to PDF files"""
     name = options['scan'] + '_'+ options['name'] + options['fitted'] \
            + '_collected'
     f = openRootFileR(name)
     for bx in O['crossings']:
         plotname = plotName(name+'_bx'+str(bx), timestamp=False)
-        filename = plotPath(name+'_bx'+str(bx), timestamp=True)
-        print '<<<< Save plot:', filename
+        filename = plotName(name+'_bx'+str(bx), timestamp=True)
+        filepath = plotPath(name+'_bx'+str(bx), timestamp=True)
+        print '<<< Save plot:', filename
         graphs = f.Get(plotname)
         residuals = f.Get(plotname+'_residuals')
         
@@ -113,11 +126,14 @@ def plotPerDirectionBx(options):
             pad.Update()
         
         canvas.cd()
-        canvas.Print(filename)
+        drawSignature(filename)
+        canvas.Print(filepath)
         canvas.Close()
     closeRootFile(f, name)
 
-def vertexPositionPerDirectionBx(scan, fitted=''):
+def vertexPositionPerDirectionBx(scan, fitted='', combine=False):
+    """Save vertex position directional plots to PDF files"""
     options = {'name': 'vtxPos', 'scan': scan, 'fitted': fitted, 'optfit': 111, \
-               'fit': 'pol1', 'ytitle': 'Measured Vertex Position [#mum]'}
+               'fit': 'pol1', 'ytitle': 'Measured Vertex Position [#mum]', \
+               'combine': combine}
     plotPerDirectionBx(options)
