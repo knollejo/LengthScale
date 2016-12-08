@@ -15,7 +15,10 @@ def plotPerBxStep(options):
             histname = plotName(options['scan']+'_'+options['name']+ \
                                 options['extra']+'_bx'+str(bx)+'_step'+ \
                                 str(step), timestamp=False)
-            filename = plotPath(options['scan']+'_'+options['name']+ \
+            filename = plotName(options['scan']+'_'+options['name']+ \
+                                options['extra']+'_bx'+str(bx)+'_step'+ \
+                                str(step), timestamp=True)
+            filepath = plotPath(options['scan']+'_'+options['name']+ \
                                 options['extra']+'_bx'+str(bx)+'_step'+ \
                                 str(step), timestamp=True)
             print '<<< Save plot:', filename
@@ -29,8 +32,8 @@ def plotPerBxStep(options):
             hist.GetXaxis().SetTitle(options['xtitle'])
             hist.GetXaxis().SetRangeUser(options['xmin'], options['xmax'])
             hist.GetYaxis().SetTitle(options['ytitle'])
-            drawSignature(histname)
-            canvas.Print(filename)
+            drawSignature(filename)
+            canvas.Print(filepath)
             canvas.Close()
     closeRootFile(f, name)
 
