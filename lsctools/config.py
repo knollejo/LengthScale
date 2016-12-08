@@ -85,10 +85,10 @@ def PCCReRecoDec2015():
     VdM2015()
     PCC()
     
-    options['minitrees'] = ['/comm_luminosity/PCC/VdM/0150825_Dec2015ReReco/' \
+    options['fulltrees'] = ['/comm_luminosity/PCC/VdM/0150825_Dec2015ReReco/' \
                             +'ZeroBias'+str(i)+'/PCC_VdM_ZeroBias'+str(i)+'_' \
                             +'4266_DecRereco_Event/161026_'+str(time)+'/0000' \
-                            for i, j in enumerate([153235, 153318, 153418, \
+                            for i, time in enumerate([153235, 153318, 153418, \
                             153453, 153542, 153807, 153907, 153950], start=1)]
     options['minitrees'] = [s+'_vdmminitrees' for s in options['fulltrees']]
     options['dataset'] = ['rereco_dec15', 'ReReco Dec 2015']
