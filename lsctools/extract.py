@@ -1,6 +1,5 @@
 from config import options as O
 from tools import openRootFileR
-from numpy import mean
 
 def si(value, error):
     return '\\si{' + str(value) + ' \\pm ' + str(error) + '}'
@@ -25,21 +24,35 @@ def extractPerDirectionBx(options):
 
 def makeTexTablePerDirectionBx(average, averror, options):
     """Output results to LaTeX code"""
-    print '\\begin{tabular}{lccc}'
-    print '\t\\bfseries', options['scan'], '& \\bfseries forward & ', \
-          '\\bfseries backward & \\bfseries difference \\\\'
-    print '\t\\hline'
+    s = '\\begin{tabular}{lccc}\n'
+    s += '\t\\bfseries ' + options['scan'] + ' & \\bfseries forward & ' + \
+          '\\bfseries backward & \\bfseries difference \\\\\n'
+    s += '\t\\hline\n'
     for bx in O['crossings']:
         difference = abs(average[bx][0] - average[bx][1])
         differror = (averror[bx][0] ** 2 + averror[bx][1] ** 2) ** 0.5
-        print '\t\\bfseries', bx
+        s += '\t\\bfseries ' + str(bx)
         for i in range(2):
-            print '&', si(average[bx][i], averror[bx][i])
-        print '&', si(difference, differror), '\\\\'
-    print '\t\\hline'
-    #print '\t average &'
+            s += ' & ' + si(average[bx][i], averror[bx][i])
+        s += ' & ' + si(difference, differror) + ' \\\\\n'
+    s += '\t\\hline\n'
+    av = [sum([average[bx][i] * averror[bx][i] ** -2 for bx in O['crossings']]) \
+          / sum([averror[bx][i] ** -2 for bx in O['crossings']]) for i in \
+          range(2)]
+    er = [sum([averror[bx][i] ** -2 for bx in O['crossings']]) ** -0.5 for i \
+          in range(2)]
+    s += '\t average & '+ si(av[0], er[0]) + ' & ' + si(av[1], er[1]) \
+         + ' \\\\\n'
     if(options['combine']):
-        print '\t inclusive'
+        s += '\t inclusive'
         for i in range(2):
-            print '&', si(average['all'][i], averror['all'][i])
-        print '\\\\'
+            s += ' & ' + si(average['all'][i], averror['all'][i])
+        s += ' \\\\\n'
+    s += '\\end{tabular}{lccc}'
+    return s
+
+def vertexPositionTexTable(scan, fitted='', combined=False):
+    options = {'scan': scan, 'name': 'vtxPos', 'fitted': fitted, 'fit': 'gaus', \
+               'parameter': 1, 'combine': combined}
+    average, averror = extractPerDirectionBx(options)
+    return makeTexTablePerDirectionBx(average, averror, options)

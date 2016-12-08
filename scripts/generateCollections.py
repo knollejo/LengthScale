@@ -13,9 +13,9 @@ def main():
     parser.add_argument('-X1', dest='scans', action='append_const', const='X1', \
                         help='apply to LSC scan X1')
     parser.add_argument('-Y1', dest='scans', action='append_const', const='Y1', \
-                        help='apply to LSC scan X1')
+                        help='apply to LSC scan Y1')
     parser.add_argument('-X2', dest='scans', action='append_const', const='X2', \
-                        help='apply to LSC scan X1')
+                        help='apply to LSC scan X2')
     parser.add_argument('-combined', action='store_true', help='use '+ \
                         'combined data of all bunch crossings')
     parser.add_argument('-analyze', action='store_true', help='collect mean '+ \

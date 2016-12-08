@@ -21,7 +21,7 @@ def plotPerBxStep(options):
             filepath = plotPath(options['scan']+'_'+options['name']+ \
                                 options['extra']+'_bx'+str(bx)+'_step'+ \
                                 str(step), timestamp=True)
-            print '<<< Save plot:', filename
+            print '<<< Save plot:', filepath
             hist = f.Get(histname)
             canvas = TCanvas()
             canvas.SetLogx(options['logx'])
@@ -73,7 +73,7 @@ def plotPerDirectionBx(options):
         plotname = plotName(name+'_bx'+str(bx), timestamp=False)
         filename = plotName(name+'_bx'+str(bx), timestamp=True)
         filepath = plotPath(name+'_bx'+str(bx), timestamp=True)
-        print '<<< Save plot:', filename
+        print '<<< Save plot:', filepath
         graphs = f.Get(plotname)
         residuals = f.Get(plotname+'_residuals')
         

@@ -21,6 +21,8 @@ def main():
                         'from ROOT file')
     parser.add_argument('-combine', action='store_true', help='combine data '+ \
                         'of all bunch crossings')
+    parser.add_argument('-combined', action='store_true', help='use combined '+ \
+                        'data of all bunch crossings')
     parser.add_argument('-fit', action='append', nargs='?', const='F', \
                         help='fit histogram, give L for log-likelihood fit, '+ \
                         'add R for restricted range')
@@ -50,22 +52,24 @@ def main():
         for action in args.actions:
             for scan in args.scans:
                 getattr(gather, action)(scan, combine=True)
+    if args.combine:
+        args.combined = True
     if args.fit:
         for action in args.actions:
             for scan in args.scans:
                 for method in args.fit:
                     getattr(fit, action)(scan, fitmethod=method, \
-                            combine=args.combine)
+                            combine=args.combined)
     if args.plot:
         for action in args.actions:
             for scan in args.scans:
                 if args.fit:
                     for method in args.fit:
                         getattr(plot, action+'PerBxStep')(scan, fit=method, \
-                                combine=args.combine)
+                                combine=args.combined)
                 else:
                     getattr(plot, action+'PerBxStep')(scan, \
-                            combine=args.combine)
+                            combine=args.combined)
 
 if __name__ == '__main__':
     main()
