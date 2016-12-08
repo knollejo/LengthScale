@@ -69,7 +69,7 @@ def plotPerDirectionBx(options):
     crossings = O['crossings'][:]
     if options['combine']:
         crossings.append('all')
-    for bx in O['crossings']:
+    for bx in crossings:
         plotname = plotName(name+'_bx'+str(bx), timestamp=False)
         filename = plotName(name+'_bx'+str(bx), timestamp=True)
         filepath = plotPath(name+'_bx'+str(bx), timestamp=True)
