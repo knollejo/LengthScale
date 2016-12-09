@@ -6,7 +6,7 @@ from argparse import ArgumentParser
 
 def main():
     parser = ArgumentParser(description='Scan over ROOT files to find those '+ \
-                                        'belonging to a lumisection interval.')
+                            'belonging to a lumisection interval.')
     parser.add_argument('-b', action='store_true', help='enable batch mode')
     parser.add_argument('--dataset', required=True, choices=['PromptReco2015', \
                         'ReRecoOct2015', 'ReRecoDec2015', 'PromptReco2016'], \

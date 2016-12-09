@@ -32,6 +32,16 @@ def plotPerBxStep(options):
             hist.GetXaxis().SetTitle(options['xtitle'])
             hist.GetXaxis().SetRangeUser(options['xmin'], options['xmax'])
             hist.GetYaxis().SetTitle(options['ytitle'])
+            hist.GetYaxis().SetTitleOffset(1.2)
+            for axis in [hist.GetXaxis(), hist.GetYaxis()]:
+                axis.SetTitleFont(133)
+                axis.SetTitleSize(16)
+                axis.SetLabelFont(133)
+                axis.SetLabelSize(12)
+                axis.CenterTitle()
+            stats = hist.FindObject("stats")
+            stats.SetTextFont(133)
+            stats.SetTextSize(16)
             drawSignature(filename)
             canvas.Print(filepath)
             canvas.Close()
@@ -57,7 +67,7 @@ def vertexPositionPerBxStep(scan, fit='', combine=False):
     """Save vertex position histograms to PDF files"""
     options = {'name': 'vtxPos', 'scan': scan, 'xmin': -1e3, 'xmax':3e3, \
                'logx': 0, 'logy': 0, 'xtitle': 'Measured Vertex Position [#mum]', \
-               'ytitle': 'Number of Events','optstat': 1110, 'optfit': 101,
+               'ytitle': 'Number of Events','optstat': 1110, 'optfit': 111,
                'extra': fit, 'combine': combine}
     plotPerBxStep(options)
 
@@ -76,7 +86,7 @@ def plotPerDirectionBx(options):
         print '<<< Save plot:', filepath
         graphs = f.Get(plotname)
         residuals = f.Get(plotname+'_residuals')
-        
+
         gStyle.SetOptFit(options['optfit'])
         canvas = TCanvas()
         canvas.cd()
@@ -84,7 +94,7 @@ def plotPerDirectionBx(options):
         pad2 = TPad('pad2', 'pad2', 0, 0, 1, 0.3)
         pad1.Draw()
         pad2.Draw()
-        
+
         pad1.cd()
         gPad.SetMargin(0.1, 0.01, 0.0, 0.3)
         graphs.Draw('AP')
@@ -100,7 +110,7 @@ def plotPerDirectionBx(options):
             stats.SetY2NDC(0.88)
             graph.GetFunction(options['fit']).SetLineColor(2+2*j)
         graphs.GetYaxis().SetTitle(options['ytitle'])
-        
+
         pad2.cd()
         gPad.SetMargin(0.1, 0.01, 0.3, 0.0)
         for j, residual in enumerate(residuals.GetListOfGraphs()):
@@ -108,7 +118,7 @@ def plotPerDirectionBx(options):
             residual.SetMarkerColor(2+2*j)
         residuals.Draw("AP")
         residuals.GetXaxis().SetTitle('Nominal Position [#mum]')
-        residuals.GetYaxis().SetTitle('Residuals')
+        residuals.GetYaxis().SetTitle('Residuals [#mum]')
         residuals.GetXaxis().SetTitleOffset(3)
         residuals.GetXaxis().SetLabelOffset(0.02)
         residuals.GetYaxis().SetNdivisions(305)
@@ -117,7 +127,7 @@ def plotPerDirectionBx(options):
         line.SetLineColor(14)
         line.SetLineStyle(3)
         line.Draw()
-        
+
         for axis in [graphs.GetYaxis(), residuals.GetXaxis(), \
                      residuals.GetYaxis()]:
             axis.SetTitleFont(133)
@@ -125,11 +135,11 @@ def plotPerDirectionBx(options):
             axis.SetLabelFont(133)
             axis.SetLabelSize(12)
             axis.CenterTitle()
-        
+
         for pad in [pad1, pad2]:
             pad.Modified()
             pad.Update()
-        
+
         canvas.cd()
         drawSignature(filename)
         canvas.Print(filepath)
