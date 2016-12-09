@@ -30,17 +30,18 @@ def main():
     parser.add_argument('-vtxPos', dest='action', action='store_const', \
                         const='vertexPosition', help='use transverse '+ \
                         'position of reconstructed vertices')
-    parser.add_argument('-o', dest='output', required=True, nargs=1, \
-                        help='specify output file name')
     args = parser.parse_args()
-    
+
     from importlib import import_module
     from lsctools import config, extract
     getattr(config, 'PCC'+args.dataset)()
     table = getattr(extract, args.action+'TexTable')(args.scan, \
                     fitted=args.fitted[0], combined=args.combined)
-    print '<<< Save to file:', args.output[0]
-    f = open(args.output[0], 'w')
+    from lsctools.tools include plotName, plotDir
+    name = args.scan + '_' + args.action + args.fitted + '_collected'
+    filename = plotDir() + '/' + plotName(name) + '.tex'
+    print '<<< Save to file:', filename
+    f = open(filename, 'w')
     f.write(table)
     f.close()
 
