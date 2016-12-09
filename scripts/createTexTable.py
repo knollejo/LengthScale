@@ -37,8 +37,8 @@ def main():
     getattr(config, 'PCC'+args.dataset)()
     table = getattr(extract, args.action+'TexTable')(args.scan, \
                     fitted=args.fitted[0], combined=args.combined)
-    from lsctools.tools include plotName, plotDir
-    name = args.scan + '_' + args.action + args.fitted + '_collected'
+    from lsctools.tools import plotName, plotDir
+    name = args.scan + '_' + args.action + args.fitted[0] + '_collected'
     filename = plotDir() + '/' + plotName(name) + '.tex'
     print '<<< Save to file:', filename
     f = open(filename, 'w')
