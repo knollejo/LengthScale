@@ -2,7 +2,7 @@ from config import options as O
 from tools import openRootFileR, plotName
 
 def si(value, error, form='{}'):
-    return '\\si{' + form.format(value) + ' \\pm ' + \
+    return '\\num{' + form.format(value) + ' \\pm ' + \
            form.format(error) + '}'
 
 def extractPerDirectionBx(options):
@@ -45,14 +45,14 @@ def makeTexTablePerDirectionBx(average, averror, options):
           range(2)]
     er = [sum([averror[bx][i] ** -2 for bx in O['crossings']]) ** -0.5 for i \
           in range(2)]
-    s += '\t average & '+ si(av[0], er[0], form) + ' & ' + \
-         si(av[1], er[1], form) + ' \\\\\n'
+    s += '\t\t average & '+ si(av[0], er[0], form) + ' & ' + \
+         si(av[1], er[1], form) + ' & \\\\\n'
     if(options['combine']):
-        s += '\t inclusive'
+        s += '\t\bfseries inclusive'
         for i in range(2):
             s += ' & ' + si(average['all'][i], averror['all'][i], form)
-        s += ' \\\\\n'
-    s += '\\end{tabular}{lccc}'
+        s += ' & \\\\\n'
+    s += '\\end{tabular}'
     return s
 
 def vertexPositionTexTable(scan, fitted='', combined=False):
