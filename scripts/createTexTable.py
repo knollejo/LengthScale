@@ -39,7 +39,7 @@ def main():
                     fitted=args.fitted[0], combined=args.combined)
     from lsctools.tools include plotName, plotDir
     name = args.scan + '_' + args.action + args.fitted + '_collected'
-    filename = plotDir() + '/' + plotName(name) + '.tex'
+    filename = plotDir() + '/' + plotName(name, timestamp=True) + '.tex'
     print '<<< Save to file:', filename
     f = open(filename, 'w')
     f.write(table)
