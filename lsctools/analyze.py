@@ -71,16 +71,17 @@ def collectPerDirectionBx(options):
 
 def numberClusters(scan, fitted='', combine=False):
     """Fit pixel cluster number in both directions of a scan"""
-    options = {'name': nCluster, 'scan': scan, 'fit': 'pol1', 'x': scale(), \
+    options = {'name': 'nCluster', 'scan': scan, 'fit': 'pol1', 'x': 
+scale(), \
                'y': scale(), 'e': scale(), 'fitted': fitted, 'combine': combine}
     if fitted:
         def custom(hist):
             average = hist.GetFunction('gaus').GetParameter(1)
             averror = hist.GetFunction('gaus').GetParError(1)
             return average, averror
-        options['custom']: custom
+        options['custom'] = custom
     else:
-        options['custom']: False
+        options['custom'] = False
     collectPerDirectionBx(options)
 
 def numberVertices(scan, combine=False):

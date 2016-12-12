@@ -54,7 +54,8 @@ def numberClustersPerBxStep(scan, fit='', combine=False):
     """Save cluster number histograms to PDF files"""
     options = {'name': 'nCluster', 'scan': scan, 'xmin': -0.5, 'xmax': 5000.5, \
                'logx': 0, 'logy': 1, 'xtitle': 'Number of Pixel Clusters (per event)', \
-               'ytitle': 'Number of Events', 'optstat': 101110, 'optfit': 0, \
+               'ytitle': 'Number of Events', 'optstat': 101110, 'optfit': 
+111, \
                'extra': fit, 'combine': combine}
     plotPerBxStep(options)
 
@@ -149,7 +150,7 @@ def plotPerDirectionBx(options):
         canvas.Close()
     closeRootFile(f, name)
 
-def numberClustersPerBxStep(scan, fitted='', combine=False):
+def numberClustersPerDirectionBx(scan, fitted='', combine=False):
     """Save number of clusters directional plots to PDF files"""
     options = {'name': 'nCluster', 'scan': scan, 'fitted': fitted, \
                'optfit': 111, 'fit': 'pol1', 'combine': combine, \

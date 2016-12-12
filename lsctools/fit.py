@@ -29,16 +29,18 @@ def fitPerBxStep(options):
     closeRootFile(g, newname)
     closeRootFile(f, oldname)
 
-def numberClusters(scan, combine=False):
+def numberClusters(scan, fitmethod='F', combine=False):
     """Fit number of clusters with a Gaussian in a range"""
     def getRange(hist):
-        hist->GetXaxis()->SetRange(1, 30)
-        mini = hist->GetMinimumBin()
-        hist->GetYaxis()->SetRange(mini, 1000)
-        maxi = hist->GetMaximumBin()
+        hist.GetXaxis().SetRange(1, 30)
+        mini = hist.GetMinimumBin()
+        hist.GetXaxis().SetRange(mini, 1000)
+        maxi = hist.GetMaximumBin()
         return mini, 2 * maxi - mini
-    options = {'name': 'nCluster', 'scan': scan, 'fit': 'gaus', 'extra': 'F' \
+    options = {'name': 'nCluster', 'scan': scan, 'fit': 'gaus', 'extra': 
+'F', \
                'combine': combine, 'fitopt': '', 'range': getRange}
+    fitPerBxStep(options)
 
 def vertexPosition(scan, fitmethod='F', combine=False):
     """Fit vertex position with a Gaussian (standard or log-likelihood)"""
