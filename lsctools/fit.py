@@ -4,35 +4,41 @@ from ROOT import TObject
 
 def fitPerBxStep(options):
     """Fit histograms (per BX and step) with a function"""
-    name = options['scan']+'_'+options['name']
-    if options['fitopt']:
-        extra = options['fitopt']
-    else:
-        extra = 'F'
-    if options['range']:
-        extra = extra + 'R'
-    f = openRootFileU(name)
-    g = openRootFileW(name+extra)
+    oldname = options['scan']+'_'+options['name']
+    newname = oldname + options['extra']
+    f = openRootFileU(oldname)
+    g = openRootFileW(newname)
     crossings = O['crossings'][:]
     if options['combine']:
         crossings.append('all')
     for bx in crossings:
         for step in range(len(O['nominalPos'][options['scan']])):
             print '<<< Fit:', options['scan'], bx, 'step', step
-            histname = plotName(options['scan']+'_'+options['name']+'_bx'+\
-                                str(bx)+'_step'+str(step), timestamp=False)
-            newname = plotName(options['scan']+'_'+options['name']+extra+'_bx'+\
-                               str(bx)+'_step'+str(step), timestamp=False)
+            histname = plotName(oldname+'_bx'+str(bx)+'_step'+str(step), \
+                                timestamp=False)
+            histnew = plotName(newname+'_bx'+str(bx)+'_step'+str(step), \
+                               timestamp=False)
             hist = f.Get(histname)
-            hist.SetName(newname)
+            hist.SetName(histnew)
             if options['range']:
-                hist.Fit(options['fit'], options['fitopt'], '', \
-                         options['rangemin'](hist), options['rangemax'](hist))
+                mini, maxi = options['range'](hist)
+                hist.Fit(options['fit'], options['fitopt'], '', mini, maxi)
             else:
                 hist.Fit(options['fit'], options['fitopt'])
             hist.Write('', TObject.kOverwrite)
-    closeRootFile(g, name+extra)
-    closeRootFile(f, name)
+    closeRootFile(g, newname)
+    closeRootFile(f, oldname)
+
+def numberClusters(scan, combine=False):
+    """Fit number of clusters with a Gaussian in a range"""
+    def getRange(hist):
+        hist->GetXaxis()->SetRange(1, 30)
+        mini = hist->GetMinimumBin()
+        hist->GetYaxis()->SetRange(mini, 1000)
+        maxi = hist->GetMaximumBin()
+        return mini, 2 * maxi - mini
+    options = {'name': 'nCluster', 'scan': scan, 'fit': 'gaus', 'extra': 'F' \
+               'combine': combine, 'fitopt': '', 'range': getRange}
 
 def vertexPosition(scan, fitmethod='F', combine=False):
     """Fit vertex position with a Gaussian (standard or log-likelihood)"""
@@ -40,13 +46,17 @@ def vertexPosition(scan, fitmethod='F', combine=False):
                'combine': combine}
     if fitmethod.startswith('L'):
         options['fitopt'] = 'L'
+        options['extra'] = 'L'
     else:
         options['fitopt'] = ''
+        options['extra'] = 'F'
     if fitmethod.endswith('R'):
-        options['range'] = True
-        options['rangemin'] = lambda hist: hist.GetMean()-2*hist.GetRMS()
-        options['rangemax'] = lambda hist: hist.GetMean()+2*hist.GetRMS()
+        def getRange(hist):
+            mean = hist.GetMean()
+            rms = hist.GetRMS()
+            return mean - 2 * rms, mean + 2 * rms
+        options['range'] = getRange
+        options['extra'] += 'R'
     else:
-        options['fit'] = 'gaus'
         options['range'] = False
     fitPerBxStep(options)

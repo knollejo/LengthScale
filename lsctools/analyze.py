@@ -69,11 +69,18 @@ def collectPerDirectionBx(options):
     closeRootFile(g, newname)
     closeRootFile(f, oldname)
 
-def numberCluster(scan, combine=False):
+def numberClusters(scan, fitted='', combine=False):
     """Fit pixel cluster number in both directions of a scan"""
     options = {'name': nCluster, 'scan': scan, 'fit': 'pol1', 'x': scale(), \
-               'y': scale(), 'e': scale(), 'fitted': '', 'custom': False, \
-               'combine': combine}
+               'y': scale(), 'e': scale(), 'fitted': fitted, 'combine': combine}
+    if fitted:
+        def custom(hist):
+            average = hist.GetFunction('gaus').GetParameter(1)
+            averror = hist.GetFunction('gaus').GetParError(1)
+            return average, averror
+        options['custom']: custom
+    else:
+        options['custom']: False
     collectPerDirectionBx(options)
 
 def numberVertices(scan, combine=False):
@@ -86,8 +93,7 @@ def numberVertices(scan, combine=False):
 def vertexPosition(scan, fitted='', combine=False):
     """Fit vertex positions in both directions of a scan"""
     options = {'name': 'vtxPos', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
-               'y': scale(), 'e': scale(), 'fitted': fitted, \
-               'combine': combine}
+               'y': scale(), 'e': scale(), 'fitted': fitted, 'combine': combine}
     if fitted:
         def custom(hist):
             average = hist.GetFunction('gaus').GetParameter(1)
