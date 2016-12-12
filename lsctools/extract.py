@@ -99,7 +99,7 @@ def makeTexTablePerDirectionBxComparison(average1, averror1, average2, averror2,
     s += '\\end{tabular}'
     return s
 
-def numberClustersPerDirectionBx(scan, fitted='', combined=False):
+def numberClustersTexTable(scan, fitted='', combined=False):
     options = {'scan': scan, 'name': 'nCluster', 'fitted': fitted, \
                'fit': 'pol1', 'parameter': 1, 'combine': combined}
     average, averror = extractPerDirectionBx(options)
