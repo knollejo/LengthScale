@@ -50,12 +50,12 @@ def plotPerBxStep(options):
             canvas.Close()
     closeRootFile(f, name)
 
-def numberClusterPerBxStep(scan, combine=False):
+def numberClustersPerBxStep(scan, fit='', combine=False):
     """Save cluster number histograms to PDF files"""
     options = {'name': 'nCluster', 'scan': scan, 'xmin': -0.5, 'xmax': 5000.5, \
                'logx': 0, 'logy': 1, 'xtitle': 'Number of Pixel Clusters (per event)', \
                'ytitle': 'Number of Events', 'optstat': 101110, 'optfit': 0, \
-               'extra': '', 'combine': combine}
+               'extra': fit, 'combine': combine}
     plotPerBxStep(options)
 
 def numberVerticesPerBxStep(scan, combine=False):
@@ -121,7 +121,7 @@ def plotPerDirectionBx(options):
             residual.SetMarkerColor(2+2*j)
         residuals.Draw("AP")
         residuals.GetXaxis().SetTitle('Nominal Position [#mum]')
-        residuals.GetYaxis().SetTitle('Residuals [#mum]')
+        residuals.GetYaxis().SetTitle('Residuals '+options['restitle'])
         residuals.GetXaxis().SetTitleOffset(3)
         residuals.GetXaxis().SetLabelOffset(0.02)
         residuals.GetYaxis().SetNdivisions(305)
@@ -149,16 +149,25 @@ def plotPerDirectionBx(options):
         canvas.Close()
     closeRootFile(f, name)
 
+def numberClustersPerBxStep(scan, fitted='', combine=False):
+    """Save number of clusters directional plots to PDF files"""
+    options = {'name': 'nCluster', 'scan': scan, 'fitted': fitted, \
+               'optfit': 111, 'fit': 'pol1', 'combine': combine, \
+               'ytitle': 'Number of Pixel Clusters (per event)', \
+               'restitle': '[abs.]'}
+    plotPerDirectionBx(options)
+
 def vertexPositionPerDirectionBx(scan, fitted='', combine=False):
     """Save vertex position directional plots to PDF files"""
     options = {'name': 'vtxPos', 'scan': scan, 'fitted': fitted, 'optfit': 111, \
                'fit': 'pol1', 'ytitle': 'Measured Vertex Position [#mum]', \
-               'combine': combine}
+               'combine': combine, 'restitle': '[#mum]'}
     plotPerDirectionBx(options)
 
 def vertexPositionSigmaPerDirectionBx(scan, fitted='F', combine=False):
     """Save sigma of vertex position directional plots to PDF files"""
     options = {'name': 'vtxPosSig', 'scan': scan, 'fitted': fitted, \
                'optfit': 111, 'fit': 'pol1', 'combine': combine, \
-               'ytitle': '#sigma(Measured Vertex Position) [#mum]'}
+               'ytitle': '#sigma(Measured Vertex Position) [#mum]', \
+               'restitle': '[#mum]'}
     plotPerDirectionBx(options)
