@@ -15,14 +15,10 @@ def extractPerDirectionBx(options):
         crossings.append('all')
     average = dict(zip(crossings, [[0, 0] for i in range(len(crossings))]))
     averror = dict(zip(crossings, [[0, 0] for i in range(len(crossings))]))
-    if options['fitted']:
-        def extract(graph):
-            func = graph.GetFunction(options['fit'])
-            return func.GetParameter(options['parameter']), \
-                   func.GetParError(options['parameter'])
-    else:
-        def extract(graph):
-            return graph.GetMean(), graph.GetMeanError()
+    def extract(graph):
+        func = graph.GetFunction(options['fit'])
+        return func.GetParameter(options['parameter']), \
+               func.GetParError(options['parameter'])
     for bx in crossings:
         plotname = plotName(name+'_bx'+str(bx), timestamp=False)
         print '<<< Access plot:', plotname
