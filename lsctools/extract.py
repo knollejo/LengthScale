@@ -70,14 +70,13 @@ def makeTexTablePerDirectionBxComparison(average1, averror1, average2, averror2,
     s += '\t\\hline\n'
     for bx in O['crossings']:
         s += '\t\\bfseries ' + str(bx)
-        for average, averror in [zip([average1, average2], \
-                                     [averror1, averror2])]:
+        for average, averror in [(average1, averror1), (average2, averror2)]:
             for i in range(2):
                 s += ' & ' + num(average[bx][i], averror[bx][i], form)
         s += ' \\\\\n'
     s += '\t\\hline\n'
     s += '\t\\bfseries average'
-    for average, averror in [zip([average1, average2], [averror1, averror2])]:
+    for average, averror in [(average1, averror1), (average2, averror2)]:
         av = [sum([average[bx][i] * averror[bx][i] ** -2 for bx in \
               O['crossings']]) / sum([averror[bx][i] ** -2 for bx in \
               O['crossings']]) for i in range(2)]
@@ -87,8 +86,7 @@ def makeTexTablePerDirectionBxComparison(average1, averror1, average2, averror2,
     s += ' \\\\\n'
     if(options['combine']):
         s += '\t\\bfseries inclusive'
-        for average, averror in [zip([average1, average2], \
-                                     [averror1, averror2])]:
+        for average, averror in [(average1, averror1), (average2, averror2)]:
             for i in range(2):
                 s += ' & ' + num(average['all'][i], averror['all'][i], form)
         s += '& \\\\\n'
