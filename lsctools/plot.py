@@ -155,3 +155,10 @@ def vertexPositionPerDirectionBx(scan, fitted='', combine=False):
                'fit': 'pol1', 'ytitle': 'Measured Vertex Position [#mum]', \
                'combine': combine}
     plotPerDirectionBx(options)
+
+def vertexPositionSigmaPerDirectionBx(scan, fitted='F', combine=False):
+    """Save sigma of vertex position directional plots to PDF files"""
+    options = {'name': 'vtxPosSig', 'scan': scan, 'fitted': fitted, \
+               'optfit': 111, 'fit': 'pol1', 'combine': combine, \
+               'ytitle': '#sigma(Measured Vertex Position) [#mum]'}
+    plotPerDirectionBx(options)

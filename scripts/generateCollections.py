@@ -34,8 +34,11 @@ def main():
     parser.add_argument('-vtxPos', dest='actions', action='append_const', \
                         const='vertexPosition', help='evaluate transverse '+ \
                         'position of reconstructed vertices')
+    parser.add_argument('-vtxPosSig', dest='actions', action='append_const', \
+                        const='vertexPositionSigma', help='evaluate sigma '+ \
+                        'of transverse position of reconstructed vertices')
     args = parser.parse_args()
-    
+
     from importlib import import_module
     from lsctools import config, plot, analyze
     getattr(config, 'PCC'+args.dataset)()
@@ -47,7 +50,7 @@ def main():
                         getattr(analyze, action)(scan, fitted=fitted[0], \
                                 combine=args.combined)
                 else:
-                    getattr(analyze, action)(scan)
+                    getattr(analyze, action)(scan, combine=args.combined)
     if args.plot:
         for action in args.actions:
             for scan in args.scans:
