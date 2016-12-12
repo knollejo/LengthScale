@@ -62,7 +62,7 @@ def makeTexTablePerDirectionBxComparison(average1, averror1, average2, averror2,
     """Output results of two different fits to LaTex code"""
     form = options['format']
     s = '\\begin{tabular}{lcccc}\n'
-    s += '\t\\multirow{2}{!}{\\bfseries ' + options['scan'] + '} & ' + \
+    s += '\t\\multirow{2}{*}{\\bfseries ' + options['scan'] + '} & ' + \
          '\\multicolumns{2}{c}{\\bfseries ' + options['title1'] + '} & ' + \
          '\\multicolumns{2}{c}{\\bfseries ' + options['title2'] + '} \\\\\n'
     s += '\t& & \\bfseries forward & \\bfseries backward & \\bfseries ' + \
@@ -82,14 +82,14 @@ def makeTexTablePerDirectionBxComparison(average1, averror1, average2, averror2,
               O['crossings']]) for i in range(2)]
         er = [sum([averror[bx][i] ** -2 for bx in O['crossings']]) ** -0.5 for \
               i in range(2)]
-        s += ' & ' + num(av[0], er[0], form) + ' & ' + num(av[0], er[0], form)
+        s += ' & ' + num(av[0], er[0], form) + ' & ' + num(av[1], er[1], form)
     s += ' \\\\\n'
     if(options['combine']):
         s += '\t\\bfseries inclusive'
         for average, averror in [(average1, averror1), (average2, averror2)]:
             for i in range(2):
                 s += ' & ' + num(average['all'][i], averror['all'][i], form)
-        s += '& \\\\\n'
+        s += ' \\\\\n'
     s += '\\end{tabular}'
     return s
 
