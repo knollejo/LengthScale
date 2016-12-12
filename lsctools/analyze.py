@@ -39,7 +39,7 @@ def collectPerDirectionBx(options):
             else:
                 average[step] = hist.GetMean()
                 averror[step] = hist.GetMeanError()
-        plotname = plotName(newname+'_collected_bx'+str(bx), timestamp=False)
+        plotname = plotName(newname+'_bx'+str(bx), timestamp=False)
         plottitl = plotTitle(options['scan']+' BX '+str(bx))
         print '<<< Create plot:', plotname
         graphs = TMultiGraph(plotname, plottitl)
