@@ -47,7 +47,7 @@ def plotPerBxStep(options):
             gPad.Modified()
             gPad.Update()
             if 'custom' in options:
-                options['custom'](hist)
+                extragraphs = options['custom'](hist)
             canvas.Print(filepath)
             canvas.Close()
     closeRootFile(f, name)
@@ -55,16 +55,19 @@ def plotPerBxStep(options):
 def numberClustersPerBxStep(scan, fit='', combine=False):
     """Save cluster number histograms to PDF files"""
     def plotZoom(hist):
-        pad = TPad('pad', '', 0.35, 0.5, 0.75, 0.89)
+        pad = TPad('pad', '', 0.2, 0.55, 0.6, 0.89)
         pad.Draw()
         pad.cd()
         hist2 = hist.Clone()
         hist2.SetTitle('')
         hist2.Draw()
+        hist2.GetXaxis().SetRangeUser(10, 100)
         for axis in [hist2.GetXaxis(), hist2.GetYaxis()]:
             axis.SetTitle('')
             axis.SetNdivisions(505)
             axis.SetLabelOffset(0.02)
+        hist2.SetStats(False)
+        return pad, hist2
     options = {'name': 'nCluster', 'scan': scan, 'xmin': -0.5, 'xmax': 5000.5, \
                'logx': 0, 'logy': 1, 'xtitle': 'Number of Pixel Clusters (per event)', \
                'ytitle': 'Number of Events', 'optstat': 101110, 'optfit': 111, \

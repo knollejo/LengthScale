@@ -33,9 +33,9 @@ def numberClusters(scan, fitmethod='F', combine=False):
     """Fit number of clusters with a Gaussian in a range"""
     def getRange(hist):
         hist.GetXaxis().SetRange(1, 30)
-        mini = hist.GetMinimumBin()
-        hist.GetXaxis().SetRange(mini, 1000)
-        maxi = hist.GetMaximumBin()
+        mini = hist.GetXaxis().GetBinCenter(hist.GetMinimumBin())
+        hist.GetXaxis().SetRange(int(mini), 1000)
+        maxi = hist.GetXaxis().GetBinCenter(hist.GetMaximumBin())
         return mini, 2 * maxi - mini
     options = {'name': 'nCluster', 'scan': scan, 'fit': 'gaus', 'extra': 
 'F', \
