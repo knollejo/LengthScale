@@ -15,9 +15,14 @@ def collectPerDirectionBx(options):
         if O['nominalPos'][options['scan']][i+1] == \
            O['nominalPos'][options['scan']][i]:
             break
-    name = options['scan']+'_'+options['name']+options['fitted']
-    f = openRootFileR(name)
-    g = openRootFileW(name+'_collected')
+    oldname = options['scan'] + '_' + options['name'] + options['fitted']
+    if 'newname' in options:
+        newname = options['scan'] + '_' + options['newname'] + \
+                  options['fitted'] + '_collected'
+    else:
+        newname = oldname + '_collected'
+    f = openRootFileR(oldname)
+    g = openRootFileW(newname)
     crossings = O['crossings'][:]
     if options['combine']:
         crossings.append('all')
@@ -26,7 +31,7 @@ def collectPerDirectionBx(options):
         averror = [0 for j in range(nSteps)]
         for step in range(nSteps):
             print '<<< Access data from:', options['scan'], bx, 'step', step
-            histname = plotName(name+'_bx'+str(bx)+'_step'+str(step), \
+            histname = plotName(oldname+'_bx'+str(bx)+'_step'+str(step), \
                                 timestamp=False)
             hist = f.Get(histname)
             if options['custom']:
@@ -34,7 +39,7 @@ def collectPerDirectionBx(options):
             else:
                 average[step] = hist.GetMean()
                 averror[step] = hist.GetMeanError()
-        plotname = plotName(name+'_collected_bx'+str(bx), timestamp=False)
+        plotname = plotName(newname+'_collected_bx'+str(bx), timestamp=False)
         plottitl = plotTitle(options['scan']+' BX '+str(bx))
         print '<<< Create plot:', plotname
         graphs = TMultiGraph(plotname, plottitl)
@@ -61,8 +66,8 @@ def collectPerDirectionBx(options):
             residuals.Add(residual)
         graphs.Write('', TObject.kOverwrite)
         residuals.Write('', TObject.kOverwrite)
-    closeRootFile(g, name+'collected')
-    closeRootFile(f, name)
+    closeRootFile(g, newname)
+    closeRootFile(f, oldname)
 
 def numberCluster(scan, combine=False):
     """Fit pixel cluster number in both directions of a scan"""
@@ -91,4 +96,15 @@ def vertexPosition(scan, fitted='', combine=False):
         options['custom'] = custom
     else:
         options['custom'] = False
+    collectPerDirectionBx(options)
+
+def vertexPositionSigma(scan, fitted='F', combine=False):
+    """Fit sigma of vertex positions in both directions of a scan"""
+    def custom(hist):
+        average = hist.GetFunction('gaus').GetParameter(2)
+        averror = hist.GetFunction('gaus').GetParError(2)
+        return average, averror
+    options = {'name': 'vtxPos', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
+               'y': scale(), 'e': scale(), 'fitted': fitted, \
+               'combine': combine, 'custom': custom, 'newname': 'vtxPosSig'}
     collectPerDirectionBx(options)
