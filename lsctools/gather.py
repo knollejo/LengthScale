@@ -110,19 +110,19 @@ def pccPerLumiSection(options):
     c = chain(options['fileset'])
     name = options['name'] + '_perLS'
     f = openRootFileW(name)
-    for (field, title) in options['fields']:
-        print '<<< Analyze', title
-        histname = plotName(title+'_perLS', timestamp=False)
-        histtitl = plotTitle()
-        mini = int(c.GetMinimum('LS'))
-        maxi = int(c.GetMaximum('LS'))
-        hist = TProfile(histname, histtitl, maxi-mini+1, mini, maxi)
-        c.Draw(field+':LS>>'+histname, '', 'goff')
-        hist.Write('', TObject.kOverwrite)
+    print '<<< Analyze', options['title']
+    histname = plotName(options['title']+'_perLS', timestamp=False)
+    histtitl = plotTitle()
+    mini = int(c.GetMinimum('LS'))
+    maxi = int(c.GetMaximum('LS'))
+    hist = TProfile(histname, histtitl, maxi-mini+1, mini, maxi)
+    c.Draw(options['field']+':LS>>'+histname, '', 'goff')
+    hist.Write('', TObject.kOverwrite)
     closeRootFile(f, name)
 
-def vertexPositionPerLumiSection():
+def vertexPositionPerLumiSection(coordinate):
     """Extract vertex position from ROOT files sorted by lumisection"""
     options = {'fileset': 'fulltrees', 'name': 'vtxPos', \
-               'fields': [('vtx_x*1e4', 'VtxPosX'), ('vtx_y*1e4', 'VtxPosY')]}
+               'title': 'vtxPos'+coordinate, \
+               'field': 'vtx_'+coordinate.lower()+'*1e4'}
     pccPerLumiSection(options)
