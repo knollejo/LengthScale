@@ -84,7 +84,7 @@ def plotPath(title, check=True, timestamp=True):
     """Give path to plot file"""
     return plotDir(check) + '/' + plotName(title) + '.pdf'
 
-def plotTitle(title):
+def plotTitle(title=''):
     """Give title for a plot"""
     titlename = O['detector'][1] + ' ' + O['dataset'][1] + ' ' + title
     return titlename

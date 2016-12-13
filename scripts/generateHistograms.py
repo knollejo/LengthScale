@@ -38,16 +38,16 @@ def main():
                         const='vertexPosition', help='evaluate transverse '+ \
                         'position of reconstructed vertices')
     args = parser.parse_args()
-    
+
     from importlib import import_module
     from lsctools import config, gather, fit, plot
     getattr(config, 'PCC'+args.dataset)()
     if args.gather:
         for action in args.actions:
             for scan in args.scans:
-                getattr(gather, action)(scan)
+                getattr(gather, action+'PerBxStep')(scan)
                 if args.combine:
-                    getattr(gather, action)(scan, combine=True)
+                    getattr(gather, action+'PerBxStep')(scan, combine=True)
     if args.combine and not args.gather:
         for action in args.actions:
             for scan in args.scans:

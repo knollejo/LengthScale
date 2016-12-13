@@ -39,4 +39,4 @@ def findAllRootFiles(fileset):
         files.append(filename)
         print '<<< Found file:', filename
     loopOverRootFiles(action, fileset)
-    return writeFiles(files, fileset)
+    return writeFiles(files, fileset+'_all')

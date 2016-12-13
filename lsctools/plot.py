@@ -187,3 +187,44 @@ def vertexPositionSigmaPerDirectionBx(scan, fitted='F', combine=False):
                'ytitle': '#sigma(Measured Vertex Position) [#mum]', \
                'restitle': '[#mum]'}
     plotPerDirectionBx(options)
+
+def plotPerLumiSection(options):
+    """Save profile histograms per lumisection to PDF files"""
+    name = options['name'] + '_perLS'
+    f = openRootFileR(name)
+    for (field, title, ytitle) in options['fields']:
+        histname = plotName(title+'_perLS', timestamp=False)
+        filename = plotName(title+'_perLS', timestamp=True)
+        filepath = plotName(title+'_perLS', timestamp=True)
+        print '<<< Save plot:', filepath
+        hist = f.Get(histname)
+        canvas = TCanvas()
+        canvas.SetLogy(options['logy'])
+        gStyle.SetOptStat(options['optstat'])
+        hist.Draw()
+        gPad.Update()
+        hist.GetXaxis().SetTitle('Lumisection')
+        hist.GetYaxis().SetTitle(ytitle)
+        hist.GetYaxis().SetTitleOffset(1.2)
+        for axis in [hist.GetXaxis(), hist.GetYaxis()]:
+            axis.SetTitleFont(133)
+            axis.SetTitleSize(16)
+            axis.SetLabelFont(133)
+            axis.SetLabelSize(12)
+            axis.CenterTitle()
+        stats = hist.FindObject('stats')
+        stats.SetTextFont(133)
+        stats.SetTextSize(16)
+        drawSignature(filename)
+        gPad.Modified()
+        gPad.Update()
+        canvas.Print(filepath)
+        canvas.Close()
+    closeRootFile(f, name)
+
+def vertexPositionPerLumiSection():
+    """Save vertex position per LS profiles to PDF files"""
+    options = {'name': 'vtxPos', 'logy': 0, 'optstat': 0, 'fields': \
+               [('vtx_x*1e4', 'VtxPosX', 'Measured Vertex Position in X'), \
+                ('vtx_y*1e4', 'VtxPosY', 'Measured Vertex Position in Y')]}
+    plotPerLumiSection(options)

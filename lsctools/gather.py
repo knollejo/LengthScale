@@ -1,13 +1,16 @@
 from config import options as O, EOSPATH as eos
 from tools import plotName, plotTitle, openRootFileW, openRootFileU, \
                   closeRootFile, loadFiles
-from ROOT import TChain, TH1I, TH1F, TObject
+from ROOT import TChain, TH1I, TH1F, TObject, TProfile
 
-def chain(fileset, scan):
+def chain(fileset, scan=''):
     """Create chain of all files belonging to a scan"""
-    files = loadFiles(fileset)
     chain = TChain(O['treename'][fileset])
-    for filename in files[scan]:
+    if scan:
+        files = loadFiles(fileset)[scan]
+    else:
+        files = loadFiles(fileset+'_all')
+    for filename in files:
         chain.Add(eos+'/'+filename)
     return chain
 
@@ -57,7 +60,7 @@ def combinePccPerStep(options):
         hist.Write('', TObject.kOverwrite)
     closeRootFile(f, name)
 
-def numberClusters(scan, combine=False):
+def numberClustersPerBxStep(scan, combine=False):
     """Extract number of pixel clusters from ROOT files sorted by BX and step"""
     options = {'min': -0.5, 'max': 1000.5, 'bin': 1001, 'histo': TH1I, \
                'name': 'nCluster', 'scan': scan}
@@ -69,7 +72,7 @@ def numberClusters(scan, combine=False):
         options['field'] = lambda s: 'nCluster'
         pccPerBxStep(options)
 
-def numberVertices(scan, combine=False):
+def numberVerticesPerBxStep(scan, combine=False):
     """Extract vertex number from ROOT files sorted by BX and step"""
     options = {'min': -0.5, 'max': 9.5, 'bin': 10, 'histo': TH1I, \
                'name': 'nVtx', 'scan': scan}
@@ -81,7 +84,7 @@ def numberVertices(scan, combine=False):
         options['field'] = lambda s: 'nVtx'
         pccPerBxStep(options)
 
-def vertexPosition(scan, combine=False):
+def vertexPositionPerBxStep(scan, combine=False):
     """Extract vertex position from ROOT files sorted by BX and step"""
     options = {'min': -3e3, 'max': 3e3, 'bin': 500, 'histo': TH1F, \
                'name': 'vtxPos', 'scan': scan}
@@ -101,3 +104,25 @@ def vertexPosition(scan, combine=False):
         options['fileset'] = 'fulltrees'
         options['field'] = field
         pccPerBxStep(options)
+
+def pccPerLumiSection(options):
+    """Extract PCC data from ROOT files and sort by lumisection"""
+    c = chain(options['fileset'])
+    name = options['name'] + '_perLS'
+    f = openRootFileW(name)
+    for (field, title) in options['fields']:
+        print '<<< Analyze', title
+        histname = plotName(title+'_perLS', timestamp=False)
+        histtitl = plotTitle()
+        mini = int(c.GetMinimum('LS'))
+        maxi = int(c.GetMaximum('LS'))
+        hist = TProfile(histname, histtitl, maxi-mini+1, mini, maxi)
+        c.Draw(field+':LS>>'+histname, '', 'goff')
+        hist.Write('', TObject.kOverwrite)
+    closeRootFile(f, name)
+
+def vertexPositionPerLumiSection():
+    """Extract vertex position from ROOT files sorted by lumisection"""
+    options = {'fileset': 'fulltrees', 'name': 'vtxPos', \
+               'fields': [('vtx_x*1e4', 'VtxPosX'), ('vtx_y*1e4', 'VtxPosY')]}
+    pccPerLumiSection(options)
