@@ -58,8 +58,11 @@ def main():
                                 combine=args.combined)
                 else:
                     getattr(analyze, action)(scan, combine=args.combined)
-    if args.truncate and not 'T' in args.fitted:
-        args.fitted.append('T')
+    if args.truncate:
+        if not args.fitted:
+            args.fitted = ['T']
+        elif not 'T' in args.fitted:
+            args.fitted.append('T')
     if args.plot:
         for action in args.actions:
             for scan in args.scans:
