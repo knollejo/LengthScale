@@ -11,7 +11,7 @@ def chain(fileset, scan=''):
     else:
         files = loadFiles(fileset+'_all')
     for filename in files:
-        chain.Add(eos+'/'+filename)
+        chain.Add(eos+filename)
     return chain
 
 def miniCondition(scan, bx, step):

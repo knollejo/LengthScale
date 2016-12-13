@@ -15,7 +15,7 @@ def loopOverRootFiles(action, fileset):
                 continue
             datafile = TFile.Open(eos+directory+'/'+filename)
             datatree = datafile.Get(O['treename'][fileset])
-            action(tree, directory+filename)
+            action(datatree, directory+'/'+filename)
             datafile.Close()
 
 def findRootFiles(fileset):
