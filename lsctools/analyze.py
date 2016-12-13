@@ -69,12 +69,22 @@ def collectPerDirectionBx(options):
     closeRootFile(g, newname)
     closeRootFile(f, oldname)
 
-def numberClusters(scan, fitted='', combine=False):
+def numberClusters(scan, fitted='', truncated=False, combine=False):
     """Fit pixel cluster number in both directions of a scan"""
-    options = {'name': 'nCluster', 'scan': scan, 'fit': 'pol1', 'x': 
-scale(), \
+    options = {'name': 'nCluster', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
                'y': scale(), 'e': scale(), 'fitted': fitted, 'combine': combine}
-    if fitted:
+    if truncated:
+        def custom(hist):
+            hist.GetXaxis().SetRange(1, 30)
+            mini = hist.GetXaxis().GetBinCenter(hist.GetMinimumBin())
+            hist.GetXaxis().SetRange(int(mini), 100)
+            average = hist.GetMean()
+            averror = hist.GetMeanError()
+            return average, averror
+        options['custom'] = custom
+        options['newname'] = 'nClusterT'
+        options['fitted'] = ''
+    elif fitted:
         def custom(hist):
             average = hist.GetFunction('gaus').GetParameter(1)
             averror = hist.GetFunction('gaus').GetParError(1)

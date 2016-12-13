@@ -30,7 +30,7 @@ def extractPerDirectionBx(options):
 def makeTexTablePerDirectionBx(average, averror, options):
     """Output results to LaTeX code"""
     form = options['format']
-    s = '\\begin{tabular}{lccc}\n'
+    s = '\\begin{tabular}{lrrrr}\n'
     s += '\t\\bfseries ' + options['scan'] + ' & \\bfseries forward & ' + \
           '\\bfseries backward & \\bfseries difference \\\\\n'
     s += '\t\\hline\n'
@@ -61,11 +61,11 @@ def makeTexTablePerDirectionBxComparison(average1, averror1, average2, averror2,
                                          options):
     """Output results of two different fits to LaTex code"""
     form = options['format']
-    s = '\\begin{tabular}{lcccc}\n'
+    s = '\\begin{tabular}{lrrrr}\n'
     s += '\t\\multirow{2}{*}{\\bfseries ' + options['scan'] + '} & ' + \
-         '\\multicolumns{2}{c}{\\bfseries ' + options['title1'] + '} & ' + \
-         '\\multicolumns{2}{c}{\\bfseries ' + options['title2'] + '} \\\\\n'
-    s += '\t& & \\bfseries forward & \\bfseries backward & \\bfseries ' + \
+         '\\multicolumn{2}{c}{\\bfseries ' + options['title1'] + '} & ' + \
+         '\\multicolumn{2}{c}{\\bfseries ' + options['title2'] + '} \\\\\n'
+    s += '\t& \\bfseries forward & \\bfseries backward & \\bfseries ' + \
          'forward & \\bfseries backward \\\\\n'
     s += '\t\\hline\n'
     for bx in O['crossings']:
