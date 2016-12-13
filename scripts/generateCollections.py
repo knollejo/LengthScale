@@ -21,6 +21,10 @@ def main():
     parser.add_argument('-analyze', action='store_true', help='collect mean '+ \
                         'and mean error from histograms')
     parser.add_argument('-plot', action='store_true', help='save plot to PDF')
+    parser.add_argument('-truncate', action='store_true', help='compute '+ \
+                        'truncated mean')
+    parser.add_argument('-truncated', action='append_const', dest='fitted', \
+                        const='T', help='use truncated mean')
     parser.add_argument('-fitted', action='append', nargs=1, help='use fit '+ \
                         'parameters instead of mean, mean error, give F for '+ \
                         'standard fit or L for log-likelihood fit, add R for'+ \
@@ -45,12 +49,17 @@ def main():
     if args.analyze:
         for action in args.actions:
             for scan in args.scans:
-                if args.fitted:
+                if args.truncate:
+                    getattr(analyze, action)(scan, truncated=True, \
+                            combine=args.combined)
+                elif args.fitted:
                     for fitted in args.fitted:
                         getattr(analyze, action)(scan, fitted=fitted[0], \
                                 combine=args.combined)
                 else:
                     getattr(analyze, action)(scan, combine=args.combined)
+    if args.truncate and not 'T' in args.fitted:
+        args.fitted.append('T')
     if args.plot:
         for action in args.actions:
             for scan in args.scans:
