@@ -109,7 +109,7 @@ def pccPerLumiSection(options):
     """Extract PCC data from ROOT files and sort by lumisection"""
     c = chain(options['fileset'])
     name = options['name'] + '_perLS'
-    f = openRootFileW(name)
+    f = openRootFileU(name)
     print '<<< Analyze', options['title']
     histname = plotName(options['title']+'_perLS', timestamp=False)
     histtitl = plotTitle()
