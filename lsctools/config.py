@@ -47,6 +47,8 @@ def PCC():
     """Set common parameters of PCC data sets"""
     options['detector'] = ['pcc', 'PCC']
     options['treename'] = {'fulltrees': 'lumi/tree', 'minitrees': 'pccminitree'}
+    options['timename'] = {'fulltrees': 'timeStamp_begin', \
+                           'minitrees': 'timeStamp'}
 
 def PCCPromptReco2015():
     """Set parameters of 2015 PCC Prompt Reco"""
