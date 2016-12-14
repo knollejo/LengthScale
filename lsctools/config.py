@@ -9,7 +9,7 @@ def VdM2015():
     options['lumisections'] = {'X1': [285, 360], 'Y1': [361, 428], \
                                'X2': [200, 257]}
     options['crossings'] = [51, 771, 1631, 2211, 2674]
-    
+
     beginMin = {'X1': [307, 309, 311, 313, 315, 317, 320, 322, 324], \
                 'Y1': [333, 335, 337, 339, 341, 343, 345, 347, 349, 351], \
                 'X2': [442, 445, 446, 448, 451, 452, 455, 456, 459, 461]}
@@ -29,7 +29,7 @@ def VdM2015():
     options['end'] = dict(zip(options['scans'], [[stableBeamsDeclared+a*60+b \
            for a,b in zip(endMin[scanname], endSec[scanname])] for scanname in \
            options['scans']]))
-    
+
     posBeam1 = {'X1': [+195, +65, -65, -195, -325, -195, -65, 65, 195], \
                 'Y1': [-300, -180, -60, 60, 180, 300, 180, 60, -60, -180], \
                 'X2': [325, 195, 65, -65, -195, -325, -195, -65, 65, 195]}
@@ -54,7 +54,7 @@ def PCCPromptReco2015():
     options.clear()
     VdM2015()
     PCC()
-    
+
     options['fulltrees'] = ['/comm_luminosity/PCC/VdM/0150825/ZeroBias'+str(i) \
                             +'/PCC_ZeroBias'+str(i+1)+'_VdMScans_150825_nVtxFix' \
                             +'/150831_'+str(time)+'/0000' for i, time in \
@@ -69,7 +69,7 @@ def PCCReRecoOct2015():
     options.clear()
     VdM2015()
     PCC()
-    
+
     options['fulltrees'] = ['/comm_luminosity/PCC/VdM/0150825_05Oct2015ReReco' \
                             +'V2/ZeroBias'+str(i)+'/PCC_ZeroBias'+str(i)+'_Re' \
                             +'RecoV2/160104_'+str(time)+'/0000' for i, time in \
@@ -84,7 +84,7 @@ def PCCReRecoDec2015():
     options.clear()
     VdM2015()
     PCC()
-    
+
     options['fulltrees'] = ['/comm_luminosity/PCC/VdM/0150825_Dec2015ReReco/' \
                             +'ZeroBias'+str(i)+'/PCC_VdM_ZeroBias'+str(i)+'_' \
                             +'4266_DecRereco_Event/161026_'+str(time)+'/0000' \
@@ -95,24 +95,19 @@ def PCCReRecoDec2015():
 
 def VdM2016():
     """Set common parameters of 2016 Van der Meer scan program"""
-    options['scans'] = ['X1', 'Y1', 'X2']
-    options['runs'] = {'X1': 274100, 'Y1': 274100, 'X2': 274100}
-    options['lumisections'] = {'X1': [640, 715], 'Y1': [715, 820], \
-                               'X2': [200, 300]}
+    options['scans'] = ['X1', 'Y1']
+    options['runs'] = {'X1': 274100, 'Y1': 274100]
+    options['lumisections'] = {'X1': [668, 717], 'Y1': [731, 782]}
     options['crossings'] = [41, 281, 872, 1783, 2063]
-    
+
     beginMin = {'X1': [0, 2, 3, 5, 7, 9, 10, 12, 14, 16], \
-                'Y1': [24, 26, 28, 30, 34, 35, 37, 39, 41, 43, 45], \
-                'X2': [442, 445, 446, 448, 451, 452, 455, 456, 459, 461, 463]}
+                'Y1': [24, 26, 28, 30, 34, 35, 37, 39, 41, 43, 45]}
     beginSec = {'X1': [2, 10, 45, 30, 5, 50, 40, 40, 10, 20], \
-                'Y1': [50, 40, 40, 20, 0, 44, 30, 20, 10, 0, 20], \
-                'X2': [58, 32, 58, 58, 20, 56, 20, 58, 20, 20, 20]}
+                'Y1': [50, 40, 40, 20, 0, 44, 30, 20, 10, 0, 20]}
     endMin = {'X1': [0, 2, 4, 6, 8, 9, 11, 13, 15, 17], \
-              'Y1': [25, 27, 29, 31, 34, 36, 38, 40, 41, 43, 46], \
-              'X2': [444, 445, 447, 449, 451, 453, 455, 457, 459, 462, 464]}
+              'Y1': [25, 27, 29, 31, 34, 36, 38, 40, 41, 43, 46]}
     endSec = {'X1': [50, 50, 30, 0, 55, 30, 20, 200, 04, 00], \
-              'Y1': [30, 20, 20, 0, 46, 20, 10, 0, 50, 50, 0], \
-              'X2': [12, 40, 40, 40, 50, 50, 40, 40, 40, 0, 0]}
+              'Y1': [30, 20, 20, 0, 46, 20, 10, 0, 50, 50, 0]}
     stableBeamsDeclared = 1464347152
     options['begin'] = dict(zip(options['scans'], [[stableBeamsDeclared+a*60+b \
            for a,b in zip(beginMin[scanname], beginSec[scanname])] for \
@@ -120,13 +115,11 @@ def VdM2016():
     options['end'] = dict(zip(options['scans'], [[stableBeamsDeclared+a*60+b \
            for a,b in zip(endMin[scanname], endSec[scanname])] for scanname in \
            options['scans']]))
-    
+
     posBeam1 = {'X1': [+195, +65, -65, -195, -325, -195, -65, 65, 195, 325], \
-                'Y1': [-300, -180, -60, 60, 180, 300, 180, 60, -60, -180, -300], \
-                'X2': [325, 195, 65, -65, -195, -325, -195, -65, 65, 195, 325]}
+                'Y1': [-300, -180, -60, 60, 180, 300, 180, 60, -60, -180, -300]}
     posBeam2 = {'X1': [+65, -65, -195, -325, -195, -65, 65, 195, 325, 195], \
-                'Y1': [-180, -60, 60, 180, 300, 180, 60, -60, -180, -300, -180], \
-                'X2': [195, 65, -65, -195, -325, -195, -65, 65, 195, 325, 195]}
+                'Y1': [-180, -60, 60, 180, 300, 180, 60, -60, -180, -300, -180]}
     options['nominalPos'] = dict(zip(options['scans'], [[(a+b)/2. for a,b in \
            zip(posBeam1[scanname], posBeam2[scanname])] for scanname in \
            options['scans']]))
