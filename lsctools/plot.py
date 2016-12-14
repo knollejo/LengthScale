@@ -235,11 +235,16 @@ def plotPerTimeStamp(options):
     filepath = plotPath(name, timestamp=True)
     print '<<< Save plot:', filepath
     hist = f.Get(histname)
+    f.SetErrorOption(options['error'])
     canvas = TCanvas()
     canvas.SetLogy(options['logy'])
     gStyle.SetOptStat(options['optstat'])
     hist.Draw()
     gPad.Update()
+    hist.GetXaxis().SetTimeDisplay(1)
+    hist.GetXaxis().SetTimeFormat('#splitline{%d.%m.%y}{%H:%M:%S}%F1970-01-01' \
+                                  +' 00:00:00')
+    hist.GetXaxis().SetLabelOffset(0.03)
     hist.GetXaxis().SetTitle('Time')
     hist.GetYaxis().SetTitle(options['ytitle'])
     hist.GetYaxis().SetTitleOffset(1.2)
@@ -260,5 +265,5 @@ def plotPerTimeStamp(options):
 def vertexPositionPerTimeStamp(scan):
     """Save vertex position per timestamp profiles to PDF files"""
     options = {'name': 'vtxPos', 'logy': 0, 'optstat': 0, 'name': 'vtxPos', \
-               'scan': scan, 'ytitle': 'Measured Vertex Position'}
+               'scan': scan, 'ytitle': 'Measured Vertex Position', 'error': 's'}
     return plotPerTimeStamp(options)
