@@ -96,7 +96,7 @@ def PCCReRecoDec2015():
 def VdM2016():
     """Set common parameters of 2016 Van der Meer scan program"""
     options['scans'] = ['X1', 'Y1']
-    options['runs'] = {'X1': 274100, 'Y1': 274100]
+    options['runs'] = {'X1': 274100, 'Y1': 274100}
     options['lumisections'] = {'X1': [668, 717], 'Y1': [731, 782]}
     options['crossings'] = [41, 281, 872, 1783, 2063]
 
