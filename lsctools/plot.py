@@ -225,3 +225,40 @@ def vertexPositionPerLumiSection(coordinate):
                'title': 'vtxPos'+coordinate, \
                'ytitle': 'Measured Vertex Position in '+coordinate}
     return plotPerLumiSection(options)
+
+def plotPerTimeStamp(options):
+    """Save profile histograms per timestamp to PDF files"""
+    name = options['name'] + '_' + options['scan'] + '_perTime'
+    f = openRootFileR(options['name']+'_perTime')
+    histname = plotName(name, timestamp=False)
+    filename = plotName(name, timestamp=True)
+    filepath = plotPath(name, timestamp=True)
+    print '<<< Save plot:', filepath
+    hist = f.Get(histname)
+    canvas = TCanvas()
+    canvas.SetLogy(options['logy'])
+    gStyle.SetOptStat(options['optstat'])
+    hist.Draw()
+    gPad.Update()
+    hist.GetXaxis().SetTitle('Time')
+    hist.GetYaxis().SetTitle(options['ytitle'])
+    hist.GetYaxis().SetTitleOffset(1.2)
+    for axis in [hist.GetXaxis(), hist.GetYaxis()]:
+        axis.SetTitleFont(133)
+        axis.SetTitleSize(16)
+        axis.SetLabelFont(133)
+        axis.SetLabelSize(12)
+        axis.CenterTitle()
+    drawSignature(filename)
+    gPad.Modified()
+    gPad.Update()
+    #canvas.Print(filepath)
+    #canvas.Close()
+    #closeRootFile(f, options['name']+'_perTime')
+    return [canvas, hist, f]
+
+def vertexPositionPerTimeStamp(scan):
+    """Save vertex position per timestamp profiles to PDF files"""
+    options = {'name': 'vtxPos', 'logy': 0, 'optstat': 0, 'name': 'vtxPos', \
+               'scan': scan, 'ytitle': 'Measured Vertex Position'}
+    return plotPerTimeStamp(options)

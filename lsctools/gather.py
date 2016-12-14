@@ -129,7 +129,7 @@ def pccPerLumiSection(options):
     mini = int(rc.GetMinimum('LS'))
     print '<<< Get Maximum'
     maxi = int(rc.GetMaximum('LS'))
-    print '<<< Fill Profile Histogram'
+    print '<<< Fill Profile Histogram', histname
     hist = TProfile(histname, histtitl, maxi-mini+1, mini-0.5, maxi+0.5)
     c.Draw(options['field']+':LS>>'+histname, '', 'goff')
     hist.Write('', TObject.kOverwrite)
@@ -147,20 +147,20 @@ def pccPerTimeStamp(options):
     c = chain(options['fileset'], options['scan'])
     rc = chain(options['fileset'], options['scan'])
     name = options['name'] + '_' + options['scan'] + '_perTime'
-    f = openRootFileW(name)
+    f = openRootFileW(options['name']+'_perTime')
     print '<<< Analyze', options['scan'], options['name']
-    histname = plotName(name)
+    histname = plotName(name, timestamp=False)
     histtitl = plotTitle(options['scan'])
     print '<<< Get Minimum'
     mini = int(rc.GetMinimum(O['timename'][options['fileset']])/10)
     print '<<< Get Maximum'
     maxi = int(rc.GetMaximum(O['timename'][options['fileset']])/10)
-    print '<<< Fill Profile Histogram'
+    print '<<< Fill Profile Histogram', histname
     hist = TProfile(histname, histtitl, maxi-mini+1, 10*mini-5, 10*maxi+5)
     c.Draw(options['field']+':'+O['timename'][options['fileset']]+'>>'+ \
            histname, '', 'goff')
     hist.Write('', TObject.kOverwrite)
-    closeRootFile(f, name)
+    closeRootFile(f, options['name']+'_perTime')
 
 def vertexPositionPerTimeStamp(scan):
     """Extract vertex position from ROOT files sorted by timestamps"""
