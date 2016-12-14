@@ -147,7 +147,7 @@ def pccPerTimeStamp(options):
     c = chain(options['fileset'], options['scan'])
     rc = chain(options['fileset'], options['scan'])
     name = options['name'] + '_' + options['scan'] + '_perTime'
-    f = openRootFileW(options['name']+'_perTime')
+    f = openRootFileU(options['name']+'_perTime')
     print '<<< Analyze', options['scan'], options['name']
     histname = plotName(name, timestamp=False)
     histtitl = plotTitle(options['scan'])
