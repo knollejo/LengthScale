@@ -16,12 +16,14 @@ def chain(fileset, scan=''):
 
 def reducedChain(fileset, scan=''):
     """Create chain of 1/8 of the files belonging to a scan"""
-    chain = TChain(o['treename'][fileset])
+    chain = TChain(O['treename'][fileset])
     if scan:
         files = loadFiles(fileset)[scan]
     else:
         files = loadFiles(fileset+'_all')
-    for filename in [f for f in files if 'ZeroBias1' in f]
+    for filename in [f for f in files if 'ZeroBias1' in f]:
+        chain.Add(eos+filename)
+    return chain
 
 def miniCondition(scan, bx, step):
     """Create condition that event in a minitree belongs to step and BX"""

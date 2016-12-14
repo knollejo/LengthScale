@@ -194,7 +194,7 @@ def plotPerLumiSection(options):
     f = openRootFileR(name)
     histname = plotName(options['title']+'_perLS', timestamp=False)
     filename = plotName(options['title']+'_perLS', timestamp=True)
-    filepath = plotName(options['title']+'_perLS', timestamp=True)
+    filepath = plotPath(options['title']+'_perLS', timestamp=True)
     print '<<< Save plot:', filepath
     hist = f.Get(histname)
     canvas = TCanvas()
@@ -211,19 +211,17 @@ def plotPerLumiSection(options):
         axis.SetLabelFont(133)
         axis.SetLabelSize(12)
         axis.CenterTitle()
-    stats = hist.FindObject('stats')
-    stats.SetTextFont(133)
-    stats.SetTextSize(16)
     drawSignature(filename)
     gPad.Modified()
     gPad.Update()
-    canvas.Print(filepath)
-    canvas.Close()
-    closeRootFile(f, name)
+    #canvas.Print(filepath)
+    #canvas.Close()
+    #closeRootFile(f, name)
+    return [canvas, hist, f]
 
 def vertexPositionPerLumiSection(coordinate):
     """Save vertex position per LS profiles to PDF files"""
     options = {'name': 'vtxPos', 'logy': 0, 'optstat': 0, \
                'title': 'vtxPos'+coordinate, \
                'ytitle': 'Measured Vertex Position in '+coordinate}
-    plotPerLumiSection(options)
+    return plotPerLumiSection(options)
