@@ -14,6 +14,15 @@ def chain(fileset, scan=''):
         chain.Add(eos+filename)
     return chain
 
+def reducedChain(fileset, scan=''):
+    """Create chain of 1/8 of the files belonging to a scan"""
+    chain = TChain(o['treename'][fileset])
+    if scan:
+        files = loadFiles(fileset)[scan]
+    else:
+        files = loadFiles(fileset+'_all')
+    for filename in [f for f in files if 'ZeroBias1' in f]
+
 def miniCondition(scan, bx, step):
     """Create condition that event in a minitree belongs to step and BX"""
     return 'timeStamp >= ' + str(O['begin'][scan][step]) + \
@@ -108,13 +117,17 @@ def vertexPositionPerBxStep(scan, combine=False):
 def pccPerLumiSection(options):
     """Extract PCC data from ROOT files and sort by lumisection"""
     c = chain(options['fileset'])
+    rc = reducedChain(options['fileset'])
     name = options['name'] + '_perLS'
     f = openRootFileU(name)
     print '<<< Analyze', options['title']
     histname = plotName(options['title']+'_perLS', timestamp=False)
     histtitl = plotTitle()
-    mini = int(c.GetMinimum('LS'))
-    maxi = int(c.GetMaximum('LS'))
+    print '<<< Get Minimum'
+    mini = int(rc.GetMinimum('LS'))
+    print '<<< Get Maximum'
+    maxi = int(rc.GetMaximum('LS'))
+    print '<<< Fill Profile Histogram'
     hist = TProfile(histname, histtitl, maxi-mini+1, mini, maxi)
     c.Draw(options['field']+':LS>>'+histname, '', 'goff')
     hist.Write('', TObject.kOverwrite)
