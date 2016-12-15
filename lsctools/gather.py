@@ -152,11 +152,11 @@ def pccPerTimeStamp(options):
     histname = plotName(name, timestamp=False)
     histtitl = plotTitle(options['scan'])
     print '<<< Get Minimum'
-    mini = int(rc.GetMinimum(O['timename'][options['fileset']])/10)
+    mini = int(rc.GetMinimum(O['timename'][options['fileset']]))
     print '<<< Get Maximum'
-    maxi = int(rc.GetMaximum(O['timename'][options['fileset']])/10)
+    maxi = int(rc.GetMaximum(O['timename'][options['fileset']]))
     print '<<< Fill Profile Histogram', histname
-    hist = TProfile(histname, histtitl, maxi-mini+1, 10*mini-5, 10*maxi+5)
+    hist = TProfile(histname, histtitl, maxi-mini+1, mini-0.5, maxi+0.5)
     c.Draw(options['field']+':'+O['timename'][options['fileset']]+'>>'+ \
            histname, '', 'goff')
     hist.Write('', TObject.kOverwrite)
