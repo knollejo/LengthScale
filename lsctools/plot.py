@@ -229,6 +229,8 @@ def vertexPositionPerLumiSection(coordinate):
 def plotPerTimeStamp(options):
     """Save profile histograms per timestamp to PDF files"""
     name = options['name'] + '_' + options['scan'] + '_perTime'
+    if options['extra']:
+        name += '_' + options['extra']
     f = openRootFileR(options['name']+'_perTime')
     histname = plotName(name, timestamp=False)
     filename = plotName(name, timestamp=True)
@@ -236,16 +238,21 @@ def plotPerTimeStamp(options):
     print '<<< Save plot:', filepath
     hist = f.Get(histname)
     hist.SetErrorOption(options['error'])
-    canvas = TCanvas()
+    if options['big']:
+        canvas = TCanvas('c', '', 8000, 1200)
+    else:
+        canvas = TCanvas()
     canvas.SetLogy(options['logy'])
     gStyle.SetOptStat(options['optstat'])
     hist.Draw()
     gPad.Update()
     hist.GetXaxis().SetTimeDisplay(1)
-    hist.GetXaxis().SetTimeFormat('#splitline{%d.%m.%y}{%H:%M:%S}%F1970-01-01' \
-                                  +' 00:00:00')
+    hist.GetXaxis().SetTimeFormat('#splitline{%d.%m.%y}{%H:%M:%S}%F1969-12-31' \
+                                  +' 22:00:00')
     hist.GetXaxis().SetLabelOffset(0.03)
-    hist.GetXaxis().SetTitle('Time')
+    hist.GetXaxis().SetTitle('')
+    if 'xmin' in options and 'xmax' in options:
+        hist.GetXaxis().SetRangeUser(options['xmin'], options['xmax'])
     hist.GetYaxis().SetTitle(options['ytitle'])
     hist.GetYaxis().SetTitleOffset(1.2)
     for axis in [hist.GetXaxis(), hist.GetYaxis()]:
@@ -254,16 +261,25 @@ def plotPerTimeStamp(options):
         axis.SetLabelFont(133)
         axis.SetLabelSize(12)
         axis.CenterTitle()
+    #if options['big']:
+    #
     drawSignature(filename)
     gPad.Modified()
     gPad.Update()
-    #canvas.Print(filepath)
-    #canvas.Close()
-    #closeRootFile(f, options['name']+'_perTime')
-    return [canvas, hist, f]
+    if options['retrn']:
+        return [canvas, hist, f]
+    else:
+        canvas.Print(filepath)
+        canvas.Close()
+        closeRootFile(f, options['name']+'_perTime')
 
-def vertexPositionPerTimeStamp(scan):
+def vertexPositionPerTimeStamp(scan, tmin=-1, tmax=-1, extra='', big=False, \
+                               retrn=False):
     """Save vertex position per timestamp profiles to PDF files"""
     options = {'name': 'vtxPos', 'logy': 0, 'optstat': 0, 'name': 'vtxPos', \
-               'scan': scan, 'ytitle': 'Measured Vertex Position', 'error': 's'}
+               'scan': scan, 'ytitle': 'Measured Vertex Position', \
+               'error': 's', 'extra': extra, 'big': big}
+    if tmin > 0 and tmax > 0:
+        options['xmin'] = tmin
+        options['xmax'] = tmax
     return plotPerTimeStamp(options)
