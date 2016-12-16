@@ -235,7 +235,7 @@ def plotPerTimeStamp(options):
     filepath = plotPath(name, timestamp=True)
     print '<<< Save plot:', filepath
     hist = f.Get(histname)
-    f.SetErrorOption(options['error'])
+    hist.SetErrorOption(options['error'])
     canvas = TCanvas()
     canvas.SetLogy(options['logy'])
     gStyle.SetOptStat(options['optstat'])
