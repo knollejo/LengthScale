@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from Tkinter import Tk, Frame, Entry, Label, END, LEFT, StringVar, W, E
 from datetime import date as Date, time as Time, datetime as Datetime
 from calendar import timegm
