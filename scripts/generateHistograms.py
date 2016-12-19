@@ -51,7 +51,7 @@ def main():
     if args.combine and not args.gather:
         for action in args.actions:
             for scan in args.scans:
-                getattr(gather, action)(scan, combine=True)
+                getattr(gather+'PerBxStep', action)(scan, combine=True)
     if args.combine:
         args.combined = True
     if args.fit:
