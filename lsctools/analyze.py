@@ -96,7 +96,7 @@ def numberClusters(scan, fitted='', truncated=False, combine=False):
 
 def numberVertices(scan, combine=False):
     """Fit vertex number in both directions of a scan"""
-    options = {'name': nVtx, 'scan': scan, 'fit': 'pol1', 'x': scale(), \
+    options = {'name': 'nVtx', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
                'y': scale(), 'e': scale(), 'fitted': '', 'custom': False, \
                'combine': combine}
     collectPerDirectionBx(options)
