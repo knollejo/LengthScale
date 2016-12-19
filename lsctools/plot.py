@@ -173,6 +173,14 @@ def numberClustersPerDirectionBx(scan, fitted='', combine=False):
                'restitle': '[abs.]'}
     plotPerDirectionBx(options)
 
+def numberVerticesPerDirectionBx(scan, fitted='', combine=False):
+    """Save number of vertices directional plots to PDF files"""
+    options = {'name': 'nVtx', 'scan': scan, 'fitted': fitted, \
+               'optfit': 111, 'fit': 'pol1', 'combine': combine, \
+               'ytitle': 'Number of Vertices (per event)', \
+               'restitle': '[abs.]'}
+    plotPerDirectionBx(options)
+
 def vertexPositionPerDirectionBx(scan, fitted='', combine=False):
     """Save vertex position directional plots to PDF files"""
     options = {'name': 'vtxPos', 'scan': scan, 'fitted': fitted, 'optfit': 111, \
