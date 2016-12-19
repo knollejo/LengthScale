@@ -261,8 +261,10 @@ def plotPerTimeStamp(options):
         axis.SetLabelFont(133)
         axis.SetLabelSize(12)
         axis.CenterTitle()
-    #if options['big']:
-    #
+        if options['big']:
+            axis.SetTickLength(0.01)
+    if options['big']:
+        hist.GetYaxis().SetTitleOffset(0.25)
     drawSignature(filename)
     gPad.Modified()
     gPad.Update()
