@@ -118,9 +118,9 @@ def VdM2016():
            for a,b in zip(endMin[scanname], endSec[scanname])] for scanname in \
            options['scans']]))
 
-    posBeam1 = {'X1': [+195, +65, -65, -195, -325, -195, -65, 65, 195, 325], \
+    posBeam1 = {'X1': [325, +195, +65, -65, -195, -325, -195, -65, 65, 195],#, 325], \
                 'Y1': [-300, -180, -60, 60, 180, 300, 180, 60, -60, -180]}#, -300]}
-    posBeam2 = {'X1': [+65, -65, -195, -325, -195, -65, 65, 195, 325, 195], \
+    posBeam2 = {'X1': [195, +65, -65, -195, -325, -195, -65, 65, 195, 325],#, 195], \
                 'Y1': [-180, -60, 60, 180, 300, 180, 60, -60, -180, -300]}#, -180]}
     options['nominalPos'] = dict(zip(options['scans'], [[(a+b)/2. for a,b in \
            zip(posBeam1[scanname], posBeam2[scanname])] for scanname in \
