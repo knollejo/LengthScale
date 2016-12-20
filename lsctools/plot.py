@@ -249,7 +249,7 @@ def plotPerTimeStamp(options):
     if options['big']:
         canvas = TCanvas('c', '', 8000, 1200)
     else:
-        canvas = TCanvas()
+        canvas = TCanvas('c', '', 1400, 500)
     canvas.SetLogy(options['logy'])
     gStyle.SetOptStat(options['optstat'])
     hist.Draw()
@@ -288,7 +288,7 @@ def vertexPositionPerTimeStamp(scan, tmin=-1, tmax=-1, extra='', big=False, \
     """Save vertex position per timestamp profiles to PDF files"""
     options = {'name': 'vtxPos', 'logy': 0, 'optstat': 0, 'name': 'vtxPos', \
                'scan': scan, 'ytitle': 'Measured Vertex Position', \
-               'error': 's', 'extra': extra, 'big': big}
+               'error': '', 'extra': extra, 'big': big, 'retrn': retrn}
     if tmin > 0 and tmax > 0:
         options['xmin'] = tmin
         options['xmax'] = tmax
