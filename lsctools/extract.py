@@ -149,3 +149,30 @@ def epsilonFactorTexTable(scan, combined=False):
                    for bx in nVtxp0]))
     return makeTexTablePerDirectionBxComparison(nClustereps, nClustererr, \
                                                 nVtxeps, nVtxerr, options)
+
+def epsilonFactorOverviewPlot(combined=False):
+    options = {'fit': 'pol1', 'combine': combined, 'fitted': ''}
+    sigmaeff = 80.0
+    forback = ['forward', 'backward']
+    nbin = len(O['scans']) * 2 * 2
+    for i1, scan in enumerate(O['scans']):
+        options['scan'] = scan
+        if 'X' in scan:
+            s0 = 130.0
+        else:
+            s0 = 120.0
+        for i2, name in enumerate(['nCluster', 'nVtx']):
+            options['name'] = name
+            options['parameter'] = 0
+            p0, p0e = extractPerDirectionBx(options)
+            options['parameter'] = 1
+            p1, p1e = extractPerDirectionBx(options)
+            epsilon = dict(zip(p0.keys(), [[-a1/a0*sigmaeff**2/s0  for a0, a1 \
+                      in zip(p0[bx], p1[bx])] for bx in p0]))
+            error = dict(zip(p0.keys(), [[abs(a1/a0*sigmaeff**2/s0)* \
+                    ((a0e/a0)**2+(a1e/a1)**2)**0.5 for a0, a0e, a1, a1e in \
+                    zip(p0[bx], p0e[bx], p1[bx], p1e[bx])] for bx in p0]))
+            for i3 in range(2):
+                title = '#splitline{' + name + ' ' + forback[i3] + '}{' + \
+                        name + '}'
+                for i4, bx in enumerate(O['crossings']):
