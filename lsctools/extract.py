@@ -113,3 +113,39 @@ def vertexPositionTexTable(scan, fitted='', combined=False):
                'parameter': 1, 'combine': combined, 'format': '{:.4f}'}
     average, averror = extractPerDirectionBx(options)
     return makeTexTablePerDirectionBx(average, averror, options)
+
+def epsilonFactorTexTable(scan, combined=False):
+    options = {'scan': scan, 'fit': 'pol1', 'format': '{:.4f}', \
+               'combine': combined, 'title1': 'Number of Clusters', \
+               'title2': 'Number of Vertices'}
+    options['name'] = 'nCluster'
+    options['parameter'] = 0
+    nClusterp0, nClusterp0e = extractPerDirectionBx(options)
+    options['parameter'] = 1
+    nClusterp1, nClusterp1e = extractPerDirectionBx(options)
+    options['name'] = 'nVtx'
+    options['parameter'] = 0
+    nVtxp0, nVtxp0e = extractPerDirectionBx(options)
+    options['parameter'] = 1
+    nVtxp1, nVtxp1e = extractPerDirectionBx(options)
+    if 'X' in scan:
+        s0 = 130.0
+    else:
+        s0 = 120.0
+    sigmaeff = 80.0
+    nClustereps = [[-p1/p0*sigmaeff**2/s0 \
+                    for p0, p1 in zip(nClusterp0[bx], nClusterp1[bx])] \
+                   for bx in nClusterp0]
+    nClustererr = [[abs(p1/p0*sigmaeff**2/s0)*((p0e/p0)**2+(p1e/p1)**2)**0.5 \
+                    for p0, p0e, p1, p1e in zip(nClusterp0[bx], \
+                    nClusterp0e[bx], nClusterp1[bx], nClusterp1e[bx])] \
+                   for bx in nClusterp0]
+    nVtxeps = [[-p1/p0*sigmaeff**2/s0 \
+                    for p0, p1 in zip(nVtxp0[bx], nVtxp1[bx])] \
+                   for bx in nVtxp0]
+    nVtxerr = [[abs(p1/p0*sigmaeff**2/s0)*((p0e/p0)**2+(p1e/p1)**2)**0.5 \
+                    for p0, p0e, p1, p1e in zip(nVtxp0[bx], \
+                    nVtxp0e[bx], nVtxp1[bx], nVtxp1e[bx])] \
+                   for bx in nVtxp0]
+    return makeTexTablePerDirectionBxComparison(nClustereps, nClustererr, \
+                                                nVtxeps, nVtxerr, options)
