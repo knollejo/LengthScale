@@ -169,7 +169,7 @@ def PCC2016ReRecoJan2017():
     """Set parameters of January 2017 ReReco of 2016 PCC"""
     print '<<< Initialize PCC 2016 ReReco January 2017'
     options.clear()
-    VdM2015()
+    VdM2016()
     PCC()
 
     options['fulltrees'] = ['/comm_luminosity/PCC/VdM/VdM_2016LegacyRepro/' \
