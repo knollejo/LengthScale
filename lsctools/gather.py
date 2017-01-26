@@ -118,8 +118,8 @@ def vertexPositionPerBxStep(scan, combine=False):
 
 def pccPerLumiSection(options):
     """Extract PCC data from ROOT files and sort by lumisection"""
-    c = chain(options['fileset'])
-    rc = reducedChain(options['fileset'])
+    c = chain(options['fileset'], options['scan'])
+    rc = reducedChain(options['fileset'], options['scan'])
     name = options['name'] + '_perLS'
     f = openRootFileU(name)
     print '<<< Analyze', options['title']
@@ -135,11 +135,11 @@ def pccPerLumiSection(options):
     hist.Write('', TObject.kOverwrite)
     closeRootFile(f, name)
 
-def vertexPositionPerLumiSection(coordinate):
+def vertexPositionPerLumiSection(scan):
     """Extract vertex position from ROOT files sorted by lumisection"""
     options = {'fileset': 'fulltrees', 'name': 'vtxPos', \
-               'title': 'vtxPos'+coordinate, \
-               'field': 'vtx_'+coordinate.lower()+'*1e4'}
+               'scan': scan, 'title': 'vtxPos'+scan, \
+               'field': 'vtx_'+scan[0].lower()+'*1e4'}
     pccPerLumiSection(options)
 
 def pccPerTimeStamp(options):
