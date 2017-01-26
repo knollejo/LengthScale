@@ -9,14 +9,15 @@ def main():
                             'belonging to a lumisection interval.')
     parser.add_argument('-b', action='store_true', help='enable batch mode')
     parser.add_argument('--dataset', required=True, choices=['PromptReco2015', \
-                        'ReRecoOct2015', 'ReRecoDec2015', 'PromptReco2016'], \
+                        'ReRecoOct2015', 'ReRecoDec2015', 'PromptReco2016', \
+                        '2015ReRecoJan2017', '2016ReRecoJan2017'], \
                         help='specify data-taking period and reconstruction')
     parser.add_argument('-mini', dest='actions', action='append_const', \
                         const='minitrees', help='look for minitrees')
     parser.add_argument('-full', dest='actions', action='append_const', \
                         const='fulltrees', help='look for full trees')
     args = parser.parse_args()
-    
+
     from importlib import import_module
     from lsctools import config, prepare
     getattr(config, 'PCC'+args.dataset)()
