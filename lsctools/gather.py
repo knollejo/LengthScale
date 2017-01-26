@@ -95,7 +95,7 @@ def numberVerticesPerBxStep(scan, combine=False):
         options['field'] = lambda s: 'nVtx'
         pccPerBxStep(options)
 
-def vertexPositionPerBxStep(scan, combine=False):
+def vertexPositionPerBxStep(scan, combine=False, alternative=False):
     """Extract vertex position from ROOT files sorted by BX and step"""
     options = {'min': -3e3, 'max': 3e3, 'bin': 500, 'histo': TH1F, \
                'name': 'vtxPos', 'scan': scan}
@@ -107,11 +107,18 @@ def vertexPositionPerBxStep(scan, combine=False):
                 return 'vtx_x*1e4'
             else:
                 return 'vtx_y*1e4'
-        def condition(s, bx, step):
+        def condition1(s, bx, step):
             return 'timeStamp_begin >= ' + str(O['begin'][s][step]) + \
                    ' && timeStamp_begin <= ' + str(O['end'][s][step]) + \
                    ' && vtx_isGood && bunchCrossing == ' + str(bx)
-        options['condition'] = condition
+        def condition2(s, bx, step):
+            return 'LS >= ' + str(O['beginLS'][s][step]) + ' && LS <= ' + \
+                   str(O['endLS'][s][step]) + ' && vtx_isGood && ' + \
+                   'bunchCrossing == ' + str(bx)
+        if alternative:
+            options['condition'] = condition2
+        else:
+            options['condition'] = condition1
         options['fileset'] = 'fulltrees'
         options['field'] = field
         pccPerBxStep(options)
