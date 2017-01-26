@@ -95,6 +95,22 @@ def PCCReRecoDec2015():
     options['minitrees'] = [s+'_vdmminitrees' for s in options['fulltrees']]
     options['dataset'] = ['rereco_dec15', 'ReReco Dec 2015']
 
+def PCC2015ReRecoJan2017():
+    """Set parameters of January 2017 ReReco of 2015 PCC"""
+    print '<<< Initialize PCC 2015 ReReco January 2017'
+    options.clear()
+    VdM2015()
+    PCC()
+
+    options['fulltrees'] = ['/comm_luminosity/PCC/VdM/August2015Scans/ZeroBias' \
+                            +str(i)+'/PCC_Run2015C_25ns-19-19Jan2017-v1_Zero' \
+                            +'Bias'+str(i)+'/170123_'+str(time)+'/0000' for i, \
+                            time in zip([184427, 184441, 184504, 184518, \
+                            184536, 184550], [1, 2, 4, 6, 7, 8])]
+    options['minitrees'] = [s+'_noVeto' for s in options['fulltrees']]
+    options['dataset'] = ['2015_rereco_jan17_part', \
+                          '2015 ReReco Jan 2017 (partial)']
+
 def VdM2016():
     """Set common parameters of 2016 Van der Meer scan program"""
     options['scans'] = ['X1', 'Y1']
@@ -148,3 +164,17 @@ def PCCPromptReco2016():
                             211447, 211507, 211529], start=1)]
     options['minitrees'] = [s+'_vdmminitrees' for s in options['fulltrees']]
     options['dataset'] = ['promptreco16', 'Prompt Reco 2016']
+
+def PCC2016ReRecoJan2017():
+    """Set parameters of January 2017 ReReco of 2016 PCC"""
+    print '<<< Initialize PCC 2016 ReReco January 2017'
+    options.clear()
+    VdM2015()
+    PCC()
+
+    options['fulltrees'] = ['/comm_luminosity/PCC/VdM/VdM_2016LegacyRepro/' \
+                            +'ZeroBias1/PCC_PRnewco_2016LegacyRepro_VdM_Pixel' \
+                            +'Vertex_Event_CERN_AlwaysTrue/170123_211327/0000/']
+    options['minitrees'] = []
+    options['dataset'] = ['2016_rereco_jan17_part', \
+                          '2016 ReReco Jan 2017 (partial)']
