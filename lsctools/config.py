@@ -105,8 +105,8 @@ def PCC2015ReRecoJan2017():
     options['fulltrees'] = ['/comm_luminosity/PCC/VdM/August2015Scans/ZeroBias' \
                             +str(i)+'/PCC_Run2015C_25ns-19-19Jan2017-v1_Zero' \
                             +'Bias'+str(i)+'/170123_'+str(time)+'/0000' for i, \
-                            time in zip([184427, 184441, 184504, 184518, \
-                            184536, 184550], [1, 2, 4, 6, 7, 8])]
+                            time in zip([1, 2, 4, 6, 7, 8], [184427, 184441, \
+                            184504, 184518, 184536, 184550])]
     options['minitrees'] = [s+'_noVeto' for s in options['fulltrees']]
     options['dataset'] = ['2015_rereco_jan17_part', \
                           '2015 ReReco Jan 2017 (partial)']
