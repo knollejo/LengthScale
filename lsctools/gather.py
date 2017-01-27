@@ -163,11 +163,11 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False):
                     values.append(vtx[i] * 1e4)
             return values
         if alternative:
-            options['evaluate'] = lambda fi, bx, st: (evaluate2(fi, bx, st, scan)
+            options['evaluate'] = lambda fi, bx, st: evaluate2(fi, bx, st, scan)
             options['name'] += 'LS'
             options['fields'].append(('LS', 'l', [0]))
         else:
-            options['evaluate'] = lambda fi, bx, st: (evaluate1(fi, bx, st, scan)
+            options['evaluate'] = lambda fi, bx, st: evaluate1(fi, bx, st, scan)
             options['fields'].append(('timeStamp_begin', 'L', [0]))
         options['fileset'] = 'fulltrees'
         pccPerBxStep(options)
