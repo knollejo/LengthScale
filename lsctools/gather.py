@@ -83,8 +83,8 @@ def numberClustersPerBxStep(scan, combine=False):
         combinePccPerStep(options)
     else:
         def evaluate(event, bx, step, s):
-            flag = event.timeStamp >= O['begin'][s][step] && \
-                   event.timeStamp <= O['end'][s][step] && event.BXid == bx
+            flag = event.timeStamp >= O['begin'][s][step] and \
+                   event.timeStamp <= O['end'][s][step] and event.BXid == bx
             value = event.nCluster
             return flag, value
         options['fileset'] = 'minitrees'
@@ -99,8 +99,8 @@ def numberVerticesPerBxStep(scan, combine=False):
         combinePccPerStep(options)
     else:
         def evaluate(event, bx, step, s):
-            flag = event.timeStamp >= O['begin'][s][step] && \
-                   event.timeStamp <= O['end'][s][step] && event.BXid == bx
+            flag = event.timeStamp >= O['begin'][s][step] and \
+                   event.timeStamp <= O['end'][s][step] and event.BXid == bx
             value = event.nVtx
             return flag, value
         options['fileset'] = 'minitrees'
@@ -120,12 +120,12 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False):
             else:
                 return event.vtx_y * 1e4
         def condition1(event bx, step, s):
-            return event.timeStamp_begin >= O['begin'][s][step] && \
-                   event.timeStamp_begin <= O['end'][s][step] &&
-                   event.vtx_isGood && event.bunchCrossing == bx
+            return event.timeStamp_begin >= O['begin'][s][step] and \
+                   event.timeStamp_begin <= O['end'][s][step] and
+                   event.vtx_isGood and event.bunchCrossing == bx
         def condition2(event, bx, step, s):
-            return event.LS >= O['beginLS'][s][step] && \
-                   event.LS <= O['endLS'][s][step] && event.vtx_isGood && \
+            return event.LS >= O['beginLS'][s][step] and \
+                   event.LS <= O['endLS'][s][step] and event.vtx_isGood and \
                    event.bunchCrossing == bx
         if alternative:
             options['evaluate'] = lambda ev, bx, st: (condition2(ev, bx, st, \
