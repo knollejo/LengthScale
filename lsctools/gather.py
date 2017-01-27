@@ -119,7 +119,7 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False):
                 return event.vtx_x * 1e4
             else:
                 return event.vtx_y * 1e4
-        def condition1(event bx, step, s):
+        def condition1(event, bx, step, s):
             return event.timeStamp_begin >= O['begin'][s][step] and \
                    event.timeStamp_begin <= O['end'][s][step] and
                    event.vtx_isGood and event.bunchCrossing == bx
