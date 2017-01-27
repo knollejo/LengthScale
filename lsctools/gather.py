@@ -49,7 +49,7 @@ def pccPerBxStep(options):
         fields[f] = pointer
     nEntries = c.GetEntries()
     print '<<< Run over', nEntries, 'events'
-    for n in range(nSteps):
+    for n in range(nEntries):
         if n % 10000 == 0:
             print '<<< Processing event', n
         c.GetEntry(n)
