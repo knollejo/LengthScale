@@ -1,6 +1,7 @@
 from config import options as O, EOSPATH as eos
 from tools import plotName, plotTitle, openRootFileW, openRootFileU, \
                   closeRootFile, loadFiles
+from array import array
 from ROOT import TChain, TH1I, TH1F, TObject, TProfile
 
 def chain(fileset, scan=''):
@@ -41,15 +42,24 @@ def pccPerBxStep(options):
                                     options['min'], options['max'])
             hist.StatOverflows(True)
             hists[bx].append(hist)
-    for n, event in enumerate(c):
+    fields = {}
+    for f, t, v in O['fields']:
+        pointer = array(t, v)
+        c.SetBranchAddress(f, pointer)
+        fields[f] = pointer
+    nEntries = c.GetEntries()
+    print '<<< Run over', nEntries, 'events'
+    for n in range(nSteps):
         if n % 10000 == 0:
-            print '<<< Processing event ', n
+            print '<<< Processing event', n
+        c.GetEntry(n)
         for bx in O['crossings']:
             for step in range(nSteps):
-                flag, value = options['evaluate'](event, bx, step)
-                if flag:
-                    for v in value:
-                        hists[bx][step].Fill(value)
+                values = options['evaluate'](fields, bx, step)
+                if not values:
+                    continue
+                for v in values:
+                    hists[bx][step].Fill(v)
     f = openRootFileW(name)
     for bx in O['crossings']:
         for hist in hists[bx]:
@@ -115,29 +125,51 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False):
     if combine:
         combinePccPerStep(options)
     else:
-        def field(event, s):
-            if 'X' in s:
-                vtx = event.vtx_x
-            else:
-                vtx = event.vtx_y
-            return [v * 1e4 for v in vtx]
-        def condition1(event, bx, step, s):
-            return event.timeStamp_begin >= O['begin'][s][step] and \
-                   event.timeStamp_begin <= O['end'][s][step] and \
-                   event.vtx_isGood and event.bunchCrossing == bx
-        def condition2(event, bx, step, s):
-            return event.LS >= O['beginLS'][s][step] and \
-                   event.LS <= O['endLS'][s][step] and event.vtx_isGood and \
-                   event.bunchCrossing == bx
-        if alternative:
-            options['evaluate'] = lambda ev, bx, st: (condition2(ev, bx, st, \
-                                                      scan), field(ev, scan))
-            options['name'] += 'LS'
+        options['fields'] = [('bunchCrossing', 'l', [0]), \
+                            ('nVtx', 'l', [0]), \
+                            ('vtx_isGood', 'b', 10*[0])]
+        if 'X' in scan:
+            options['fields'].append(('vtx_x', 'f', 10*[0.]))
         else:
-            options['evaluate'] = lambda ev, bx, st: (condition1(ev, bx, st, \
-                                                      scan), field(ev, scan))
+            options['fields'].append(('vtx_y', 'f', 10*[0.]))
+        def evaluate1(fields, bx, step, s):
+            if fields['timeStamp_begin'][0] < O['begin'][s][step] or \
+               fields['timeStamp_begin'][0] > O['end'][s][step] or \
+               fields['bunchCrossing'][0] != bx:
+                return []
+            if 'X' in s:
+                vtx = fields['vtx_x']
+            else:
+                vtx = fields['vtx_y']
+            values = []
+            nVtx = min(fields['nVtx'], 10)
+            for i in range(nVtx):
+                if fields['vtx_isGood'][i]:
+                    values.append(vtx[i] * 1e4)
+            return values
+        def evaluate2(fields, bx, step, s):
+            if fields['LS'][0] < O['beginLS'][s][step] or \
+               fields['LS'][0] > O['endLS'][s][step] or \
+               fields['bunchCrossing'][0] != bx:
+                return []
+            if 'X' in s:
+                vtx = fields['vtx_x']
+            else:
+                vtx = fields['vtx_y']
+            values = []
+            nVtx = min(fields['nVtx'], 10)
+            for i in range(nVtx):
+                if fields['vtx_isGood'][i]:
+                    values.append(vtx[i] * 1e4)
+            return values
+        if alternative:
+            options['evaluate'] = lambda fi, bx, st: (evaluate2(fi, bx, st, scan)
+            options['name'] += 'LS'
+            options['fields'].append(('LS', 'l', [0]))
+        else:
+            options['evaluate'] = lambda fi, bx, st: (evaluate1(fi, bx, st, scan)
+            options['fields'].append(('timeStamp_begin', 'L', [0]))
         options['fileset'] = 'fulltrees'
-        options['field'] = field
         pccPerBxStep(options)
 
 def pccPerLumiSection(options):
