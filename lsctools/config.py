@@ -30,6 +30,14 @@ def VdM2015():
            for a,b in zip(endMin[scanname], endSec[scanname])] for scanname in \
            options['scans']]))
 
+    LS = {'X1': [303, 308, 313, 318, 324, 330, 335, 340, 346], \
+          'Y1': [370, 375, 380, 385, 390, 395, 401, 406, 411, 416], \
+          'X2': [203, 208, 213, 218, 223, 229, 234, 239, 244, 249]}
+    options['beginLS'] = dict(zip(options['scans'], [[a-1 for a in \
+           LS[scanname]] for scanname in options['scans']]))
+    options['endLS'] = dict(zip(options['scans'], [[a+1 for a in \
+           LS[scanname]] for scanname in options['scans']]))
+
     posBeam1 = {'X1': [+195, +65, -65, -195, -325, -195, -65, 65, 195], \
                 'Y1': [-300, -180, -60, 60, 180, 300, 180, 60, -60, -180], \
                 'X2': [325, 195, 65, -65, -195, -325, -195, -65, 65, 195]}
@@ -133,6 +141,13 @@ def VdM2016():
     options['end'] = dict(zip(options['scans'], [[May27ElevenOClock+a*60+b \
            for a,b in zip(endMin[scanname], endSec[scanname])] for scanname in \
            options['scans']]))
+
+    LS = {'X1': [671, 676, 681, 685, 690, 694, 699, 704, 708, 713], \
+          'Y1': [735, 740, 744, 749, 754, 758, 763, 768, 772, 777]}
+    options['beginLS'] = dict(zip(options['scans'], [[a-1 for a in \
+           LS[scanname]] for scanname in options['scans']]))
+    options['endLS'] = dict(zip(options['scans'], [[a+1 for a in \
+           LS[scanname]] for scanname in options['scans']]))
 
     posBeam1 = {'X1': [-246.039, -147.623, -49.208, +49.208, +147.623, \
                        +246.039, +147.623, +49.208, -49.208, -147.623], \

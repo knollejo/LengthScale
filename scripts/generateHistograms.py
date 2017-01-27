@@ -37,6 +37,8 @@ def main():
     parser.add_argument('-vtxPos', dest='actions', action='append_const', \
                         const='vertexPosition', help='evaluate transverse '+ \
                         'position of reconstructed vertices')
+    parser.add_argument('-perLs', action='store_true', help='use only full '+ \
+                        'lumisections', dest='alternative')
     args = parser.parse_args()
 
     from importlib import import_module
@@ -45,13 +47,24 @@ def main():
     if args.gather:
         for action in args.actions:
             for scan in args.scans:
-                getattr(gather, action+'PerBxStep')(scan)
+                if args.alternative:
+                    getattr(gather, action+'PerBxStep', alternative=True)(scan)
+                else:
+                    getattr(gather, action+'PerBxStep', alternative=True)(scan)
                 if args.combine:
-                    getattr(gather, action+'PerBxStep')(scan, combine=True)
+                    if args.alternative:
+                        getattr(gather, action+'PerBxStep')(scan, combine=True, \
+                                alternative=True)
+                    else:
+                        getattr(gather, action+'PerBxStep')(scan, combine=True)
     if args.combine and not args.gather:
         for action in args.actions:
             for scan in args.scans:
-                getattr(gather, action+'PerBxStep')(scan, combine=True)
+                if args.alternative:
+                    getattr(gather, action+'PerBxStep')(scan, combine=True, \
+                            alternative=True)
+                else:
+                    getattr(gather, action+'PerBxStep')(scan, combine=True)
     if args.combine:
         args.combined = True
     if args.fit:

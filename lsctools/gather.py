@@ -117,6 +117,7 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False):
                    'bunchCrossing == ' + str(bx)
         if alternative:
             options['condition'] = condition2
+            options['name'] += 'LS'
         else:
             options['condition'] = condition1
         options['fileset'] = 'fulltrees'
