@@ -25,20 +25,14 @@ def reducedChain(fileset, scan=''):
         chain.Add(eos+filename)
     return chain
 
-def miniCondition(scan, bx, step):
-    """Create condition that event in a minitree belongs to step and BX"""
-    return 'timeStamp >= ' + str(O['begin'][scan][step]) + \
-           ' && timeStamp <= ' + str(O['end'][scan][step]) + \
-           ' && BXid == ' + str(bx)
-
 def pccPerBxStep(options):
     """Extract PCC data from ROOT files and sort by bunch crossing and step"""
     c = chain(options['fileset'], options['scan'])
     name = options['scan'] + '_' + options['name']
-    f = openRootFileW(name)
+    hists = dict(zip(O['crossings'], [[] for bx in O['crossings']]))
+    nSteps = len(O['nominalPos'][options['scan']])
     for bx in O['crossings']:
-        for step in range(len(O['nominalPos'][options['scan']])):
-            print '<<< Analyze:', options['scan'], bx, 'step', step
+        for step in range(nSteps):
             histname = plotName(options['scan']+'_'+options['name']+'_bx'+\
                                 str(bx)+'_step'+str(step), timestamp=False)
             histtitl = plotTitle(options['scan']+' BX '+str(bx)+', Step '+\
@@ -46,8 +40,18 @@ def pccPerBxStep(options):
             hist = options['histo'](histname, histtitl, options['bin'], \
                                     options['min'], options['max'])
             hist.StatOverflows(True)
-            c.Draw(options['field'](options['scan'])+'>>'+histname, \
-                   options['condition'](options['scan'], bx, step), 'goff')
+            hists[bx].append(hist)
+    for n, event in enumerate(c):
+        if n % 10000 == 0:
+            print '<<< Processing event ', n
+        for bx in O['crossings']:
+            for step in range(nSteps):
+                flag, value = options['evaluate'](event, bx, step)
+                if flag:
+                    hists[bx][step].Fill(value)
+    f = openRootFileW(name)
+    for bx in O['crossings']:
+        for hist in hists[bx]:
             hist.Write('', TObject.kOverwrite)
     closeRootFile(f, name)
 
@@ -78,9 +82,13 @@ def numberClustersPerBxStep(scan, combine=False):
     if combine:
         combinePccPerStep(options)
     else:
-        options['condition'] = miniCondition
+        def evaluate(event, bx, step, s):
+            flag = event.timeStamp >= O['begin'][s][step] && \
+                   event.timeStamp <= O['end'][s][step] && event.BXid == bx
+            value = event.nCluster
+            return flag, value
         options['fileset'] = 'minitrees'
-        options['field'] = lambda s: 'nCluster'
+        options['evaluate'] = lambda ev, bx, st: evaluate(ev, bx, st, scan)
         pccPerBxStep(options)
 
 def numberVerticesPerBxStep(scan, combine=False):
@@ -90,9 +98,13 @@ def numberVerticesPerBxStep(scan, combine=False):
     if combine:
         combinePccPerStep(options)
     else:
-        options['condition'] = miniCondition
+        def evaluate(event, bx, step, s):
+            flag = event.timeStamp >= O['begin'][s][step] && \
+                   event.timeStamp <= O['end'][s][step] && event.BXid == bx
+            value = event.nVtx
+            return flag, value
         options['fileset'] = 'minitrees'
-        options['field'] = lambda s: 'nVtx'
+        options['evaluate'] = lambda ev, bx, st: evaluate(ev, bx, st, scan)
         pccPerBxStep(options)
 
 def vertexPositionPerBxStep(scan, combine=False, alternative=False):
@@ -102,24 +114,26 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False):
     if combine:
         combinePccPerStep(options)
     else:
-        def field(s):
-            if 'X' in scan:
-                return 'vtx_x*1e4'
+        def field(event, s):
+            if 'X' in s:
+                return event.vtx_x * 1e4
             else:
-                return 'vtx_y*1e4'
-        def condition1(s, bx, step):
-            return 'timeStamp_begin >= ' + str(O['begin'][s][step]) + \
-                   ' && timeStamp_begin <= ' + str(O['end'][s][step]) + \
-                   ' && vtx_isGood && bunchCrossing == ' + str(bx)
-        def condition2(s, bx, step):
-            return 'LS >= ' + str(O['beginLS'][s][step]) + ' && LS <= ' + \
-                   str(O['endLS'][s][step]) + ' && vtx_isGood && ' + \
-                   'bunchCrossing == ' + str(bx)
+                return event.vtx_y * 1e4
+        def condition1(event bx, step, s):
+            return event.timeStamp_begin >= O['begin'][s][step] && \
+                   event.timeStamp_begin <= O['end'][s][step] &&
+                   event.vtx_isGood && event.bunchCrossing == bx
+        def condition2(event, bx, step, s):
+            return event.LS >= O['beginLS'][s][step] && \
+                   event.LS <= O['endLS'][s][step] && event.vtx_isGood && \
+                   event.bunchCrossing == bx
         if alternative:
-            options['condition'] = condition2
+            options['evaluate'] = lambda ev, bx, st: (condition2(ev, bx, st, \
+                                                      scan), field(ev, scan))
             options['name'] += 'LS'
         else:
-            options['condition'] = condition1
+            options['evaluate'] = lambda ev, bx, st: (condition1(ev, bx, st, \
+                                                      scan), field(ev, scan))
         options['fileset'] = 'fulltrees'
         options['field'] = field
         pccPerBxStep(options)
