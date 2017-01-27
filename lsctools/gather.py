@@ -43,7 +43,7 @@ def pccPerBxStep(options):
             hist.StatOverflows(True)
             hists[bx].append(hist)
     fields = {}
-    for f, t, v in O['fields']:
+    for f, t, v in options['fields']:
         pointer = array(t, v)
         c.SetBranchAddress(f, pointer)
         fields[f] = pointer
