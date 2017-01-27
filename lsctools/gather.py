@@ -48,7 +48,8 @@ def pccPerBxStep(options):
             for step in range(nSteps):
                 flag, value = options['evaluate'](event, bx, step)
                 if flag:
-                    hists[bx][step].Fill(value)
+                    for v in value:
+                        hists[bx][step].Fill(value)
     f = openRootFileW(name)
     for bx in O['crossings']:
         for hist in hists[bx]:
@@ -85,7 +86,7 @@ def numberClustersPerBxStep(scan, combine=False):
         def evaluate(event, bx, step, s):
             flag = event.timeStamp >= O['begin'][s][step] and \
                    event.timeStamp <= O['end'][s][step] and event.BXid == bx
-            value = event.nCluster
+            value = [event.nCluster]
             return flag, value
         options['fileset'] = 'minitrees'
         options['evaluate'] = lambda ev, bx, st: evaluate(ev, bx, st, scan)
@@ -101,7 +102,7 @@ def numberVerticesPerBxStep(scan, combine=False):
         def evaluate(event, bx, step, s):
             flag = event.timeStamp >= O['begin'][s][step] and \
                    event.timeStamp <= O['end'][s][step] and event.BXid == bx
-            value = event.nVtx
+            value = [event.nVtx]
             return flag, value
         options['fileset'] = 'minitrees'
         options['evaluate'] = lambda ev, bx, st: evaluate(ev, bx, st, scan)
@@ -116,9 +117,10 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False):
     else:
         def field(event, s):
             if 'X' in s:
-                return event.vtx_x * 1e4
+                vtx = event.vtx_x
             else:
-                return event.vtx_y * 1e4
+                vtx = event.vtx_y
+            return [v * 1e4 for v in vtx]
         def condition1(event, bx, step, s):
             return event.timeStamp_begin >= O['begin'][s][step] and \
                    event.timeStamp_begin <= O['end'][s][step] and
