@@ -100,6 +100,8 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False):
     options = {'min': -3e3, 'max': 3e3, 'bin': 500, 'histo': TH1F, \
                'name': 'vtxPos', 'scan': scan}
     if combine:
+        if alternative:
+            options['name'] += 'LS'
         combinePccPerStep(options)
     else:
         def field(s):
