@@ -55,7 +55,7 @@ def main():
                 if args.alternative:
                     getattr(gather, action+'PerBxStep')(scan, alternative=True)
                 else:
-                    getattr(gather, action+'PerBxStep')(scan, alternative=True)
+                    getattr(gather, action+'PerBxStep')(scan)
                 if args.combine:
                     if args.alternative:
                         getattr(gather, action+'PerBxStep')(scan, combine=True, \
