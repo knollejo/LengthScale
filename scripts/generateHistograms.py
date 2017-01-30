@@ -27,6 +27,10 @@ def main():
     parser.add_argument('-fit', action='append', nargs='?', const='F', \
                         help='fit histogram, give L for log-likelihood fit, '+ \
                         'add R for restricted range')
+    parser.add_argument('-fitted', action='append', nargs=1, help='use '+ \
+                        'fitted histograms, give F for standard fit or L for '+ \
+                        'log-likelihood fit, add R for fits with restricted '+ \
+                        'range')
     parser.add_argument('-plot', action='store_true', help='save histograms '+ \
                         'to PDF')
     parser.add_argument('-nCluster', dest='actions', action='append_const', \
@@ -74,11 +78,13 @@ def main():
                 for method in args.fit:
                     getattr(fit, action)(scan, fitmethod=method, \
                             combine=args.combined)
+    if args.fit:
+        args.fitted = args.fit
     if args.plot:
         for action in args.actions:
             for scan in args.scans:
-                if args.fit:
-                    for method in args.fit:
+                if args.fitted:
+                    for method in args.fitted:
                         getattr(plot, action+'PerBxStep')(scan, fit=method, \
                                 combine=args.combined)
                 else:
