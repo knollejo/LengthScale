@@ -105,7 +105,7 @@ def vertexPosition(scan, fitted='', combine=False):
     """Fit vertex positions in both directions of a scan"""
     options = {'name': 'vtxPos', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
                'y': scale(), 'e': scale(), 'fitted': fitted, 'combine': combine}
-    if fitted:
+    if fitted and not 'LS' in fitted:
         def custom(hist):
             average = hist.GetFunction('gaus').GetParameter(1)
             averror = hist.GetFunction('gaus').GetParError(1)
@@ -113,6 +113,8 @@ def vertexPosition(scan, fitted='', combine=False):
         options['custom'] = custom
     else:
         options['custom'] = False
+    if 'LS' in fitted:
+        options['name'] += 'LS'
     collectPerDirectionBx(options)
 
 def vertexPositionSigma(scan, fitted='F', combine=False):
