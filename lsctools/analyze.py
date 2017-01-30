@@ -113,8 +113,6 @@ def vertexPosition(scan, fitted='', combine=False):
         options['custom'] = custom
     else:
         options['custom'] = False
-    if 'LS' in fitted:
-        options['name'] += 'LS'
     collectPerDirectionBx(options)
 
 def vertexPositionSigma(scan, fitted='F', combine=False):
