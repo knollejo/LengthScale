@@ -159,6 +159,13 @@ def pccPerLumiSection(options):
     hist.Write('', TObject.kOverwrite)
     closeRootFile(f, name)
 
+def numberClusterPerLumiSection(scan):
+    """Extract cluster number from ROOT files sorted by lumisection"""
+    options = {'fileset': 'fulltrees', 'name': 'nCluster', \
+               'scan': scan, 'title': 'nCluster'+scan, \
+               'field': 'nCluster'}
+    pccPerLumiSection(options)
+
 def vertexPositionPerLumiSection(scan):
     """Extract vertex position from ROOT files sorted by lumisection"""
     options = {'fileset': 'fulltrees', 'name': 'vtxPos', \
