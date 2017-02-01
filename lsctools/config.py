@@ -1,11 +1,26 @@
 options = {}
 EOSPATH = '/tmp/joknolle/eos/cms/store/group'
 OUTPATH = '/afs/cern.ch/user/j/joknolle/lsc/results'
+OWNPATH = '/afs/cern.ch/work/j/joknolle/store'
+
+def PCC():
+    """Set common parameters of PCC data sets"""
+    options['detector'] = ['pcc', 'PCC']
+    options['treename'] = {'fulltrees': 'lumi/tree', 'minitrees': 'pccminitree'}
+    options['timename'] = {'fulltrees': 'timeStamp_begin', \
+                           'minitrees': 'timeStamp'}
+
+def BCM1f():
+    """Set common parameters of BCM1f data sets"""
+    options['detector'] = ['bcm1f', 'BCM1f']
+    options['treename'] = {'fulltrees': 'bcm1f', 'minitrees': 'bcm1f'}
+    options['timename'] = {'fulltrees': 'timeStamp', 'minitrees': 'timeStamp'}
 
 def VdM2015():
     """Set common parameters of 2015 Van der Meer scan program"""
     options['scans'] = ['X1', 'Y1', 'X2']
     options['runs'] = {'X1': 254991, 'Y1': 254991, 'X2': 254992}
+    options['fill'] = 4266
     options['lumisections'] = {'X1': [285, 360], 'Y1': [361, 428], \
                                'X2': [200, 257]}
     options['crossings'] = [51, 771, 1631, 2211, 2674]
@@ -30,13 +45,12 @@ def VdM2015():
            for a,b in zip(endMin[scanname], endSec[scanname])] for scanname in \
            options['scans']]))
 
-    LS = {'X1': [303, 308, 313, 318, 324, 330, 335, 340, 346], \
-          'Y1': [370, 375, 380, 385, 390, 395, 401, 406, 411, 416], \
-          'X2': [203, 208, 213, 218, 223, 229, 234, 239, 244, 249]}
-    options['beginLS'] = dict(zip(options['scans'], [[a-1 for a in \
-           LS[scanname]] for scanname in options['scans']]))
-    options['endLS'] = dict(zip(options['scans'], [[a+1 for a in \
-           LS[scanname]] for scanname in options['scans']]))
+    options['LS'] = {'X1': [[303], [308], [313], [318], [324], [330], [335], \
+                            [340], [346]], \
+                     'Y1': [[370], [375], [380], [385], [390], [395], [401], \
+                            [406], [411], [416]], \
+                     'X2': [[203], [208], [213], [218], [223], [229], [234], \
+                            [239], [244], [249]]}
 
     posBeam1 = {'X1': [+195, +65, -65, -195, -325, -195, -65, 65, 195], \
                 'Y1': [-300, -180, -60, 60, 180, 300, 180, 60, -60, -180], \
@@ -50,13 +64,6 @@ def VdM2015():
     options['nominalDif'] = dict(zip(options['scans'], [[b-a for a,b in \
            zip(posBeam1[scanname], posBeam2[scanname])] for scanname in \
            options['scans']]))
-
-def PCC():
-    """Set common parameters of PCC data sets"""
-    options['detector'] = ['pcc', 'PCC']
-    options['treename'] = {'fulltrees': 'lumi/tree', 'minitrees': 'pccminitree'}
-    options['timename'] = {'fulltrees': 'timeStamp_begin', \
-                           'minitrees': 'timeStamp'}
 
 def PCCPromptReco2015():
     """Set parameters of 2015 PCC Prompt Reco"""
@@ -123,6 +130,7 @@ def VdM2016():
     """Set common parameters of 2016 Van der Meer scan program"""
     options['scans'] = ['X1', 'Y1']
     options['runs'] = {'X1': 274100, 'Y1': 274100}
+    options['fill'] = 4954
     options['lumisections'] = {'X1': [668, 717], 'Y1': [731, 782]}
     options['crossings'] = [41, 281, 872, 1783, 2063]
 
@@ -142,12 +150,10 @@ def VdM2016():
            for a,b in zip(endMin[scanname], endSec[scanname])] for scanname in \
            options['scans']]))
 
-    LS = {'X1': [671, 676, 681, 685, 690, 694, 699, 704, 708, 713], \
-          'Y1': [735, 740, 744, 749, 754, 758, 763, 768, 772, 777]}
-    options['beginLS'] = dict(zip(options['scans'], [[a-1 for a in \
-           LS[scanname]] for scanname in options['scans']]))
-    options['endLS'] = dict(zip(options['scans'], [[a+1 for a in \
-           LS[scanname]] for scanname in options['scans']]))
+    options['LS'] = {'X1': [[671], [676], [681], [685], [690], [694], [699], \
+                            [704], [708], [713]], \
+                     'Y1': [[735], [740], [744], [749], [754], [758], [763], \
+                            [768], [772], [777]]}
 
     posBeam1 = {'X1': [-246.039, -147.623, -49.208, +49.208, +147.623, \
                        +246.039, +147.623, +49.208, -49.208, -147.623], \
@@ -193,3 +199,14 @@ def PCC2016ReRecoJan2017():
     options['minitrees'] = []
     options['dataset'] = ['2016_rereco_jan17_part', \
                           '2016 ReReco Jan 2017 (partial)']
+
+def BCM1f2016():
+    """Set parameters of 2016 BCM1f data"""
+    print '<<< Initialize 2016 data of BCM1f'
+    options.clear()
+    VdM2016()
+    BCM1f()
+
+    options['hd5files'] = ['/comm_luminosity/VdM/scanFill4954_27May16/' \
+                           +'scanFill4954_27May16/central/']
+    options['dataset'] = ['2016', '2016']

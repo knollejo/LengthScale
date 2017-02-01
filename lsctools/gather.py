@@ -114,9 +114,11 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False):
                    ' && timeStamp_begin <= ' + str(O['end'][s][step]) + \
                    ' && vtx_isGood && bunchCrossing == ' + str(bx)
         def condition2(s, bx, step):
-            return 'LS >= ' + str(O['beginLS'][s][step]) + ' && LS <= ' + \
-                   str(O['endLS'][s][step]) + ' && vtx_isGood && ' + \
-                   'bunchCrossing == ' + str(bx)
+            cond = '(LS == ' + str(O['LS'][s][step][0])
+            for ls in O['LS'][s][step][1:]:
+                cond += ' || LS == ' + str(ls)
+            cond += ')'
+            return cond + ' && vtx_isGood && bunchCrossing == ' + str(bx)
         if alternative:
             options['condition'] = condition2
             options['name'] += 'LS'
