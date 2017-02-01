@@ -1,5 +1,5 @@
 options = {}
-EOSPATH = '/tmp/joknolle/eos/cms/store/group'
+EOSPATH = '/eos/cms/store/group'
 OUTPATH = '/afs/cern.ch/user/j/joknolle/lsc/results'
 OWNPATH = '/afs/cern.ch/work/j/joknolle/store'
 
