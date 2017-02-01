@@ -71,14 +71,26 @@ def combinePccPerStep(options):
         hist.Write('', TObject.kOverwrite)
     closeRootFile(f, name)
 
-def numberClustersPerBxStep(scan, combine=False):
+def numberClustersPerBxStep(scan, combine=False, alternative=False):
     """Extract number of pixel clusters from ROOT files sorted by BX and step"""
     options = {'min': -0.5, 'max': 1000.5, 'bin': 1001, 'histo': TH1I, \
                'name': 'nCluster', 'scan': scan}
     if combine:
+        if alternative:
+            options['name'] += 'LS'
         combinePccPerStep(options)
     else:
-        options['condition'] = miniCondition
+        def condition2(s, bx, step):
+            cond = '(LS == ' + str(O['LS'][s][step][0])
+            for ls in O['LS'][s][step][1:]:
+                cond += ' || LS == ' + str(ls)
+            cond += ')'
+            return cond + ' && BXid == ' + str(bx)
+        if alternative:
+            options['condition'] = condition2
+            options['name'] += 'LS'
+        else:
+            options['condition'] = miniCondition
         options['fileset'] = 'minitrees'
         options['field'] = lambda s: 'nCluster'
         pccPerBxStep(options)
