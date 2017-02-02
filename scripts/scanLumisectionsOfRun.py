@@ -24,13 +24,14 @@ def main():
     args = parser.parse_args()
 
     from importlib import import_module
-    from lsctools import config, prepare
+    from lsctools import config
     from lsctools.config import options as O, EOSPATH as eos
     from lsctools.tools import openRootFileU, closeRootFile, writeFiles, \
                                plotName, plotTitle
+    from lsctools.prepare import loopOverRootFiles
     from ROOT import TChain, TObject, TProfile
     getattr(config, 'PCC'+args.dataset)()
-    O['fulltrees'] = O['fulltrees'][:1]
+    O['fulltrees'] = O['fulltrees'][:args.n]
     files = []
     def action(tree, filename):
         condition = 'run == ' + str(args.run)
