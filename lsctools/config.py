@@ -195,12 +195,17 @@ def PCCPromptReco2016():
     VdM2016()
     PCC()
 
-    options['fulltrees'] = ['/comm_luminosity/PCC/VdM/May272016_274100/Zero' \
-                            +'Bias'+str(i)+'/PCC_VdM_ZeroBias'+str(i)+'_' \
-                            +'274100_ProMay312016_Event_AlwaysTrue/160531_' \
-                            +str(time)+'/0000' for i, time in \
-                            enumerate([211313, 211331, 211350, 211413, 211430, \
-                            211447, 211507, 211529], start=1)]
+    fill274100 = ['/comm_luminosity/PCC/VdM/May272016_274100/ZeroBias'+str(i) \
+                  +'/PCC_VdM_ZeroBias'+str(i)+'_274100_ProMay312016_Event' \
+                  +'_AlwaysTrue/160531_'+str(time)+'/0000' for i, time in \
+                  enumerate([211313, 211331, 211350, 211413, 211430, 211447, \
+                  211507, 211529], start=1)]
+    fill273531 = ['/comm_luminosity/PCC/VdM/May172016_273531/ZeroBias'+str(i) \
+                  +'/PCC_VdM_ZeroBias'+str(i)+'_273531_ProMay272016_Event' \
+                  +'_AlwaysTrue/160527_'+str(time)+'/0000' for i, time in \
+                  enumerate([180918, 180936, 181606, 181118, 181152, 181208, \
+                  181228, 181244], start=1)]
+    options['fulltrees'] = fill274100 + fill273531
     options['minitrees'] = [s+'_vdmminitrees' for s in options['fulltrees']]
     options['dataset'] = ['promptreco16', 'Prompt Reco 2016']
 
