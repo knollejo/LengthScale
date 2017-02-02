@@ -26,15 +26,18 @@ def main():
     parser.add_argument('-noscan', action='store_const', const=True, \
                         default=False, help='don\'t repeat the scan of the '+ \
                         'ROOT files, just do the plotting')
+    parser.add_argument('-title', nargs=1, help='Specify a title for the '+ \
+                        'histogram')
     args = parser.parse_args()
 
     from importlib import import_module
     from lsctools import config
     from lsctools.config import options as O, EOSPATH as eos
     from lsctools.tools import openRootFileU, closeRootFile, writeFiles, \
-                               plotName, plotTitle, loadFiles
+                               plotName, plotTitle, loadFiles, plotPath, \
+                               drawSignature
     from lsctools.prepare import loopOverRootFiles
-    from ROOT import TChain, TObject, TProfile
+    from ROOT import TChain, TObject, TProfile, TCanvas, gStyle, gPad
     getattr(config, 'PCC'+args.dataset)()
     O['fulltrees'] = O['fulltrees'][:args.n]
     run =args.run[0]
@@ -53,7 +56,10 @@ def main():
     for filename in files:
         chain.Add(eos+filename)
     name = 'vtxPos_perLS'
-    title = 'run' + str(run) + '_perLS'
+    title1 = 'run' + str(run) + '_perLS'
+    title2 = 'Run ' + str(run) + ')'
+    if(args.title):
+        title2 = args.title[0] + ' (' + title2 + ')'
     f = openRootFileU(name)
     if args.range:
         mini = args.range[0]
@@ -66,11 +72,29 @@ def main():
         maxi = int(chain.GetMaximum('LS'))
     for coord in args.coords:
         print '<<< Analyze coordinate', coord
-        histname = plotName(coord+'_'+title, timestamp=False)
-        histtitl = plotTitle()
+        histname = plotName(coord+'_'+title1, timestamp=False)
+        histtitl = plotTitle('- 'title2)
+        histfile = plotName(coord+'_'+title1)
+        histpath = plotPath(coord+'_'+title1)
         hist = TProfile(histname, histtitl, maxi-mini+1, mini-0.5, maxi+0.5)
-        chain.Draw(coord+':LS>>'+histname, 'run == ' + str(run), 'goff')
+        chain.Draw(coord+'*1e4:LS>>'+histname, 'run == ' + str(run), 'goff')
         hist.Write('', TObject.kOverwrite)
+        canvas = TCanvas()
+        gStyle.SetOptStat(0)
+        hist.GetXaxis().SetTitle('LS')
+        hist.GetYaxis().SetTitle(coord+' [#mum]')
+        hist.GetYaxis().SetTitleOffset(1.2)
+        for axis in [hist.GetXaxis(), hist.GetYaxis()]:
+            axis.SetTitleFont(133)
+            axis.SetTitleSize(16)
+            axis.SetLabelFont(133)
+            axis.SetLabelSize(12)
+            axis.CenterTitle()
+        drawSignature(histfile)
+        gPad.Modified()
+        gPad.Update()
+        canvas.Print(histpath)
+        canvas.Close()
     closeRootFile(f, name)
 
 if __name__ == '__main__':
