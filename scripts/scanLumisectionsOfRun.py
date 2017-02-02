@@ -53,11 +53,15 @@ def main():
     name = 'vtxPos_perLS'
     title = 'run' + str(run) + '_perLS'
     f = openRootFileU(name)
+    print '<<< Get minimum lumisection'
+    mini = int(chain.GetMinimum('LS'))
+    print '<<< Get maximum lumisection'
+    maxi = int(chain.GetMaximum('LS'))
     for coord in args.coords:
         print '<<< Analyze coordinate', coord
         histname = plotName(coord+'_'+title, timestamp=False)
         histtitl = plotTitle()
-        hist = TProfile(histname, histtitl, 250, -0.3, 0.3)
+        hist = TProfile(histname, histtitl, maxi-mini+1, mini-0.5, maxi+0.5)
         chain.Draw(coord+':LS>>'+histname, 'run == ' + str(run), 'goff')
         hist.Write('', TObject.kOverwrite)
     closeRootFile(f, name)
