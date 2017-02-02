@@ -191,7 +191,7 @@ def vertexPositionPerDirectionBx(scan, fitted='', combine=False, \
                'fit': 'pol1', 'ytitle': 'Measured Vertex Position [#mum]', \
                'combine': combine, 'restitle': '[#mum]'}
     if alternative:
-        options['method'] = True
+        options['method'] = 'LS'
     plotPerDirectionBx(options)
 
 def vertexPositionSigmaPerDirectionBx(scan, fitted='F', combine=False):
