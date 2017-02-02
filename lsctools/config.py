@@ -193,9 +193,11 @@ def PCC2016ReRecoJan2017():
     VdM2016()
     PCC()
 
-    options['fulltrees'] = ['/comm_luminosity/PCC/VdM/VdM_2016LegacyRepro/' \
-                            +'ZeroBias1/PCC_PRnewco_2016LegacyRepro_VdM_Pixel' \
-                            +'Vertex_Event_CERN_AlwaysTrue/170123_211327/0000/']
+    options['fulltrees'] = ['/comm_luminosity/PCC/VdM/May2016Scans/ZeroBias' \
+                            +str(i)+'/PCC_Run2016B-17Jan2017-v1_ZeroBias' \
+                            +str(i)+'/170130_0'+str(time)+'/0000' for i, time \
+                            in zip([1, 2, 3, 4, 6, 8], [84827, 84841, 84855, \
+                            84911, 84929, 84943])]
     options['minitrees'] = []
     options['dataset'] = ['2016_rereco_jan17_part', \
                           '2016 ReReco Jan 2017 (partial)']
