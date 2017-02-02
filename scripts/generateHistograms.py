@@ -27,10 +27,10 @@ def main():
     parser.add_argument('-fit', action='append', nargs='?', const='F', \
                         help='fit histogram, give L for log-likelihood fit, '+ \
                         'add R for restricted range')
-    parser.add_argument('-fitted', action='append', nargs=1, help='use '+ \
-                        'fitted histograms, give F for standard fit or L for '+ \
-                        'log-likelihood fit, add R for fits with restricted '+ \
-                        'range')
+    parser.add_argument('-fitted', action='append', nargs='?', const='F', \
+                        help='use fitted histograms, give F for standard fit '+ \
+                        'or L for log-likelihood fit, add R for fits with '+ \
+                        'restricted range')
     parser.add_argument('-plot', action='store_true', help='save histograms '+ \
                         'to PDF')
     parser.add_argument('-nCluster', dest='actions', action='append_const', \
