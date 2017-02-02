@@ -64,7 +64,7 @@ def main():
     if args.range:
         mini = args.range[0]
         maxi = args.range[1]
-        title += '_from' + str(mini) + 'to' + str(maxi)
+        title1 += '_from' + str(mini) + 'to' + str(maxi)
     else:
         print '<<< Get minimum lumisection'
         mini = int(chain.GetMinimum('LS'))
