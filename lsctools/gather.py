@@ -35,12 +35,14 @@ def pccPerBxStep(options):
     """Extract PCC data from ROOT files and sort by bunch crossing and step"""
     c = chain(options['fileset'], options['scan'])
     name = options['scan'] + '_' + options['name']
+    if 'method' in options:
+        name += '_' + options['method']
     f = openRootFileW(name)
     for bx in O['crossings']:
         for step in range(len(O['nominalPos'][options['scan']])):
             print '<<< Analyze:', options['scan'], bx, 'step', step
-            histname = plotName(options['scan']+'_'+options['name']+'_bx'+\
-                                str(bx)+'_step'+str(step), timestamp=False)
+            histname = plotName(name+'_bx'+str(bx)+'_step'+str(step), \
+                                timestamp=False)
             histtitl = plotTitle(options['scan']+' BX '+str(bx)+', Step '+\
                                 str(step))
             hist = options['histo'](histname, histtitl, options['bin'], \
@@ -54,18 +56,19 @@ def pccPerBxStep(options):
 def combinePccPerStep(options):
     """Combine PCC data from all bunch crossings into a single histogram"""
     name = options['scan'] + '_' + options['name']
+    if 'method' in options:
+        name += '_' + options['method']
     f = openRootFileU(name)
     for step in range(len(O['nominalPos'][options['scan']])):
-        histname = plotName(options['scan']+'_'+options['name']+'_bxall_step'+ \
-                            str(step), timestamp=False)
+        histname = plotName(name+'_bxall_step'+str(step), timestamp=False)
         histtitl = plotTitle(options['scan']+', Step '+str(step)+' (all BX)')
         hist = options['histo'](histname, histtitl, options['bin'], \
                                     options['min'], options['max'])
         hist.StatOverflows(True)
         print '<<< Combine histograms:', histname
         for bx in O['crossings']:
-            bxname = plotName(options['scan']+'_'+options['name']+'_bx'+ \
-                              str(bx)+'_step'+str(step), timestamp=False)
+            bxname = plotName(name+'_bx'+str(bx)+'_step'+str(step), \
+                              timestamp=False)
             bxhist = f.Get(bxname)
             hist.Add(bxhist)
         hist.Write('', TObject.kOverwrite)
@@ -77,7 +80,7 @@ def numberClustersPerBxStep(scan, combine=False, alternative=False):
                'name': 'nCluster', 'scan': scan}
     if combine:
         if alternative:
-            options['name'] += 'LS'
+            options['method'] = 'LS'
         combinePccPerStep(options)
     else:
         def condition2(s, bx, step):
@@ -88,7 +91,7 @@ def numberClustersPerBxStep(scan, combine=False, alternative=False):
             return cond + ' && BXid == ' + str(bx)
         if alternative:
             options['condition'] = condition2
-            options['name'] += 'LS'
+            options['method'] = 'LS'
         else:
             options['condition'] = miniCondition
         options['fileset'] = 'minitrees'
@@ -109,11 +112,11 @@ def numberVerticesPerBxStep(scan, combine=False):
 
 def vertexPositionPerBxStep(scan, combine=False, alternative=False):
     """Extract vertex position from ROOT files sorted by BX and step"""
-    options = {'min': -3e3, 'max': 3e3, 'bin': 500, 'histo': TH1F, \
+    options = {'min': -1e3, 'max': 3e3, 'bin': 250, 'histo': TH1F, \
                'name': 'vtxPos', 'scan': scan}
     if combine:
         if alternative:
-            options['name'] += 'LS'
+            options['method'] = 'LS'
         combinePccPerStep(options)
     else:
         def field(s):
@@ -133,7 +136,7 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False):
             return cond + ' && vtx_isGood && bunchCrossing == ' + str(bx)
         if alternative:
             options['condition'] = condition2
-            options['name'] += 'LS'
+            options['method'] = 'LS'
         else:
             options['condition'] = condition1
         options['fileset'] = 'fulltrees'

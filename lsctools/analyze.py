@@ -18,9 +18,13 @@ def collectPerDirectionBx(options):
     oldname = options['scan'] + '_' + options['name'] + options['fitted']
     if 'newname' in options:
         newname = options['scan'] + '_' + options['newname'] + \
-                  options['fitted'] + '_collected'
+                  options['fitted']
     else:
-        newname = oldname + '_collected'
+        newname = oldname
+    if 'method' in options:
+        oldname += '_' + options['method']
+        newname += '_' + options['method']
+    newname += '_collected'
     f = openRootFileR(oldname)
     g = openRootFileW(newname)
     crossings = O['crossings'][:]
@@ -101,7 +105,7 @@ def numberVertices(scan, combine=False):
                'combine': combine}
     collectPerDirectionBx(options)
 
-def vertexPosition(scan, fitted='', combine=False):
+def vertexPosition(scan, fitted='', combine=False, alternative=False):
     """Fit vertex positions in both directions of a scan"""
     options = {'name': 'vtxPos', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
                'y': scale(), 'e': scale(), 'fitted': fitted, 'combine': combine}
@@ -113,6 +117,8 @@ def vertexPosition(scan, fitted='', combine=False):
         options['custom'] = custom
     else:
         options['custom'] = False
+    if alternative:
+        options['method'] = 'LS'
     collectPerDirectionBx(options)
 
 def vertexPositionSigma(scan, fitted='F', combine=False):

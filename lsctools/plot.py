@@ -6,21 +6,20 @@ from ROOT import TCanvas, gStyle, TPad, gPad, TLine
 def plotPerBxStep(options):
     """Save histograms (per BX and step) to PDF files"""
     name = options['scan'] + '_' + options['name'] + options['extra']
+    if 'method' in options:
+        name += options['method']
     f = openRootFileR(name)
     crossings = O['crossings'][:]
     if options['combine']:
         crossings.append('all')
     for bx in crossings:
         for step in range(len(O['nominalPos'][options['scan']])):
-            histname = plotName(options['scan']+'_'+options['name']+ \
-                                options['extra']+'_bx'+str(bx)+'_step'+ \
-                                str(step), timestamp=False)
-            filename = plotName(options['scan']+'_'+options['name']+ \
-                                options['extra']+'_bx'+str(bx)+'_step'+ \
-                                str(step), timestamp=True)
-            filepath = plotPath(options['scan']+'_'+options['name']+ \
-                                options['extra']+'_bx'+str(bx)+'_step'+ \
-                                str(step), timestamp=True)
+            histname = plotName(name+'_bx'+str(bx)+'_step'+str(step), \
+                                timestamp=False)
+            filename = plotName(name+'_bx'+str(bx)+'_step'+str(step), \
+                                timestamp=True)
+            filepath = plotPath(name+'_bx'+str(bx)+'_step'+str(step), \
+                                timestamp=True)
             print '<<< Save plot:', filepath
             hist = f.Get(histname)
             canvas = TCanvas()
@@ -92,8 +91,10 @@ def vertexPositionPerBxStep(scan, fit='', combine=False):
 
 def plotPerDirectionBx(options):
     """Save directional fit plots (per BX) to PDF files"""
-    name = options['scan'] + '_'+ options['name'] + options['fitted'] \
-           + '_collected'
+    name = options['scan'] + '_'+ options['name'] + options['fitted']
+    if 'method' in options:
+        name += '_' + options['method']
+    name += '_collected'
     f = openRootFileR(name)
     crossings = O['crossings'][:]
     if options['combine']:
@@ -181,11 +182,14 @@ def numberVerticesPerDirectionBx(scan, fitted='', combine=False):
                'restitle': '[abs.]'}
     plotPerDirectionBx(options)
 
-def vertexPositionPerDirectionBx(scan, fitted='', combine=False):
+def vertexPositionPerDirectionBx(scan, fitted='', combine=False, \
+                                 alternative=False):
     """Save vertex position directional plots to PDF files"""
     options = {'name': 'vtxPos', 'scan': scan, 'fitted': fitted, 'optfit': 111, \
                'fit': 'pol1', 'ytitle': 'Measured Vertex Position [#mum]', \
                'combine': combine, 'restitle': '[#mum]'}
+    if alternative:
+        options['method'] = True
     plotPerDirectionBx(options)
 
 def vertexPositionSigmaPerDirectionBx(scan, fitted='F', combine=False):

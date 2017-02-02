@@ -42,6 +42,8 @@ def main():
     parser.add_argument('-vtxPosSig', dest='actions', action='append_const', \
                         const='vertexPositionSigma', help='evaluate sigma '+ \
                         'of transverse position of reconstructed vertices')
+    parser.add_argument('-perLs', action='store_true', help='use only full '+ \
+                        'lumisections', dest='alternative')
     args = parser.parse_args()
 
     from importlib import import_module
@@ -55,10 +57,18 @@ def main():
                             combine=args.combined)
                 elif args.fitted:
                     for fitted in args.fitted:
-                        getattr(analyze, action)(scan, fitted=fitted[0], \
-                                combine=args.combined)
+                        if args.alternative:
+                            getattr(analyze, action)(scan, fitted=fitted[0], \
+                                    combine=args.combined, alternative=True)
+                        else:
+                            getattr(analyze, action)(scan, fitted=fitted[0], \
+                                    combine=args.combined)
                 else:
-                    getattr(analyze, action)(scan, combine=args.combined)
+                    if args.alternative:
+                        getattr(analyze, action)(scan, combine=args.combined, \
+                                alternative=True)
+                    else:
+                        getattr(analyze, action)(scan, combine=args.combined)
     if args.truncate:
         if not args.fitted:
             args.fitted = ['T']
@@ -69,11 +79,20 @@ def main():
             for scan in args.scans:
                 if args.fitted:
                     for fitted in args.fitted:
-                        getattr(plot, action+'PerDirectionBx')(scan, \
-                                fitted=fitted[0], combine=args.combined)
+                        if args.alternative:
+                            getattr(plot, action+'PerDirectionBx')(scan, \
+                                    fitted=fitted[0], combine=args.combined, \
+                                    alternative=True)
+                        else:
+                            getattr(plot, action+'PerDirectionBx')(scan, \
+                                    fitted=fitted[0], combine=args.combined)
                 else:
-                    getattr(plot, action+'PerDirectionBx')(scan, \
-                            combine=args.combined)
+                    if args.alternative:
+                        getattr(plot, action+'PerDirectionBx')(scan, \
+                                combine=args.combined, alternative=True)
+                    else:
+                        getattr(plot, action+'PerDirectionBx')(scan, \
+                                combine=args.combined)
 
 if __name__ == '__main__':
     main()

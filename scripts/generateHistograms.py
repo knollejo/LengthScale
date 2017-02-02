@@ -76,8 +76,12 @@ def main():
         for action in args.actions:
             for scan in args.scans:
                 for method in args.fit:
-                    getattr(fit, action)(scan, fitmethod=method, \
-                            combine=args.combined)
+                    if args.alternative:
+                        getattr(fit, action)(scan, fitmethod=method, \
+                                combine=args.combined, alternative = True)
+                    else:
+                        getattr(fit, action)(scan, fitmethod=method, \
+                                combine=args.combined)
     if args.fit:
         args.fitted = args.fit
     if args.plot:
@@ -85,8 +89,12 @@ def main():
             for scan in args.scans:
                 if args.fitted:
                     for method in args.fitted:
-                        getattr(plot, action+'PerBxStep')(scan, fit=method, \
-                                combine=args.combined)
+                        if args.alternative:
+                            getattr(plot, action+'PerBxStep')(scan, fit=method, \
+                                    combine=args.combined, alternative=True)
+                        else:
+                            getattr(plot, action+'PerBxStep')(scan, fit=method, \
+                                    combine=args.combined)
                 else:
                     getattr(plot, action+'PerBxStep')(scan, \
                             combine=args.combined)

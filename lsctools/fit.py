@@ -6,6 +6,9 @@ def fitPerBxStep(options):
     """Fit histograms (per BX and step) with a function"""
     oldname = options['scan']+'_'+options['name']
     newname = oldname + options['extra']
+    if 'method' in options:
+        oldname += '_' + options['method']
+        newname += '_' + options['method']
     f = openRootFileU(oldname)
     g = openRootFileW(newname)
     crossings = O['crossings'][:]
@@ -37,12 +40,12 @@ def numberClusters(scan, fitmethod='F', combine=False):
         hist.GetXaxis().SetRange(int(mini), 1000)
         maxi = hist.GetXaxis().GetBinCenter(hist.GetMaximumBin())
         return mini, 2 * maxi - mini
-    options = {'name': 'nCluster', 'scan': scan, 'fit': 'gaus', 'extra': 
+    options = {'name': 'nCluster', 'scan': scan, 'fit': 'gaus', 'extra':
 'F', \
                'combine': combine, 'fitopt': '', 'range': getRange}
     fitPerBxStep(options)
 
-def vertexPosition(scan, fitmethod='F', combine=False):
+def vertexPosition(scan, fitmethod='F', combine=False, alternative=False):
     """Fit vertex position with a Gaussian (standard or log-likelihood)"""
     options = {'name': 'vtxPos', 'scan': scan, 'fit': 'gaus', \
                'combine': combine}
@@ -61,4 +64,6 @@ def vertexPosition(scan, fitmethod='F', combine=False):
         options['extra'] += 'R'
     else:
         options['range'] = False
+    if alternative:
+        options['method'] = 'LS'
     fitPerBxStep(options)
