@@ -73,7 +73,7 @@ def main():
     for coord in args.coords:
         print '<<< Analyze coordinate', coord
         histname = plotName(coord+'_'+title1, timestamp=False)
-        histtitl = plotTitle('- 'title2)
+        histtitl = plotTitle('- '+title2)
         histfile = plotName(coord+'_'+title1)
         histpath = plotPath(coord+'_'+title1)
         hist = TProfile(histname, histtitl, maxi-mini+1, mini-0.5, maxi+0.5)
