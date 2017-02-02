@@ -81,12 +81,14 @@ def numberVerticesPerBxStep(scan, combine=False):
                'extra': '', 'combine': combine}
     plotPerBxStep(options)
 
-def vertexPositionPerBxStep(scan, fit='', combine=False):
+def vertexPositionPerBxStep(scan, fit='', combine=False, alternative=False):
     """Save vertex position histograms to PDF files"""
     options = {'name': 'vtxPos', 'scan': scan, 'xmin': -1e3, 'xmax':3e3, \
                'logx': 0, 'logy': 0, 'xtitle': 'Measured Vertex Position [#mum]', \
                'ytitle': 'Number of Events','optstat': 1110, 'optfit': 111,
                'extra': fit, 'combine': combine}
+    if alternative:
+        options['method'] = 'LS'
     plotPerBxStep(options)
 
 def plotPerDirectionBx(options):
