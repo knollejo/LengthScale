@@ -79,8 +79,10 @@ def main():
         hist = TProfile(histname, histtitl, maxi-mini+1, mini-0.5, maxi+0.5)
         chain.Draw(coord+'*1e4:LS>>'+histname, 'run == ' + str(run), 'goff')
         hist.Write('', TObject.kOverwrite)
+        print '<<< Save plot:', histpath
         canvas = TCanvas()
         gStyle.SetOptStat(0)
+        hist.Draw()
         hist.GetXaxis().SetTitle('LS')
         hist.GetYaxis().SetTitle(coord+' [#mum]')
         hist.GetYaxis().SetTitleOffset(1.2)
