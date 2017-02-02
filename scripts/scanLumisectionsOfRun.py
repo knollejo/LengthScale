@@ -39,7 +39,7 @@ def main():
             files.append(filename)
             print '<<< Found file:', filename
     loopOverRootFiles(action, 'fulltrees')
-    writeFiles(files, 'fulltrees_'+str(run))
+    writeFiles(files, 'fulltrees_'+str(args.run))
     chain = TChain(O['treename']['fulltrees'])
     for filename in files:
         chain.Add(eos+filename)
