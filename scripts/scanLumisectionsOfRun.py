@@ -57,7 +57,7 @@ def main():
         chain.Add(eos+filename)
     name = 'vtxPos_perLS'
     title1 = 'run' + str(run) + '_perLS'
-    title2 = 'Run ' + str(run) + ')'
+    title2 = 'Run ' + str(run)
     if(args.title):
         title2 = args.title[0] + ' (' + title2 + ')'
     f = openRootFileU(name)
