@@ -37,7 +37,7 @@ def main():
     O['fulltrees'] = O['fulltrees'][:args.n]
     run =args.run[0]
     files = []
-    if noscan:
+    if args.noscan:
         files = loadFiles('fulltrees_'+str(run))
     else:
         def action(tree, filename):
