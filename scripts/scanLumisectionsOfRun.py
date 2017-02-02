@@ -58,7 +58,7 @@ def main():
         histname = plotName(coord+'_'+title, timestamp=False)
         histtitl = plotTitle()
         hist = TProfile(histname, histtitl, 250, -0.3, 0.3)
-        chain.Draw(coord+':LS>>'+histname, '', 'goff')
+        chain.Draw(coord+':LS>>'+histname, 'run == ' + str(run), 'goff')
         hist.Write('', TObject.kOverwrite)
     closeRootFile(f, name)
 
