@@ -21,30 +21,37 @@ def main():
                         const='vtx_x', help='look for vtx_x')
     parser.add_argument('-Y', dest='coords', action='append_const', \
                         const='vtx_y', help='look for vtx_y')
+    parser.add_argument('-noscan', action='store_const', const=True, \
+                        default=False, help='don\'t repeat the scan of the '+ \
+                        'ROOT files, just do the plotting')
     args = parser.parse_args()
 
     from importlib import import_module
     from lsctools import config
     from lsctools.config import options as O, EOSPATH as eos
     from lsctools.tools import openRootFileU, closeRootFile, writeFiles, \
-                               plotName, plotTitle
+                               plotName, plotTitle, loadFiles
     from lsctools.prepare import loopOverRootFiles
     from ROOT import TChain, TObject, TProfile
     getattr(config, 'PCC'+args.dataset)()
     O['fulltrees'] = O['fulltrees'][:args.n]
+    run =args.run[0]
     files = []
-    def action(tree, filename):
-        condition = 'run == ' + str(args.run)
-        if tree.GetEntries(condition) > 0:
-            files.append(filename)
-            print '<<< Found file:', filename
-    loopOverRootFiles(action, 'fulltrees')
-    writeFiles(files, 'fulltrees_'+str(args.run))
+    if noscan:
+        files = loadFiles('fulltrees_'+str(run))
+    else:
+        def action(tree, filename):
+            condition = 'run == ' + str(run)
+            if tree.GetEntries(condition) > 0:
+                files.append(filename)
+                print '<<< Found file:', filename
+        loopOverRootFiles(action, 'fulltrees')
+        writeFiles(files, 'fulltrees_'+str(run))
     chain = TChain(O['treename']['fulltrees'])
     for filename in files:
         chain.Add(eos+filename)
     name = 'vtxPos_perLS'
-    title = 'run' + str(args.run) + '_perLS'
+    title = 'run' + str(run) + '_perLS'
     f = openRootFileU(name)
     for coord in args.coords:
         print '<<< Analyze coordinate', coord
