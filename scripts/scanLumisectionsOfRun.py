@@ -17,6 +17,8 @@ def main():
     parser.add_argument('-run', nargs=1, required=True, type=int, \
                         help='Specify the run number for the selection of '+ \
                         'the lumisections')
+    parser.add_argument('-range', nargs=2, type=int, help='Specify a range '+ \
+                        'in lumisections for the histogram')
     parser.add_argument('-X', dest='coords', action='append_const', \
                         const='vtx_x', help='look for vtx_x')
     parser.add_argument('-Y', dest='coords', action='append_const', \
@@ -53,10 +55,15 @@ def main():
     name = 'vtxPos_perLS'
     title = 'run' + str(run) + '_perLS'
     f = openRootFileU(name)
-    print '<<< Get minimum lumisection'
-    mini = int(chain.GetMinimum('LS'))
-    print '<<< Get maximum lumisection'
-    maxi = int(chain.GetMaximum('LS'))
+    if args.range:
+        mini = args.range[0]
+        maxi = args.range[1]
+        title += '_from' + int(mini) + 'to' + int(maxi)
+    else:
+        print '<<< Get minimum lumisection'
+        mini = int(chain.GetMinimum('LS'))
+        print '<<< Get maximum lumisection'
+        maxi = int(chain.GetMaximum('LS'))
     for coord in args.coords:
         print '<<< Analyze coordinate', coord
         histname = plotName(coord+'_'+title, timestamp=False)
