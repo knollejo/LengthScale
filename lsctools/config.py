@@ -9,6 +9,7 @@ def PCC():
     options['treename'] = {'fulltrees': 'lumi/tree', 'minitrees': 'pccminitree'}
     options['timename'] = {'fulltrees': 'timeStamp_begin', \
                            'minitrees': 'timeStamp'}
+    options['bxname'] = {'fulltrees': 'bunchCrossing', 'minitrees': 'BXid'}
 
 def BCM1f():
     """Set common parameters of BCM1f data sets"""
@@ -194,7 +195,7 @@ def PCCPromptReco2016():
     VdM2016()
     PCC()
 
-    options['fulltrees'] = ['/comm_luminosity/PCC/VdM/May182016_274100/Zero' \
+    options['fulltrees'] = ['/comm_luminosity/PCC/VdM/May272016_274100/Zero' \
                             +'Bias'+str(i)+'/PCC_VdM_ZeroBias'+str(i)+'_' \
                             +'274100_ProMay312016_Event_AlwaysTrue/160531_' \
                             +str(time)+'/0000' for i, time in \
