@@ -17,8 +17,12 @@ def main():
                         help='apply to LSC scan Y1')
     parser.add_argument('-X2', dest='scans', action='append_const', const='X2', \
                         help='apply to LSC scan X2')
+    parser.add_argument('-Y2', dest='scans', action='append_const', const='Y2', \
+                        help='apply to LSC scan Y2')
     parser.add_argument('-combined', action='store_true', help='use '+ \
                         'combined data of all bunch crossings')
+    parser.add_argument('-all', action='store_true', help='only use data of '+ \
+                        'all bunch crossings at once')
     parser.add_argument('-analyze', action='store_true', help='collect mean '+ \
                         'and mean error from histograms')
     parser.add_argument('-plot', action='store_true', help='save plot to PDF')
@@ -49,26 +53,29 @@ def main():
     from importlib import import_module
     from lsctools import config, plot, analyze
     getattr(config, 'PCC'+args.dataset)()
+    allbx = bool(args.all)
     if args.analyze:
         for action in args.actions:
             for scan in args.scans:
                 if args.truncate:
                     getattr(analyze, action)(scan, truncated=True, \
-                            combine=args.combined)
+                            combine=args.combined, all=bxall)
                 elif args.fitted:
                     for fitted in args.fitted:
                         if args.alternative:
                             getattr(analyze, action)(scan, fitted=fitted[0], \
-                                    combine=args.combined, alternative=True)
+                                    combine=args.combined, alternative=True,
+                                    all=bxall)
                         else:
                             getattr(analyze, action)(scan, fitted=fitted[0], \
-                                    combine=args.combined)
+                                    combine=args.combined, all=bxall)
                 else:
                     if args.alternative:
                         getattr(analyze, action)(scan, combine=args.combined, \
-                                alternative=True)
+                                alternative=True, all=bxall)
                     else:
-                        getattr(analyze, action)(scan, combine=args.combined)
+                        getattr(analyze, action)(scan, combine=args.combined, \
+                                all=bxall)
     if args.truncate:
         if not args.fitted:
             args.fitted = ['T']
@@ -82,17 +89,19 @@ def main():
                         if args.alternative:
                             getattr(plot, action+'PerDirectionBx')(scan, \
                                     fitted=fitted[0], combine=args.combined, \
-                                    alternative=True)
+                                    alternative=True, all=bxall)
                         else:
                             getattr(plot, action+'PerDirectionBx')(scan, \
-                                    fitted=fitted[0], combine=args.combined)
+                                    fitted=fitted[0], combine=args.combined, \
+                                    all=bxall)
                 else:
                     if args.alternative:
                         getattr(plot, action+'PerDirectionBx')(scan, \
-                                combine=args.combined, alternative=True)
+                                combine=args.combined, alternative=True, \
+                                all=bxall)
                     else:
                         getattr(plot, action+'PerDirectionBx')(scan, \
-                                combine=args.combined)
+                                combine=args.combined, all=bxall)
 
 if __name__ == '__main__':
     main()

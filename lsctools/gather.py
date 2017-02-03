@@ -37,7 +37,7 @@ def pccPerBxStep(options):
     name = options['scan'] + '_' + options['name']
     if 'method' in options:
         name += '_' + options['method']
-    f = openRootFileW(name)
+    f = openRootFileU(name)
     for bx in O['crossings']:
         for step in range(len(O['nominalPos'][options['scan']])):
             print '<<< Analyze:', options['scan'], bx, 'step', step
@@ -51,6 +51,32 @@ def pccPerBxStep(options):
             c.Draw(options['field'](options['scan'])+'>>'+histname, \
                    options['condition'](options['scan'], bx, step), 'goff')
             hist.Write('', TObject.kOverwrite)
+    closeRootFile(f, name)
+
+def pccPerStep(options):
+    """Extract PCC data from ROOT files and sort by step"""
+    c = chain(options['fileset'], options['scan'])
+    name = options['scan'] + '_' + options['name']
+    if 'method' in options:
+        name += '_' + options['method']
+    cond = O['bxname'][options['fileset']] + ' == ' + str(O['crossings'][0])
+    if O['crossings'][1:]:
+        cond = '(' + cond
+        for bx in O['crossings']:
+            cond += ' || ' + O['bxname'][options['fileset']] + ' == ' + str(bx)
+        cond += ')'
+    cond = ' && ' + cond
+    f = openRootFileU(name)
+    for step in range(len(O['nominalPos'][options['scan']])):
+        print '<<< Analyze:', options['scan'], 'step', step
+        histname = plotName(name+'_bxall_step'+str(step), timestamp=False)
+        histtitl = plotTitle(options['scan']+' BX all, Step '+str(step))
+        hist = options['histo'](histname, histtitl, options['bin'], \
+                                options['min'], options['max'])
+        hist.StatOverflows(True)
+        c.Draw(options['field'](options['scan'])+'>>'+histname, \
+               options['condition'](options['scan'], step)+cond, 'goff')
+        hist.Write('', TObject.kOverwrite)
     closeRootFile(f, name)
 
 def combinePccPerStep(options):
@@ -74,7 +100,7 @@ def combinePccPerStep(options):
         hist.Write('', TObject.kOverwrite)
     closeRootFile(f, name)
 
-def numberClustersPerBxStep(scan, combine=False, alternative=False):
+def numberClustersPerBxStep(scan, combine=False, alternative=False, all=False):
     """Extract number of pixel clusters from ROOT files sorted by BX and step"""
     options = {'min': -0.5, 'max': 1000.5, 'bin': 1001, 'histo': TH1I, \
                'name': 'nCluster', 'scan': scan}
@@ -98,7 +124,7 @@ def numberClustersPerBxStep(scan, combine=False, alternative=False):
         options['field'] = lambda s: 'nCluster'
         pccPerBxStep(options)
 
-def numberVerticesPerBxStep(scan, combine=False):
+def numberVerticesPerBxStep(scan, combine=False, all=False):
     """Extract vertex number from ROOT files sorted by BX and step"""
     options = {'min': -0.5, 'max': 9.5, 'bin': 10, 'histo': TH1I, \
                'name': 'nVtx', 'scan': scan}
@@ -110,7 +136,7 @@ def numberVerticesPerBxStep(scan, combine=False):
         options['field'] = lambda s: 'nVtx'
         pccPerBxStep(options)
 
-def vertexPositionPerBxStep(scan, combine=False, alternative=False):
+def vertexPositionPerBxStep(scan, combine=False, alternative=False, all=False):
     """Extract vertex position from ROOT files sorted by BX and step"""
     options = {'min': -1e3, 'max': 3e3, 'bin': 250, 'histo': TH1F, \
                'name': 'vtxPos', 'scan': scan}
@@ -124,24 +150,42 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False):
                 return 'vtx_x*1e4'
             else:
                 return 'vtx_y*1e4'
-        def condition1(s, bx, step):
-            return 'timeStamp_begin >= ' + str(O['begin'][s][step]) + \
-                   ' && timeStamp_begin <= ' + str(O['end'][s][step]) + \
-                   ' && vtx_isGood && bunchCrossing == ' + str(bx)
-        def condition2(s, bx, step):
-            cond = '(LS == ' + str(O['LS'][s][step][0])
-            for ls in O['LS'][s][step][1:]:
-                cond += ' || LS == ' + str(ls)
-            cond += ')'
-            return cond + ' && vtx_isGood && bunchCrossing == ' + str(bx)
-        if alternative:
-            options['condition'] = condition2
-            options['method'] = 'LS'
-        else:
-            options['condition'] = condition1
         options['fileset'] = 'fulltrees'
         options['field'] = field
-        pccPerBxStep(options)
+        if all:
+            def condition1(s, step):
+                return 'timeStamp_begin >= ' + str(O['begin'][s][step]) + \
+                       ' && timeStamp_begin <= ' + str(O['end'][s][step]) + \
+                       ' && vtx_isGood'
+            def condition2(s, step):
+                cond = '(LS == ' + str(O['LS'][s][step][0])
+                for ls in O['LS'][s][step][1:]:
+                    cond += ' || LS == ' + str(ls)
+                cond += ')'
+                return cond + ' && vtx_isGood'
+            if alternative:
+                options['condition'] = condition2
+                options['method'] = 'LS'
+            else:
+                options['condition'] = condition1
+            pccPerStep(options)
+        else:
+            def condition1(s, bx, step):
+                return 'timeStamp_begin >= ' + str(O['begin'][s][step]) + \
+                       ' && timeStamp_begin <= ' + str(O['end'][s][step]) + \
+                       ' && vtx_isGood && bunchCrossing == ' + str(bx)
+            def condition2(s, bx, step):
+                cond = '(LS == ' + str(O['LS'][s][step][0])
+                for ls in O['LS'][s][step][1:]:
+                    cond += ' || LS == ' + str(ls)
+                cond += ')'
+                return cond + ' && vtx_isGood && bunchCrossing == ' + str(bx)
+            if alternative:
+                options['condition'] = condition2
+                options['method'] = 'LS'
+            else:
+                options['condition'] = condition1
+            pccPerBxStep(options)
 
 def pccPerLumiSection(options):
     """Extract PCC data from ROOT files and sort by lumisection"""

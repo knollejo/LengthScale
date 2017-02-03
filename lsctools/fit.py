@@ -11,10 +11,7 @@ def fitPerBxStep(options):
         newname += '_' + options['method']
     f = openRootFileU(oldname)
     g = openRootFileW(newname)
-    crossings = O['crossings'][:]
-    if options['combine']:
-        crossings.append('all')
-    for bx in crossings:
+    for bx in options['crossings']:
         for step in range(len(O['nominalPos'][options['scan']])):
             print '<<< Fit:', options['scan'], bx, 'step', step
             histname = plotName(oldname+'_bx'+str(bx)+'_step'+str(step), \
@@ -32,7 +29,7 @@ def fitPerBxStep(options):
     closeRootFile(g, newname)
     closeRootFile(f, oldname)
 
-def numberClusters(scan, fitmethod='F', combine=False):
+def numberClusters(scan, fitmethod='F', combine=False, all=False):
     """Fit number of clusters with a Gaussian in a range"""
     def getRange(hist):
         hist.GetXaxis().SetRange(1, 30)
@@ -40,15 +37,26 @@ def numberClusters(scan, fitmethod='F', combine=False):
         hist.GetXaxis().SetRange(int(mini), 1000)
         maxi = hist.GetXaxis().GetBinCenter(hist.GetMaximumBin())
         return mini, 2 * maxi - mini
-    options = {'name': 'nCluster', 'scan': scan, 'fit': 'gaus', 'extra':
-'F', \
-               'combine': combine, 'fitopt': '', 'range': getRange}
+    options = {'name': 'nCluster', 'scan': scan, 'fit': 'gaus', 'extra': 'F', \
+               'fitopt': '', 'range': getRange}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     fitPerBxStep(options)
 
-def vertexPosition(scan, fitmethod='F', combine=False, alternative=False):
+def vertexPosition(scan, fitmethod='F', combine=False, alternative=False, \
+                   all=False):
     """Fit vertex position with a Gaussian (standard or log-likelihood)"""
-    options = {'name': 'vtxPos', 'scan': scan, 'fit': 'gaus', \
-               'combine': combine}
+    options = {'name': 'vtxPos', 'scan': scan, 'fit': 'gaus'}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     if fitmethod.startswith('L'):
         options['fitopt'] = 'L'
         options['extra'] = 'L'

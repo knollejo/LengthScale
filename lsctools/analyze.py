@@ -27,10 +27,7 @@ def collectPerDirectionBx(options):
     newname += '_collected'
     f = openRootFileR(oldname)
     g = openRootFileW(newname)
-    crossings = O['crossings'][:]
-    if options['combine']:
-        crossings.append('all')
-    for bx in crossings:
+    for bx in options['crossings']:
         average = [0 for j in range(nSteps)]
         averror = [0 for j in range(nSteps)]
         for step in range(nSteps):
@@ -76,7 +73,13 @@ def collectPerDirectionBx(options):
 def numberClusters(scan, fitted='', truncated=False, combine=False):
     """Fit pixel cluster number in both directions of a scan"""
     options = {'name': 'nCluster', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
-               'y': scale(), 'e': scale(), 'fitted': fitted, 'combine': combine}
+               'y': scale(), 'e': scale(), 'fitted': fitted}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     if truncated:
         def custom(hist):
             hist.GetXaxis().SetRange(1, 30)
@@ -98,17 +101,29 @@ def numberClusters(scan, fitted='', truncated=False, combine=False):
         options['custom'] = False
     collectPerDirectionBx(options)
 
-def numberVertices(scan, combine=False):
+def numberVertices(scan, combine=False, all=False):
     """Fit vertex number in both directions of a scan"""
     options = {'name': 'nVtx', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
-               'y': scale(), 'e': scale(), 'fitted': '', 'custom': False, \
-               'combine': combine}
+               'y': scale(), 'e': scale(), 'fitted': '', 'custom': False}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     collectPerDirectionBx(options)
 
-def vertexPosition(scan, fitted='', combine=False, alternative=False):
+def vertexPosition(scan, fitted='', combine=False, alternative=False, \
+                   all=False):
     """Fit vertex positions in both directions of a scan"""
     options = {'name': 'vtxPos', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
-               'y': scale(), 'e': scale(), 'fitted': fitted, 'combine': combine}
+               'y': scale(), 'e': scale(), 'fitted': fitted}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     if fitted and not 'LS' in fitted:
         def custom(hist):
             average = hist.GetFunction('gaus').GetParameter(1)
@@ -121,7 +136,7 @@ def vertexPosition(scan, fitted='', combine=False, alternative=False):
         options['method'] = 'LS'
     collectPerDirectionBx(options)
 
-def vertexPositionSigma(scan, fitted='F', combine=False):
+def vertexPositionSigma(scan, fitted='F', combine=False, all=False):
     """Fit sigma of vertex positions in both directions of a scan"""
     def custom(hist):
         average = hist.GetFunction('gaus').GetParameter(2)
@@ -129,5 +144,11 @@ def vertexPositionSigma(scan, fitted='F', combine=False):
         return average, averror
     options = {'name': 'vtxPos', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
                'y': scale(), 'e': scale(), 'fitted': fitted, \
-               'combine': combine, 'custom': custom, 'newname': 'vtxPosSig'}
+               'custom': custom, 'newname': 'vtxPosSig'}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     collectPerDirectionBx(options)

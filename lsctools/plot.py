@@ -9,10 +9,7 @@ def plotPerBxStep(options):
     if 'method' in options:
         name += '_' + options['method']
     f = openRootFileR(name)
-    crossings = O['crossings'][:]
-    if options['combine']:
-        crossings.append('all')
-    for bx in crossings:
+    for bx in options['crossings']:
         for step in range(len(O['nominalPos'][options['scan']])):
             histname = plotName(name+'_bx'+str(bx)+'_step'+str(step), \
                                 timestamp=False)
@@ -51,7 +48,7 @@ def plotPerBxStep(options):
             canvas.Close()
     closeRootFile(f, name)
 
-def numberClustersPerBxStep(scan, fit='', combine=False):
+def numberClustersPerBxStep(scan, fit='', combine=False, all=False):
     """Save cluster number histograms to PDF files"""
     def plotZoom(hist):
         pad = TPad('pad', '', 0.2, 0.55, 0.6, 0.89)
@@ -70,25 +67,44 @@ def numberClustersPerBxStep(scan, fit='', combine=False):
     options = {'name': 'nCluster', 'scan': scan, 'xmin': -0.5, 'xmax': 5000.5, \
                'logx': 0, 'logy': 1, 'xtitle': 'Number of Pixel Clusters (per event)', \
                'ytitle': 'Number of Events', 'optstat': 101110, 'optfit': 111, \
-               'extra': fit, 'combine': combine, 'custom': plotZoom}
+               'extra': fit, 'custom': plotZoom}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     plotPerBxStep(options)
 
-def numberVerticesPerBxStep(scan, combine=False):
+def numberVerticesPerBxStep(scan, combine=False, all=False):
     """Save vertex number histograms to PDF files"""
     options = {'name': 'nVtx', 'scan': scan, 'xmin': -0.5, 'xmax': 6.5, 'logx': 0, \
                'logy': 1, 'xtitle': 'Number of Vertices (per event)', \
                'ytitle': 'Number of Events', 'optstat': 1110, 'optfit': 0, \
-               'extra': '', 'combine': combine}
+               'extra': ''}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     plotPerBxStep(options)
 
-def vertexPositionPerBxStep(scan, fit='', combine=False, alternative=False):
+def vertexPositionPerBxStep(scan, fit='', combine=False, alternative=False, \
+                            all=False):
     """Save vertex position histograms to PDF files"""
     options = {'name': 'vtxPos', 'scan': scan, 'xmin': -1e3, 'xmax':3e3, \
                'logx': 0, 'logy': 0, 'xtitle': 'Measured Vertex Position [#mum]', \
                'ytitle': 'Number of Events','optstat': 1110, 'optfit': 111,
-               'extra': fit, 'combine': combine}
+               'extra': fit}
     if alternative:
         options['method'] = 'LS'
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     plotPerBxStep(options)
 
 def plotPerDirectionBx(options):
@@ -98,10 +114,7 @@ def plotPerDirectionBx(options):
         name += '_' + options['method']
     name += '_collected'
     f = openRootFileR(name)
-    crossings = O['crossings'][:]
-    if options['combine']:
-        crossings.append('all')
-    for bx in crossings:
+    for bx in options['crossings']:
         plotname = plotName(name+'_bx'+str(bx), timestamp=False)
         filename = plotName(name+'_bx'+str(bx), timestamp=True)
         filepath = plotPath(name+'_bx'+str(bx), timestamp=True)
@@ -168,38 +181,60 @@ def plotPerDirectionBx(options):
         canvas.Close()
     closeRootFile(f, name)
 
-def numberClustersPerDirectionBx(scan, fitted='', combine=False):
+def numberClustersPerDirectionBx(scan, fitted='', combine=False, all=False):
     """Save number of clusters directional plots to PDF files"""
     options = {'name': 'nCluster', 'scan': scan, 'fitted': fitted, \
-               'optfit': 111, 'fit': 'pol1', 'combine': combine, \
-               'ytitle': 'Number of Pixel Clusters (per event)', \
-               'restitle': '[abs.]'}
+               'optfit': 111, 'fit': 'pol1', 'restitle': '[abs.]', \
+               'ytitle': 'Number of Pixel Clusters (per event)'}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     plotPerDirectionBx(options)
 
-def numberVerticesPerDirectionBx(scan, fitted='', combine=False):
+def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=True):
     """Save number of vertices directional plots to PDF files"""
     options = {'name': 'nVtx', 'scan': scan, 'fitted': fitted, \
-               'optfit': 111, 'fit': 'pol1', 'combine': combine, \
-               'ytitle': 'Number of Vertices (per event)', \
-               'restitle': '[abs.]'}
+               'optfit': 111, 'fit': 'pol1', 'restitle': '[abs.]', \
+               'ytitle': 'Number of Vertices (per event)'}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     plotPerDirectionBx(options)
 
 def vertexPositionPerDirectionBx(scan, fitted='', combine=False, \
-                                 alternative=False):
+                                 alternative=False, all=False):
     """Save vertex position directional plots to PDF files"""
     options = {'name': 'vtxPos', 'scan': scan, 'fitted': fitted, 'optfit': 111, \
                'fit': 'pol1', 'ytitle': 'Measured Vertex Position [#mum]', \
-               'combine': combine, 'restitle': '[#mum]'}
+               'restitle': '[#mum]'}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     if alternative:
         options['method'] = 'LS'
     plotPerDirectionBx(options)
 
-def vertexPositionSigmaPerDirectionBx(scan, fitted='F', combine=False):
+def vertexPositionSigmaPerDirectionBx(scan, fitted='F', combine=False, \
+                                      all=False):
     """Save sigma of vertex position directional plots to PDF files"""
     options = {'name': 'vtxPosSig', 'scan': scan, 'fitted': fitted, \
-               'optfit': 111, 'fit': 'pol1', 'combine': combine, \
-               'ytitle': '#sigma(Measured Vertex Position) [#mum]', \
-               'restitle': '[#mum]'}
+               'optfit': 111, 'fit': 'pol1', 'restitle': '[#mum]', \
+               'ytitle': '#sigma(Measured Vertex Position) [#mum]'}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
     plotPerDirectionBx(options)
 
 def plotPerLumiSection(options):

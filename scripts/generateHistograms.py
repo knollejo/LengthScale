@@ -18,10 +18,14 @@ def main():
                         help='apply to LSC scan Y1')
     parser.add_argument('-X2', dest='scans', action='append_const', const='X2', \
                         help='apply to LSC scan X2')
+    parser.add_argument('-Y2', dest='scans', action='append_const', const='Y2', \
+                        help='apply to LSC scan Y2')
     parser.add_argument('-gather', action='store_true', help='extract data '+ \
                         'from ROOT file')
     parser.add_argument('-combine', action='store_true', help='combine data '+ \
                         'of all bunch crossings')
+    parser.add_argument('-all', action='store_true', help='only use data of '+ \
+                        'all bunch crossings at once')
     parser.add_argument('-combined', action='store_true', help='use combined '+ \
                         'data of all bunch crossings')
     parser.add_argument('-fit', action='append', nargs='?', const='F', \
@@ -49,27 +53,31 @@ def main():
     from importlib import import_module
     from lsctools import config, gather, fit, plot
     getattr(config, 'PCC'+args.dataset)()
+    allbx = bool(args.all)
     if args.gather:
         for action in args.actions:
             for scan in args.scans:
                 if args.alternative:
-                    getattr(gather, action+'PerBxStep')(scan, alternative=True)
+                    getattr(gather, action+'PerBxStep')(scan, alternative=True, \
+                            all=allbx)
                 else:
-                    getattr(gather, action+'PerBxStep')(scan)
+                    getattr(gather, action+'PerBxStep')(scan, all=allbx)
                 if args.combine:
                     if args.alternative:
                         getattr(gather, action+'PerBxStep')(scan, combine=True, \
-                                alternative=True)
+                                alternative=True, all=allbx)
                     else:
-                        getattr(gather, action+'PerBxStep')(scan, combine=True)
+                        getattr(gather, action+'PerBxStep')(scan, combine=True, \
+                                all=allbx)
     if args.combine and not args.gather:
         for action in args.actions:
             for scan in args.scans:
                 if args.alternative:
                     getattr(gather, action+'PerBxStep')(scan, combine=True, \
-                            alternative=True)
+                            alternative=True, all=allbx)
                 else:
-                    getattr(gather, action+'PerBxStep')(scan, combine=True)
+                    getattr(gather, action+'PerBxStep')(scan, combine=True, \
+                            all=allbx)
     if args.combine:
         args.combined = True
     if args.fit:
@@ -77,10 +85,10 @@ def main():
             for scan in args.scans:
                 for method in args.fit:
                     if args.alternative:
-                        getattr(fit, action)(scan, fitmethod=method, \
+                        getattr(fit, action)(scan, fitmethod=method, all=bxall, \
                                 combine=args.combined, alternative = True)
                     else:
-                        getattr(fit, action)(scan, fitmethod=method, \
+                        getattr(fit, action)(scan, fitmethod=method, all=bxall, \
                                 combine=args.combined)
     if args.fit:
         args.fitted = args.fit
@@ -91,13 +99,14 @@ def main():
                     for method in args.fitted:
                         if args.alternative:
                             getattr(plot, action+'PerBxStep')(scan, fit=method, \
-                                    combine=args.combined, alternative=True)
+                                    combine=args.combined, alternative=True, \
+                                    all=bxall)
                         else:
                             getattr(plot, action+'PerBxStep')(scan, fit=method, \
-                                    combine=args.combined)
+                                    combine=args.combined, all=bxall)
                 else:
                     getattr(plot, action+'PerBxStep')(scan, \
-                            combine=args.combined)
+                            combine=args.combined, all=bxall)
 
 if __name__ == '__main__':
     main()
