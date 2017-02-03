@@ -203,9 +203,9 @@ def PCCPromptReco2016():
     run273591 = ['/comm_luminosity/PCC/VdM/May182016_273591/ZeroBias'+str(i) \
                  +'/PCC_VdM_ZeroBias'+str(i)+'_273591_ProMay212016_Event' \
                  +'_AlwaysTrue/16052'+time+'/0000' for i, time in \
-                 enumerate(['24_190706', '24_190731', '24_190756', '24_190825', \
-                 '24_190850', '21_215614', '24_190916', '24_190945'], start=1)]
-    options['fulltrees'] = run274100 + run273591
+                 enumerate(['4_190706', '4_190731', '4_190756', '4_190825', \
+                 '4_190850', '1_215614', '4_190916', '4_190945'], start=1)]
+    options['fulltrees'] = run273591 + run274100
     options['minitrees'] = [s+'_vdmminitrees' for s in options['fulltrees']]
     options['dataset'] = ['promptreco16', 'Prompt Reco 2016']
 
