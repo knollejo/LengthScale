@@ -59,23 +59,23 @@ def main():
             for scan in args.scans:
                 if args.truncate:
                     getattr(analyze, action)(scan, truncated=True, \
-                            combine=args.combined, all=bxall)
+                            combine=args.combined, all=allbx)
                 elif args.fitted:
                     for fitted in args.fitted:
                         if args.alternative:
                             getattr(analyze, action)(scan, fitted=fitted[0], \
                                     combine=args.combined, alternative=True,
-                                    all=bxall)
+                                    all=allbx)
                         else:
                             getattr(analyze, action)(scan, fitted=fitted[0], \
-                                    combine=args.combined, all=bxall)
+                                    combine=args.combined, all=allbx)
                 else:
                     if args.alternative:
                         getattr(analyze, action)(scan, combine=args.combined, \
-                                alternative=True, all=bxall)
+                                alternative=True, all=allbx)
                     else:
                         getattr(analyze, action)(scan, combine=args.combined, \
-                                all=bxall)
+                                all=allbx)
     if args.truncate:
         if not args.fitted:
             args.fitted = ['T']
@@ -89,19 +89,19 @@ def main():
                         if args.alternative:
                             getattr(plot, action+'PerDirectionBx')(scan, \
                                     fitted=fitted[0], combine=args.combined, \
-                                    alternative=True, all=bxall)
+                                    alternative=True, all=allbx)
                         else:
                             getattr(plot, action+'PerDirectionBx')(scan, \
                                     fitted=fitted[0], combine=args.combined, \
-                                    all=bxall)
+                                    all=allbx)
                 else:
                     if args.alternative:
                         getattr(plot, action+'PerDirectionBx')(scan, \
                                 combine=args.combined, alternative=True, \
-                                all=bxall)
+                                all=allbx)
                     else:
                         getattr(plot, action+'PerDirectionBx')(scan, \
-                                combine=args.combined, all=bxall)
+                                combine=args.combined, all=allbx)
 
 if __name__ == '__main__':
     main()
