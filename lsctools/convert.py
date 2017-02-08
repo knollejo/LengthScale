@@ -2,6 +2,7 @@ from config import options as O, OWNPATH as path
 from tools import checkDir
 from tables import open_file as tablesOpen
 from array import array
+from os import listdir, stat
 from ROOT import TFile, TTree
 
 def loopOverHD5Files(action, fileset):
@@ -17,8 +18,8 @@ def loopOverHD5Files(action, fileset):
             table = tablesOpen(eos+directory+'/'+filename)
             action(table, directory+'/'+filename)
 
-def convertBCM1F(fileset):
-    """Convert all BMC1F HD5 files to ROOT tree files and list them"""
+def convertBCM1f(fileset):
+    """Convert all BMC1f HD5 files to ROOT tree files and list them"""
     files = dict([(scan, []) for scan in O['scans']])
     def action(table, filename):
         nBX = len(O['crossings'])
