@@ -71,9 +71,6 @@ def convertBCM1f(fileset):
             myls = int(row['lsnum'])
             for i, bx in enumerate(O['crossings']):
                 mydata[i] += int(row['data'][bx-1])
-        print '<<< Save new ROOT file:', newpath+'/'+newname
-        rootfile.Write()
-        rootfile.Close()
         for scan in O['scans']:
             condition = 'run == ' + str(O['runs'][scan]) + ' && ls >= ' + \
                         str(O['lumisections'][scan][0]) + ' && ls <= ' + \
@@ -81,5 +78,8 @@ def convertBCM1f(fileset):
             if tree.GetEntries(condition) > 0:
                 files[scan].append(filename)
                 print '<<< File contains scan', scan
+        print '<<< Save new ROOT file:', newpath+'/'+newname
+        rootfile.Write()
+        rootfile.Close()
     loopOverHD5Files(action, fileset)
     return writeFiles(files, fileset+'_all')
