@@ -41,8 +41,8 @@ def convertBCM1f(fileset):
         myls = array('l', [0])
         tree = TTree(O['treename']['owntrees'], 'BCM1f data')
         tree.Branch(O['timename']['owntrees'], mytime, 'timestamp/I')
-        tree.Branch('data', mydata, 'data['+str(nBX)+'/F]')
-        tree.Branch('bx', mybx, 'bx['+str(nBX)+'/I]')
+        tree.Branch('data', mydata, 'data['+str(nBX)+']/F')
+        tree.Branch('bx', mybx, 'bx['+str(nBX)+']/I')
         tree.Branch('fill', myfill, 'fill/I')
         tree.Branch('run', myrun, 'run/I')
         tree.Branch('ls', myls, 'ls/I')
@@ -63,7 +63,7 @@ def convertBCM1f(fileset):
                 first = False
             if nowtimestamp > mytime[0]:
                 tree.Fill()
-                for i in nBX:
+                for i in range(nBX):
                     mydata[i] = 0.0
                 mytime[0] = nowtimestamp
             myfill = int(row['fillnum'])
