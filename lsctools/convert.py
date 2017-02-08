@@ -1,4 +1,4 @@
-from config import options as O, OWNPATH as path
+from config import options as O, OWNPATH as path, EOSPATH as eos
 from tools import checkDir
 from tables import open_file as tablesOpen
 from array import array
