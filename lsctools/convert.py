@@ -31,8 +31,8 @@ def convertBCM1f(fileset):
         newname = O['detector'][0] + '_' + O['dataset'][0] + '_' + \
                   filename[pos[0]:pos[1]] + '_' + filename[pos[2]:pos[3]]
         checkDir(newpath)
-        print '<<< Create new ROOT file:', newpath+'/'+newfile
-        rootfile = TFile(newpath+'/'+newfile, 'RECREATE')
+        print '<<< Create new ROOT file:', newpath+'/'+newname
+        rootfile = TFile(newpath+'/'+newname, 'RECREATE')
         mytime = array('l', [0])
         mydata = array('f', nBX*[0.0])
         mybx = array('l', [bx for bx in O['crossings']])
@@ -71,7 +71,7 @@ def convertBCM1f(fileset):
             myls = int(row['lsnum'])
             for i, bx in enumerate(O['crossings']):
                 mydata[i] += int(row['data'][bx-1])
-        print '<<< Save new ROOT file:', newpath+'/'+newfile
+        print '<<< Save new ROOT file:', newpath+'/'+newname
         rootfile.Write()
         rootfile.Close()
         for scan in O['scans']:
