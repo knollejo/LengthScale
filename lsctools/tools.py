@@ -8,11 +8,15 @@ from ROOT import TFile, TText
 def timeStamp():
     return strftime('%y%m%d_%H%M%S')
 
+def checkDir(dirname):
+    if not exists(dirname):
+        mkdir(dirname)
+
 def dataDir(check=True):
     """Give directory for data files and check if it exists"""
     dirname = outpath + '/' + O['detector'][0] + '_' + O['dataset'][0]
-    if check and not exists(dirname):
-        mkdir(dirname)
+    if check:
+        checkDir(dirname)
     return dirname
 
 def dataName(title):
@@ -69,8 +73,8 @@ def closeRootFile(f, name):
 def plotDir(check=True):
     """Give directory for plot files and check if it exists"""
     dirname = outpath + '/' + O['detector'][0] + '_' + O['dataset'][0] + '/out'
-    if check and not exists(dirname):
-        mkdir(dirname)
+    if check:
+        checkDir(dirname)
     return dirname
 
 def plotName(title, timestamp=True):
