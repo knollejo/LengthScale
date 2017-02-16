@@ -1,5 +1,5 @@
 from config import options as O, OWNPATH as path, EOSPATH as eos
-from tools import checkDir
+from tools import checkDir, writeFiles
 from tables import open_file as tablesOpen
 from array import array
 from os import listdir, stat
@@ -29,7 +29,8 @@ def convertBCM1f(fileset):
         pos.append(filename.find('.', pos[2]))
         newpath = path + '/' + O['detector'][0] + '_' + O['dataset'][0]
         newname = O['detector'][0] + '_' + O['dataset'][0] + '_' + \
-                  filename[pos[0]:pos[1]] + '_' + filename[pos[2]:pos[3]]
+                  filename[pos[0]:pos[1]] + '_' + filename[pos[2]:pos[3]] + \
+                  '.root'
         checkDir(newpath)
         print '<<< Create new ROOT file:', newpath+'/'+newname
         rootfile = TFile(newpath+'/'+newname, 'RECREATE')
