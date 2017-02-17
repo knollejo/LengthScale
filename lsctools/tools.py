@@ -57,7 +57,7 @@ def loadFiles(name):
             returnfiles[scan] = [eospath+filename for filename in files[scan]]
         return returnfiles
     elif eos and type(files) is list:
-        return [eospath+filename for filename in files
+        return [eospath+filename for filename in files]
     else:
         return files
 
