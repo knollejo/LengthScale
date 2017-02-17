@@ -81,7 +81,7 @@ def convertBCM1f(fileset):
                 rootfile['time'][0] = nowtimestamp
                 first = False
             if nowtimestamp > rootfile['time'][0]:
-                tree.Fill()
+                rootfile['tree'].Fill()
                 if i / 10000 > thisfilenumber:
                     rootfile = newRootFile(closeRootFile(rootfile))
                     thisfilenumber += 1
