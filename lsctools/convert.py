@@ -29,7 +29,8 @@ def convertBCM1f(fileset):
             rootfile = {'number': filenumber}
             rootfile['name'] = path + '/' + O['detector'][0] + '_' + \
                                O['dataset'][0] + '/' + O['detector'][0] + '_' \
-                               + O['dataset'][0] + str(filenumber) + '.root'
+                               + O['dataset'][0] + '_' + str(filenumber) + \
+                               '.root'
             print '<<< Create ROOT file:', rootfile['name']
             rootfile['file'] = TFile(rootfile['name'], 'RECREATE')
             for inttype in ['b', 'h', 'i', 'l']:
@@ -62,7 +63,7 @@ def convertBCM1f(fileset):
             print '<<< Save ROOT file:', rootfile['name']
             rootfile['file'].Write()
             rootfile['file'].Close()
-            return rootfile['filenumber'] + 1
+            return rootfile['number'] + 1
         rootfile = newRootFile(filenumber)
         print '<<< Read from file:', filename
         bcm1f = table.root.bcm1fagghist
