@@ -83,15 +83,15 @@ def convertBCM1f(fileset):
                 rootfile['time'][0] = nowtimestamp
                 first = False
             if nowtimestamp > rootfile['time'][0]:
-                for i in range(nBX):
-                    rootfile['data'][0] = rootfile['datas'][i]
-                    rootfile['bx'][0] = rootfile['bxs'][i]
+                for j in range(nBX):
+                    rootfile['data'][0] = rootfile['datas'][j]
+                    rootfile['bx'][0] = rootfile['bxs'][j]
                     rootfile['tree'].Fill()
                 if i / 100000 > thisfilenumber:
                     rootfile = newRootFile(closeRootFile(rootfile))
                     thisfilenumber += 1
-                for i in range(nBX):
-                    rootfile['datas'][i] = 0.0
+                for j in range(nBX):
+                    rootfile['datas'][j] = 0.0
                 rootfile['time'][0] = nowtimestamp
             rootfile['fill'][0] = int(row['fillnum'])
             rootfile['run'][0] = int(row['runnum'])
