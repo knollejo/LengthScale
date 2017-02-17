@@ -5,10 +5,9 @@ from array import array
 from os import listdir, stat
 from ROOT import TFile, TTree
 
-filenumber = 0
-
 def loopOverHD5Files(action, fileset):
     """Execute an action on all HD5 files in a fileset"""
+    filenumber = 0
     for directory in O[fileset]:
         print '<<< Enter directory', directory
         allfiles = listdir(eos+directory+'/')
@@ -18,12 +17,13 @@ def loopOverHD5Files(action, fileset):
             if stat(eos+directory+'/'+filename).st_size <= 0:
                 continue
             table = tablesOpen(eos+directory+'/'+filename)
-            action(table, directory+'/'+filename)
+            action(table, directory+'/'+filename, filenumber)
+            filenumber += 1
 
 def convertBCM1f(fileset):
     """Convert all BMC1f HD5 files to ROOT tree files and list them"""
     files = dict([(scan, []) for scan in O['scans']])
-    def action(table, filename):
+    def action(table, filename, filenumber):
         nBX = len(O['crossings'])
         newpath = path + '/' + O['detector'][0] + '_' + O['dataset'][0]
         newname = O['detector'][0] + '_' + O['dataset'][0] + '_' + \
@@ -79,6 +79,5 @@ def convertBCM1f(fileset):
         print '<<< Save new ROOT file:', newpath+'/'+newname
         rootfile.Write()
         rootfile.Close()
-        filenumber += 1
     loopOverHD5Files(action, fileset)
     return writeFiles(files, fileset+'_all')
