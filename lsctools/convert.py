@@ -41,7 +41,7 @@ def convertBCM1f(fileset):
             rootfile['fill'] = array(inttype, [0])
             rootfile['run'] = array(inttype, [0])
             rootfile['ls'] = array(inttype, [0])
-             = TTree(O['treename']['owntrees'], 'BCM1f data')
+            rootfile['tree'] = TTree(O['treename']['owntrees'], 'BCM1f data')
             rootfile['tree'].Branch(O['timename']['owntrees'], \
                                     rootfile['time'], 'timestamp/I')
             rootfile['tree'].Branch('data', rootfile['data'], \
