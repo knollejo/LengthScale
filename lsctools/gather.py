@@ -11,7 +11,7 @@ def chain(fileset, scan=''):
     else:
         files = loadFiles(fileset+'_all')
     for filename in files:
-        chain.Add(eos+filename)
+        chain.Add(filename)
     return chain
 
 def reducedChain(fileset, scan=''):
@@ -22,7 +22,7 @@ def reducedChain(fileset, scan=''):
     else:
         files = loadFiles(fileset+'_all')
     for filename in [f for f in files if 'ZeroBias1' in f]:
-        chain.Add(eos+filename)
+        chain.Add(filename)
     return chain
 
 def miniCondition(scan, bx, step):

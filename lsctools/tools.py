@@ -1,4 +1,4 @@
-from config import options as O, OUTPATH as outpath
+from config import options as O, OUTPATH as outpath, EOSPATH as eospath
 from os import mkdir
 from os.path import exists
 from time import strftime
@@ -32,9 +32,10 @@ def rootPath(title, check=True):
     """Give path to a ROOT file"""
     return dataDir(check) + '/' + dataName(title) + '.root'
 
-def writeFiles(files, name):
+def writeFiles(files, name, eos=True):
     """Write list of files to a pickle-file"""
     outputfile = picklePath(name)
+    files['eos'] = eos
     print '<<< Write selected files:', outputfile
     with open(outputfile, 'wb') as pkl:
         pkldump(files, pkl)
@@ -45,7 +46,16 @@ def loadFiles(name):
     print '<<< Load selected files:', picklePath(name)
     with open(picklePath(name), 'rb') as pkl:
         files = pklload(pkl)
-    return files
+    eos = files.pop('eos', True)
+    if eos:
+        returnfiles = {}
+        for scan in files:
+            returnfiles[scan] = []
+            for filename in files['scan']:
+                returnfiles[scan].append(eospath+filename)
+        return returnfiles
+    else:
+        return files
 
 def openRootFileW(name):
     """Open a ROOT file (overwrite mode)"""
