@@ -5,6 +5,8 @@ from array import array
 from os import listdir, stat
 from ROOT import TFile, TTree
 
+filenumber = 0
+
 def loopOverHD5Files(action, fileset):
     """Execute an action on all HD5 files in a fileset"""
     for directory in O[fileset]:
@@ -21,7 +23,6 @@ def loopOverHD5Files(action, fileset):
 def convertBCM1f(fileset):
     """Convert all BMC1f HD5 files to ROOT tree files and list them"""
     files = dict([(scan, []) for scan in O['scans']])
-    filenumber = 0
     def action(table, filename):
         nBX = len(O['crossings'])
         newpath = path + '/' + O['detector'][0] + '_' + O['dataset'][0]
