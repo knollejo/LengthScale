@@ -39,6 +39,7 @@ def writeFiles(files, name, eos=True):
     print '<<< Write selected files:', outputfile
     with open(outputfile, 'wb') as pkl:
         pkldump(files, pkl)
+        pkldump(eos, pkl)
     return outputfile
 
 def loadFiles(name):
@@ -46,14 +47,17 @@ def loadFiles(name):
     print '<<< Load selected files:', picklePath(name)
     with open(picklePath(name), 'rb') as pkl:
         files = pklload(pkl)
-    eos = files.pop('eos', True)
-    if eos:
+        try:
+            eos = pklload(pkl)
+        except EOFError:
+            eos = True
+    if eos and type(files) is dict:
         returnfiles = {}
         for scan in files:
-            returnfiles[scan] = []
-            for filename in files['scan']:
-                returnfiles[scan].append(eospath+filename)
+            returnfiles[scan] = [eospath+filename for filename in files[scan]]
         return returnfiles
+    elif eos and type(files) is list:
+        return [eospath+filename for filename in files
     else:
         return files
 
