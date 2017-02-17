@@ -1,6 +1,6 @@
 options = {}
 EOSPATH = '/eos/cms/store/group'
-OUTPATH = '/afs/cern.ch/user/j/joknolle/lsc/results'
+OUTPATH = '/afs/cern.ch/user/j/joknolle/LengthScale/results'
 OWNPATH = '/afs/cern.ch/work/j/joknolle/store'
 
 def PCC():

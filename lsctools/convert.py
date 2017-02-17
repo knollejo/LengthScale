@@ -33,7 +33,9 @@ def convertBCM1f(fileset):
         rootfile = TFile(newpath+'/'+newname, 'RECREATE')
         mytime = array('l', [0])
         mydata = array('f', nBX*[0.0])
-        mybx = array('l', [bx for bx in O['crossings']])
+        mybx = array('l', nBX*[0])
+        for i, bx in enumerate(O['crossings']):
+            mybx[i] = bx
         myfill = array('l', [0])
         myrun = array('l', [0])
         myls = array('l', [0])
@@ -64,9 +66,9 @@ def convertBCM1f(fileset):
                 for i in range(nBX):
                     mydata[i] = 0.0
                 mytime[0] = nowtimestamp
-            myfill = int(row['fillnum'])
-            myrun = int(row['runnum'])
-            myls = int(row['lsnum'])
+            myfill[0] = int(row['fillnum'])
+            myrun[0] = int(row['runnum'])
+            myls[0] = int(row['lsnum'])
             for i, bx in enumerate(O['crossings']):
                 mydata[i] += int(row['data'][bx-1])
         for scan in O['scans']:
