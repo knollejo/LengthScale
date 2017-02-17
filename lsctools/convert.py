@@ -27,7 +27,7 @@ def convertBCM1f(fileset):
         nBX = len(O['crossings'])
         newpath = path + '/' + O['detector'][0] + '_' + O['dataset'][0]
         newname = O['detector'][0] + '_' + O['dataset'][0] + '_' + \
-                  filenumber + '.root'
+                  str(filenumber) + '.root'
         checkDir(newpath)
         print '<<< Create new ROOT file:', newpath+'/'+newname
         rootfile = TFile(newpath+'/'+newname, 'RECREATE')
