@@ -9,7 +9,7 @@ def scale(s=1.0):
     return lambda a: s*a
 
 def collectPerDirectionBx(options):
-    """Fit PCC data in both directions of a scan"""
+    """Fit data in both directions of a scan"""
     nSteps = len(O['nominalPos'][options['scan']])
     for i in range(nSteps):
         if O['nominalPos'][options['scan']][i+1] == \
@@ -149,6 +149,18 @@ def vertexPositionSigma(scan, fitted='F', combine=False, all=False):
         options['crossings'] = ['all']
     else:
         options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
+    collectPerDirectionBx(options)
+
+def counts(scan, combine=False, alternative=False, all=False):
+    """Fit counts in both directions of a scan"""
+    options = {'name': 'counts', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
+               'y': scale(), 'e': scale(), 'custom': False}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] + O['crossings'][:]
         if combine:
             options['crossings'].append('all')
     collectPerDirectionBx(options)

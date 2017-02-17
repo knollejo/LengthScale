@@ -250,6 +250,18 @@ def vertexPositionSigmaPerDirectionBx(scan, fitted='F', combine=False, \
             options['crossings'].append('all')
     plotPerDirectionBx(options)
 
+def countsPerDirectionBx(scan, fitted='', combine=False, all=False):
+    """Save counts directional plots to PDF files"""
+    options = {'name': 'counts', 'scan': scan, 'fitted': fitted, 'optfit': 111, \
+               'fit': 'pol1', 'restitle': '[abs.]', 'ytitle': 'Counts'}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
+    plotPerDirectionBx(options)
+
 def plotPerLumiSection(options):
     """Save profile histograms per lumisection to PDF files"""
     name = options['name'] + '_perLS'
