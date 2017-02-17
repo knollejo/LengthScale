@@ -198,10 +198,10 @@ def countsPerBxStep(scan, combine=False, alternative=False, all=False):
     else:
         options['fileset'] = 'hd5files'
         options['field'] = lambda s: 'data'
-        def condition1(s, bx, step):
+        def condition1(s, step):
             return 'timestamp >= ' + str(O['begin'][s][step]) + \
                    ' && timestamp <= ' + str(O['end'][s][step])
-        def condition2(s, bx, step):
+        def condition2(s, step):
             cond = 'ls == ' + str(O['LS'][s][step][0])
             for ls in O['LS'][s][step][1:]:
                 cond += ' || ls == ' + str(ls)
@@ -215,11 +215,11 @@ def countsPerBxStep(scan, combine=False, alternative=False, all=False):
             doPerStep(options)
         else:
             if alternative:
-                options['condition'] = lambda sc, bx, st: '('+condition2(sc,bx, \
-                                       st)+') && bx == '+str(bx)
+                options['condition'] = lambda sc, bx, st: '('+condition2(sc,st) \
+                                       +') && bx == '+str(bx)
                 options['method'] = 'LS'
             else:
-                options['condition'] = lambda sc, bx, st: condition1(sc,bx,st) \
+                options['condition'] = lambda sc, bx, st: condition1(sc,st) \
                                        +' && bx == '+str(bx)
             doPerBxStep(options)
 

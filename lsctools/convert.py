@@ -67,7 +67,6 @@ def convertBCM1f(fileset):
             rootfile['file'].Write()
             rootfile['file'].Close()
             return rootfile['number'] + 1
-        rootfile = newRootFile(filenumber)
         print '<<< Read from file:', filename
         bcm1f = table.root.bcm1fagghist
         beam = table.root.beam
@@ -82,6 +81,7 @@ def convertBCM1f(fileset):
                 continue
             nowtimestamp = int(row['timestampsec'])
             if first:
+                rootfile = newRootFile(filenumber)
                 rootfile['time'][0] = nowtimestamp
                 first = False
             if nowtimestamp > rootfile['time'][0]:
