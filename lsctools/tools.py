@@ -35,7 +35,6 @@ def rootPath(title, check=True):
 def writeFiles(files, name, eos=True):
     """Write list of files to a pickle-file"""
     outputfile = picklePath(name)
-    files['eos'] = eos
     print '<<< Write selected files:', outputfile
     with open(outputfile, 'wb') as pkl:
         pkldump(files, pkl)
