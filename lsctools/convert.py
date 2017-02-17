@@ -19,8 +19,8 @@ def loopOverHD5Files(action, fileset):
             table = tablesOpen(eos+directory+'/'+filename)
             filenumber = action(table, directory+'/'+filename, filenumber)
 
-def convertBCM1f(fileset):
-    """Convert all BMC1f HD5 files to ROOT tree files and list them"""
+def convertHD5FilesToRoot(options):
+    """Convert all HD5 files to ROOT tree files and list them"""
     files = dict([(scan, []) for scan in O['scans']])
     allfiles = []
     def action(table, filename, filenumber):
@@ -45,7 +45,8 @@ def convertBCM1f(fileset):
             rootfile['fill'] = array(inttype, [0])
             rootfile['run'] = array(inttype, [0])
             rootfile['ls'] = array(inttype, [0])
-            rootfile['tree'] = TTree(O['treename']['hd5files'], 'BCM1f data')
+            rootfile['tree'] = TTree(O['treename']['hd5files'], \
+                                     O['detector'][1]+' data')
             rootfile['tree'].Branch(O['timename']['hd5files'], \
                                     rootfile['time'], 'timestamp/I')
             rootfile['tree'].Branch('data', rootfile['data'], 'data/F')
@@ -68,16 +69,12 @@ def convertBCM1f(fileset):
             rootfile['file'].Close()
             return rootfile['number'] + 1
         print '<<< Read from file:', filename
-        bcm1f = table.root.bcm1fagghist
-        beam = table.root.beam
+        hd5 = getattr(table.root, options['table'])
         first = True
         lasttimestamp = 0
         thisfilenumber = 0
-        for i, row in enumerate(bcm1f.iterrows()):
-            if not int(row['algoid']) == 2:
-                continue
-            channelid = int(row['channelid']) - 1
-            if channelid >= 48:
+        for i, row in enumerate(hd5.iterrows()):
+            if not options['condition'](row):
                 continue
             nowtimestamp = int(row['timestampsec'])
             if first:
@@ -101,6 +98,22 @@ def convertBCM1f(fileset):
             for i, bx in enumerate(O['crossings']):
                 rootfile['datas'][i] += int(row['data'][bx-1])
         return closeRootFile(rootfile)
-    loopOverHD5Files(action, fileset)
-    writeFiles(allfiles, fileset+'_all', eos=False)
-    return writeFiles(files, fileset, eos=False)
+    loopOverHD5Files(action, options['fileset'])
+    writeFiles(allfiles, options['fileset']+'_all', eos=False)
+    return writeFiles(files, options['fileset'], eos=False)
+
+def convertBCM1f(fileset):
+    """Extract BCM1f data from HD5 files"""
+    options = {'fileset': fileset, 'table': 'bcm1fagghist'}
+    def condition(row):
+        algoid = int(row['algoid'])
+        channelid = int(row['channelid'])
+        return algoid == 2 and channelid < 48
+    options['condition'] = 'condition'
+    convertHD5FilesToRoot(options)
+
+def convertPLT(fileset):
+    """Extract PLT data from HD5 files"""
+    options = {'fileset': fileset, 'table': 'pltaggzero'}
+    options['condition'] = lambda row: True
+    convertHD5FilesToRoot(options)

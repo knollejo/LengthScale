@@ -18,6 +18,13 @@ def BCM1f():
     options['timename'] = {'hd5files': 'timestamp'}
     options['bxname'] = {'hd5files': 'bx'}
 
+def PLT():
+    """Set common parameters of PLT data sets"""
+    options['detector'] = ['plt', 'PLT']
+    options['treename'] = {'hd5files': 'plt'}
+    options['timename'] = {'hd5files': 'timestamp'}
+    options['bxname'] = {'hd5files': 'bx'}
+
 def VdM2015():
     """Set common parameters of 2015 Van der Meer scan program"""
     options['scans'] = ['X1', 'Y1', 'X2']
@@ -226,13 +233,24 @@ def PCC2016ReRecoJan2017():
     options['dataset'] = ['2016_rereco_jan17_part', \
                           '2016 ReReco Jan 2017 (partial)']
 
+def HD5Files2016():
+    """Set parameters of 2016 data that is stored in HD5 files"""
+    options['hd5files'] = ['/comm_luminosity/VdM/scanFill'+a+'/compressed/'+ \
+                           'central' for a in ['4954_27May16', '4945_18May16']]
+    options['dataset'] = ['2016', '2016']
+
 def BCM1f2016():
     """Set parameters of 2016 BCM1f data"""
     print '<<< Initialize 2016 data of BCM1f'
     options.clear()
     VdM2016()
     BCM1f()
+    HD5Files2016()
 
-    options['hd5files'] = ['/comm_luminosity/VdM/scanFill'+a+'/compressed/'+ \
-                           'central' for a in ['4954_27May16', '4945_18May16']]
-    options['dataset'] = ['2016', '2016']
+def PLT2016():
+    """Set parameters of 2016 PLT data"""
+    print '<<< Initialize 2016 data of PLT'
+    options.clear()
+    VdM2016()
+    PLT()
+    HD5Files2016()
