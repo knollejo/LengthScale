@@ -21,16 +21,12 @@ def loopOverHD5Files(action, fileset):
 def convertBCM1f(fileset):
     """Convert all BMC1f HD5 files to ROOT tree files and list them"""
     files = dict([(scan, []) for scan in O['scans']])
+    filenumber = 0
     def action(table, filename):
         nBX = len(O['crossings'])
-        pos = [filename.find('Fill')]
-        pos.append(filename.find('_', pos[0]))
-        pos.append(filename.rfind('_')+1)
-        pos.append(filename.find('.', pos[2]))
         newpath = path + '/' + O['detector'][0] + '_' + O['dataset'][0]
         newname = O['detector'][0] + '_' + O['dataset'][0] + '_' + \
-                  filename[pos[0]:pos[1]] + '_' + filename[pos[2]:pos[3]] + \
-                  '.root'
+                  filenumber + '.root'
         checkDir(newpath)
         print '<<< Create new ROOT file:', newpath+'/'+newname
         rootfile = TFile(newpath+'/'+newname, 'RECREATE')
@@ -82,5 +78,6 @@ def convertBCM1f(fileset):
         print '<<< Save new ROOT file:', newpath+'/'+newname
         rootfile.Write()
         rootfile.Close()
+        filenumber += 1
     loopOverHD5Files(action, fileset)
     return writeFiles(files, fileset+'_all')

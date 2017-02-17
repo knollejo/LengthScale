@@ -233,6 +233,6 @@ def BCM1f2016():
     VdM2016()
     BCM1f()
 
-    options['hd5files'] = ['/comm_luminosity/VdM/'+a+'/central' for a in \
-                           ['scanFill4954_27May16', 'scanFill4945_18May16']]
+    options['hd5files'] = ['/comm_luminosity/VdM/scanFill'+a+'/compressed/'+ \
+                           'central' for a in ['4954_27May16', '4945_18May16']]
     options['dataset'] = ['2016', '2016']
