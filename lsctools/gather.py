@@ -189,7 +189,7 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False, all=False):
 
 def countsPerBxStep(scan, combine=False, alternative=False, all=False):
     """Extract BCM1f counts from ROOT files sorted by BX and step"""
-    options = {'min': -0.5, 'max': 499.5, 'bin': 500, 'histo': TH1I, \
+    options = {'min': -0.5, 'max': 599.5, 'bin': 600, 'histo': TH1I, \
                'name': 'counts', 'scan': scan}
     if combine:
         if alternative:

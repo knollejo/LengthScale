@@ -96,7 +96,7 @@ def convertHD5FilesToRoot(options):
             rootfile['run'][0] = int(row['runnum'])
             rootfile['ls'][0] = int(row['lsnum'])
             for j, bx in enumerate(O['crossings']):
-                rootfile['datas'][i] += int(row['data'][bx-1])
+                rootfile['datas'][j] += int(row['data'][bx-1])
         return closeRootFile(rootfile)
     loopOverHD5Files(action, options['fileset'])
     writeFiles(allfiles, options['fileset']+'_all', eos=False)
@@ -114,6 +114,6 @@ def convertBCM1f(fileset):
 
 def convertPLT(fileset):
     """Extract PLT data from HD5 files"""
-    options = {'fileset': fileset, 'table': 'pltaggzero', 'filesize': 500}
+    options = {'fileset': fileset, 'table': 'pltaggzero', 'filesize': 10000}
     options['condition'] = lambda row: True
     convertHD5FilesToRoot(options)

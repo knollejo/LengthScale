@@ -109,7 +109,7 @@ def vertexPositionPerBxStep(scan, fit='', combine=False, alternative=False, \
 
 def countsPerBxStep(scan, fit='', combine=False, all=False):
     """Save counts histograms to PDF files"""
-    options = {'name': 'counts', 'scan': scan, 'xmin': -0.5, 'xmax': 499.5, \
+    options = {'name': 'counts', 'scan': scan, 'xmin': -0.5, 'xmax': 599.5, \
                'logx': 0, 'logy': 0, 'xtitle': 'Counts', 'ytitle': 'Number of'+ \
                ' events', 'optstat': 1110, 'optfit': 0, 'extra': ''}
     if all:
