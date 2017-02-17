@@ -86,7 +86,7 @@ def convertHD5FilesToRoot(options):
                     rootfile['data'][0] = rootfile['datas'][j]
                     rootfile['bx'][0] = rootfile['bxs'][j]
                     rootfile['tree'].Fill()
-                if i / 100000 > thisfilenumber:
+                if i / options['filesize'] > thisfilenumber:
                     rootfile = newRootFile(closeRootFile(rootfile))
                     thisfilenumber += 1
                 for j in range(nBX):
@@ -95,7 +95,7 @@ def convertHD5FilesToRoot(options):
             rootfile['fill'][0] = int(row['fillnum'])
             rootfile['run'][0] = int(row['runnum'])
             rootfile['ls'][0] = int(row['lsnum'])
-            for i, bx in enumerate(O['crossings']):
+            for j, bx in enumerate(O['crossings']):
                 rootfile['datas'][i] += int(row['data'][bx-1])
         return closeRootFile(rootfile)
     loopOverHD5Files(action, options['fileset'])
@@ -104,7 +104,7 @@ def convertHD5FilesToRoot(options):
 
 def convertBCM1f(fileset):
     """Extract BCM1f data from HD5 files"""
-    options = {'fileset': fileset, 'table': 'bcm1fagghist'}
+    options = {'fileset': fileset, 'table': 'bcm1fagghist', 'filesize': 10000}
     def condition(row):
         algoid = int(row['algoid'])
         channelid = int(row['channelid'])
@@ -114,6 +114,6 @@ def convertBCM1f(fileset):
 
 def convertPLT(fileset):
     """Extract PLT data from HD5 files"""
-    options = {'fileset': fileset, 'table': 'pltaggzero'}
+    options = {'fileset': fileset, 'table': 'pltaggzero', 'filesize': 500}
     options['condition'] = lambda row: True
     convertHD5FilesToRoot(options)

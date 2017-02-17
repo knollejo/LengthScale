@@ -235,8 +235,8 @@ def PCC2016ReRecoJan2017():
 
 def HD5Files2016():
     """Set parameters of 2016 data that is stored in HD5 files"""
-    options['hd5files'] = ['/comm_luminosity/VdM/scanFill'+a+'/central' for a \
-                           in ['4954_27May16', '4945_18May16']]
+    options['hd5files'] = ['/comm_luminosity/VdM/scanFill'+a+'/compressed/'+ \
+                           'central' for a in ['4954_27May16', '4945_18May16']]
     options['dataset'] = ['2016', '2016']
 
 def BCM1f2016():
