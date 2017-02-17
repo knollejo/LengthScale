@@ -17,40 +17,59 @@ def loopOverHD5Files(action, fileset):
             if stat(eos+directory+'/'+filename).st_size <= 0:
                 continue
             table = tablesOpen(eos+directory+'/'+filename)
-            action(table, directory+'/'+filename, filenumber)
-            filenumber += 1
+            filenumber = action(table, directory+'/'+filename, filenumber)
 
 def convertBCM1f(fileset):
     """Convert all BMC1f HD5 files to ROOT tree files and list them"""
     files = dict([(scan, []) for scan in O['scans']])
     def action(table, filename, filenumber):
         nBX = len(O['crossings'])
-        newpath = path + '/' + O['detector'][0] + '_' + O['dataset'][0]
-        newname = O['detector'][0] + '_' + O['dataset'][0] + '_' + \
-                  str(filenumber) + '.root'
-        checkDir(newpath)
-        print '<<< Create new ROOT file:', newpath+'/'+newname
-        rootfile = TFile(newpath+'/'+newname, 'RECREATE')
-        mytime = array('l', [0])
-        mydata = array('f', nBX*[0.0])
-        mybx = array('l', nBX*[0])
-        for i, bx in enumerate(O['crossings']):
-            mybx[i] = bx
-        myfill = array('l', [0])
-        myrun = array('l', [0])
-        myls = array('l', [0])
-        tree = TTree(O['treename']['owntrees'], 'BCM1f data')
-        tree.Branch(O['timename']['owntrees'], mytime, 'timestamp/I')
-        tree.Branch('data', mydata, 'data['+str(nBX)+']/F')
-        tree.Branch('bx', mybx, 'bx['+str(nBX)+']/I')
-        tree.Branch('fill', myfill, 'fill/I')
-        tree.Branch('run', myrun, 'run/I')
-        tree.Branch('ls', myls, 'ls/I')
+        checkDir(path + '/' + O['detector'][0] + '_' + O['dataset'][0])
+        def newRootFile(filenumber):
+            rootfile = {'number': filenumber}
+            rootfile['name'] = path + '/' + O['detector'][0] + '_' + \
+                               O['dataset'][0] + '/' + O['detector'][0] + '_' \
+                               + O['dataset'][0] + str(filenumber) + '.root'
+            print '<<< Create ROOT file:', rootfile['name']
+            rootfile['file'] = TFile(rootfile['name'], 'RECREATE')
+            for inttype in ['b', 'h', 'i', 'l']:
+                if array(inttype, [0]).itemsize == 4:
+                    break
+            rootfile['time'] = array(inttype, [0])
+            rootfile['data'] = array('f', nBX*[0.0])
+            rootfile['bx'] = array(inttype, [bx for bx in O['crossings']])
+            rootfile['fill'] = array(inttype, [0])
+            rootfile['run'] = array(inttype, [0])
+            rootfile['ls'] = array(inttype, [0])
+             = TTree(O['treename']['owntrees'], 'BCM1f data')
+            rootfile['tree'].Branch(O['timename']['owntrees'], \
+                                    rootfile['time'], 'timestamp/I')
+            rootfile['tree'].Branch('data', rootfile['data'], \
+                                    'data['+str(nBX)+']/F')
+            rootfile['tree'].Branch('bx', rootfile['bx'], 'bx['+str(nBX)+']/I')
+            rootfile['tree'].Branch('fill', rootfile['fill'], 'fill/I')
+            rootfile['tree'].Branch('run', rootfile['run'], 'run/I')
+            rootfile['tree'].Branch('ls', rootfile['ls'], 'ls/I')
+            return rootfile
+        def closeRootFile(rootfile):
+            for scan in O['scans']:
+                condition = 'run == ' + str(O['runs'][scan]) + ' && ls >= ' + \
+                            str(O['lumisections'][scan][0]) + ' && ls <= ' + \
+                            str(O['lumisections'][scan][1])
+                if rootfile['tree'].GetEntries(condition) > 0:
+                    files[scan].append(rootfile['name'])
+                    print '<<< File contains scan', scan
+            print '<<< Save ROOT file:', rootfile['name']
+            rootfile['file'].Write()
+            rootfile['file'].Close()
+            return rootfile['filenumber'] + 1
+        rootfile = newRootFile(filenumber)
         print '<<< Read from file:', filename
         bcm1f = table.root.bcm1fagghist
         beam = table.root.beam
         first = True
         lasttimestamp = 0
+        thisfilenumber = 0
         for i, row in enumerate(bcm1f.iterrows()):
             if not int(row['algoid']) == 2:
                 continue
@@ -59,27 +78,21 @@ def convertBCM1f(fileset):
                 continue
             nowtimestamp = int(row['timestampsec'])
             if first:
-                mytime[0] = nowtimestamp
+                rootfile['time'][0] = nowtimestamp
                 first = False
-            if nowtimestamp > mytime[0]:
+            if nowtimestamp > rootfile['time'][0]:
                 tree.Fill()
+                if i / 10000 > thisfilenumber:
+                    rootfile = newRootFile(closeRootFile(rootfile))
+                    thisfilenumber += 1
                 for i in range(nBX):
-                    mydata[i] = 0.0
-                mytime[0] = nowtimestamp
-            myfill[0] = int(row['fillnum'])
-            myrun[0] = int(row['runnum'])
-            myls[0] = int(row['lsnum'])
+                    rootfile['data'][i] = 0.0
+                rootfile['time'][0] = nowtimestamp
+            rootfile['fill'][0] = int(row['fillnum'])
+            rootfile['run'][0] = int(row['runnum'])
+            rootfile['ls'][0] = int(row['lsnum'])
             for i, bx in enumerate(O['crossings']):
-                mydata[i] += int(row['data'][bx-1])
-        for scan in O['scans']:
-            condition = 'run == ' + str(O['runs'][scan]) + ' && ls >= ' + \
-                        str(O['lumisections'][scan][0]) + ' && ls <= ' + \
-                        str(O['lumisections'][scan][1])
-            if tree.GetEntries(condition) > 0:
-                files[scan].append(filename)
-                print '<<< File contains scan', scan
-        print '<<< Save new ROOT file:', newpath+'/'+newname
-        rootfile.Write()
-        rootfile.Close()
+                rootfile['data'][i] += int(row['data'][bx-1])
+        return closeRootFile(rootfile)
     loopOverHD5Files(action, fileset)
     return writeFiles(files, fileset+'_all')
