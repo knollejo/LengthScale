@@ -31,8 +31,8 @@ def miniCondition(scan, bx, step):
            ' && timeStamp <= ' + str(O['end'][scan][step]) + \
            ' && BXid == ' + str(bx)
 
-def pccPerBxStep(options):
-    """Extract PCC data from ROOT files and sort by bunch crossing and step"""
+def doPerBxStep(options):
+    """Extract data from ROOT files and sort by bunch crossing and step"""
     c = chain(options['fileset'], options['scan'])
     name = options['scan'] + '_' + options['name']
     if 'method' in options:
@@ -53,8 +53,8 @@ def pccPerBxStep(options):
             hist.Write('', TObject.kOverwrite)
     closeRootFile(f, name)
 
-def pccPerStep(options):
-    """Extract PCC data from ROOT files and sort by step"""
+def doPerStep(options):
+    """Extract data from ROOT files and sort by step"""
     c = chain(options['fileset'], options['scan'])
     name = options['scan'] + '_' + options['name']
     if 'method' in options:
@@ -79,8 +79,8 @@ def pccPerStep(options):
         hist.Write('', TObject.kOverwrite)
     closeRootFile(f, name)
 
-def combinePccPerStep(options):
-    """Combine PCC data from all bunch crossings into a single histogram"""
+def combinePerStep(options):
+    """Combine data from all bunch crossings into a single histogram"""
     name = options['scan'] + '_' + options['name']
     if 'method' in options:
         name += '_' + options['method']
@@ -107,7 +107,7 @@ def numberClustersPerBxStep(scan, combine=False, alternative=False, all=False):
     if combine:
         if alternative:
             options['method'] = 'LS'
-        combinePccPerStep(options)
+        combinePerStep(options)
     else:
         def condition2(s, bx, step):
             cond = '(LS == ' + str(O['LS'][s][step][0])
@@ -122,19 +122,19 @@ def numberClustersPerBxStep(scan, combine=False, alternative=False, all=False):
             options['condition'] = miniCondition
         options['fileset'] = 'minitrees'
         options['field'] = lambda s: 'nCluster'
-        pccPerBxStep(options)
+        doPerBxStep(options)
 
 def numberVerticesPerBxStep(scan, combine=False, all=False):
     """Extract vertex number from ROOT files sorted by BX and step"""
     options = {'min': -0.5, 'max': 9.5, 'bin': 10, 'histo': TH1I, \
                'name': 'nVtx', 'scan': scan}
     if combine:
-        combinePccPerStep(options)
+        combinePerStep(options)
     else:
         options['condition'] = miniCondition
         options['fileset'] = 'minitrees'
         options['field'] = lambda s: 'nVtx'
-        pccPerBxStep(options)
+        doPerBxStep(options)
 
 def vertexPositionPerBxStep(scan, combine=False, alternative=False, all=False):
     """Extract vertex position from ROOT files sorted by BX and step"""
@@ -143,7 +143,7 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False, all=False):
     if combine:
         if alternative:
             options['method'] = 'LS'
-        combinePccPerStep(options)
+        combinePerStep(options)
     else:
         def field(s):
             if 'X' in scan:
@@ -168,7 +168,7 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False, all=False):
                 options['method'] = 'LS'
             else:
                 options['condition'] = condition1
-            pccPerStep(options)
+            doPerStep(options)
         else:
             def condition1(s, bx, step):
                 return 'timeStamp_begin >= ' + str(O['begin'][s][step]) + \
@@ -185,7 +185,43 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False, all=False):
                 options['method'] = 'LS'
             else:
                 options['condition'] = condition1
-            pccPerBxStep(options)
+            doPerBxStep(options)
+
+def countsPerBxStep(scan, combine=False, alternative=False, all=False):
+    """Extract BCM1f counts from ROOT files sorted by BX and step"""
+    options = {'min': -0.5, 'max': 499.5, 'bin': 500, 'histo': TH1I, \
+               'name': 'counts', 'scan': scan}
+    if combine:
+        if alternative:
+            options['method'] = 'LS'
+        combinePerStep(options)
+    else:
+        options['fileset'] = 'hd5files'
+        options['field'] = lambda s: 'data'
+        def condition1(s, bx, step):
+            return 'timestamp >= ' + str(O['begin'][s][step]) + \
+                   ' && timestamp <= ' + str(O['end'][s][step])
+        def condition2(s, bx, step):
+            cond = 'ls == ' + str(O['LS'][s][step][0])
+            for ls in O['LS'][s][step][1:]:
+                cond += ' || ls == ' + str(ls)
+            return cond
+        if all:
+            if alternative:
+                options['condition'] = condition2
+                options['method'] = 'LS'
+            else:
+                options['condition'] = condition1
+            doPerStep(options)
+        else:
+            if alternative:
+                options['condition'] = lambda sc, bx, st: '('+condition2(sc,bx, \
+                                       st)+') && bx == '+str(bx)
+                options['method'] = 'LS'
+            else:
+                options['condition'] = lambda sc, bx, st: condition1(sc,bx,st) \
+                                       +' && bx == '+str(bx)
+            doPerBxStep(options)
 
 def pccPerLumiSection(options):
     """Extract PCC data from ROOT files and sort by lumisection"""

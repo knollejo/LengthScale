@@ -107,6 +107,19 @@ def vertexPositionPerBxStep(scan, fit='', combine=False, alternative=False, \
             options['crossings'].append('all')
     plotPerBxStep(options)
 
+def countsPerBxStep(scan, fit='', combine=False, all=False):
+    """Save counts histograms to PDF files"""
+    options = {'name': 'counts', 'scan': scan, 'xmin': -0.5, 'xmax': 499.5, \
+               'logx': 0, 'logy': 0, 'xtitle': 'Counts', 'ytitle': 'Number of'+ \
+               ' events', 'optstat': 1110, 'optfit': 0, 'extra': ''}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
+    plotPerBxStep(options)
+
 def plotPerDirectionBx(options):
     """Save directional fit plots (per BX) to PDF files"""
     name = options['scan'] + '_'+ options['name'] + options['fitted']

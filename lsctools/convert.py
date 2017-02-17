@@ -37,17 +37,18 @@ def convertBCM1f(fileset):
                 if array(inttype, [0]).itemsize == 4:
                     break
             rootfile['time'] = array(inttype, [0])
-            rootfile['data'] = array('f', nBX*[0.0])
-            rootfile['bx'] = array(inttype, [bx for bx in O['crossings']])
+            rootfile['data'] = array('f', [0.0])
+            rootfile['datas'] = nBX * [0.0]
+            rootfile['bx'] = array(inttype, [0])
+            rootfile['bxs'] = [bx for bx in O['crossings']]
             rootfile['fill'] = array(inttype, [0])
             rootfile['run'] = array(inttype, [0])
             rootfile['ls'] = array(inttype, [0])
             rootfile['tree'] = TTree(O['treename']['owntrees'], 'BCM1f data')
             rootfile['tree'].Branch(O['timename']['owntrees'], \
                                     rootfile['time'], 'timestamp/I')
-            rootfile['tree'].Branch('data', rootfile['data'], \
-                                    'data['+str(nBX)+']/F')
-            rootfile['tree'].Branch('bx', rootfile['bx'], 'bx['+str(nBX)+']/I')
+            rootfile['tree'].Branch('data', rootfile['data'], 'data/F')
+            rootfile['tree'].Branch('bx', rootfile['bx'], 'bx/I')
             rootfile['tree'].Branch('fill', rootfile['fill'], 'fill/I')
             rootfile['tree'].Branch('run', rootfile['run'], 'run/I')
             rootfile['tree'].Branch('ls', rootfile['ls'], 'ls/I')
@@ -82,18 +83,21 @@ def convertBCM1f(fileset):
                 rootfile['time'][0] = nowtimestamp
                 first = False
             if nowtimestamp > rootfile['time'][0]:
-                rootfile['tree'].Fill()
+                for i in range(nBX):
+                    rootfile['data'][0] = rootfile['datas'][i]
+                    rootfile['bx'][0] = rootfile['bxs'][i]
+                    rootfile['tree'].Fill()
                 if i / 100000 > thisfilenumber:
                     rootfile = newRootFile(closeRootFile(rootfile))
                     thisfilenumber += 1
                 for i in range(nBX):
-                    rootfile['data'][i] = 0.0
+                    rootfile['datas'][i] = 0.0
                 rootfile['time'][0] = nowtimestamp
             rootfile['fill'][0] = int(row['fillnum'])
             rootfile['run'][0] = int(row['runnum'])
             rootfile['ls'][0] = int(row['lsnum'])
             for i, bx in enumerate(O['crossings']):
-                rootfile['data'][i] += int(row['data'][bx-1])
+                rootfile['datas'][i] += int(row['data'][bx-1])
         return closeRootFile(rootfile)
     loopOverHD5Files(action, fileset)
     return writeFiles(files, fileset+'_all')

@@ -14,9 +14,9 @@ def PCC():
 def BCM1f():
     """Set common parameters of BCM1f data sets"""
     options['detector'] = ['bcm1f', 'BCM1f']
-    options['treename'] = {'owntrees': 'bcm1f'}
-    options['timename'] = {'owntrees': 'timestamp'}
-    options['bxname'] = {'owntrees': 'bx'}
+    options['treename'] = {'hd5files': 'bcm1f'}
+    options['timename'] = {'hd5files': 'timestamp'}
+    options['bxname'] = {'hd5files': 'bx'}
 
 def VdM2015():
     """Set common parameters of 2015 Van der Meer scan program"""
