@@ -156,7 +156,7 @@ def vertexPositionSigma(scan, fitted='F', combine=False, all=False):
 def counts(scan, combine=False, alternative=False, all=False):
     """Fit counts in both directions of a scan"""
     options = {'name': 'counts', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
-               'y': scale(), 'e': scale(), 'custom': False}
+               'y': scale(), 'e': scale(), 'custom': False, 'fitted': ''}
     if all:
         options['crossings'] = ['all']
     else:
