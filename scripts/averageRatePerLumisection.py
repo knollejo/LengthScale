@@ -39,4 +39,3 @@ histo = TH1I('hist', '', 1001, -0.5, 1000.5)
 cond = 'LS >= ' + str(args.ls[0]) + ' && LS <= ' + str(args.ls[1])
 chain.Draw('nCluster>>hist', cond, 'goff')
 print histo.GetMean(), '+-', histo.GetMeanError()
-for filename in
