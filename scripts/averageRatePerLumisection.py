@@ -26,7 +26,7 @@ def main():
     from os import listdir
     from ROOT import TChain, TH1I
     getattr(config, 'PCC'+args.dataset)()
-    O['fulltrees'] = O['fulltrees'][:args.n]
+    O['fulltrees'] = O['fulltrees'][:args.n[0]]
     chain = TChain(O['treename']['fulltrees'])
     for directory in O['fulltrees']:
         print '<<< Enter directory', directory
