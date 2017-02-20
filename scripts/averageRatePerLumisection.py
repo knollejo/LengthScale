@@ -20,22 +20,22 @@ def main():
                         'in file numbers')
     args = parser.parse_args()
 
-from importlib import import_module
-from lsctools import config
-from lsctools.config import options as O, EOSPATH as eos
-from os import listdir
-from ROOT import TChain, TH1I
-getattr(config, 'PCC'+args.dataset)()
-O['fulltrees'] = O['fulltrees'][:args.n]
-chain = TChain(O['treename']['fulltrees'])
-for directory in O['fulltrees']:
-    print '<<< Enter directory', directory
-    for filename in listdir(eos+directory+'/'):
-        for i in range(args.files[0], args.files[1]+1):
-            if not filename.endswith(str(i)+'.root'):
-                continue
-            chain.Add(eos+directory+'/'+filename)
-histo = TH1I('hist', '', 1001, -0.5, 1000.5)
-cond = 'LS >= ' + str(args.ls[0]) + ' && LS <= ' + str(args.ls[1])
-chain.Draw('nCluster>>hist', cond, 'goff')
-print histo.GetMean(), '+-', histo.GetMeanError()
+    from importlib import import_module
+    from lsctools import config
+    from lsctools.config import options as O, EOSPATH as eos
+    from os import listdir
+    from ROOT import TChain, TH1I
+    getattr(config, 'PCC'+args.dataset)()
+    O['fulltrees'] = O['fulltrees'][:args.n]
+    chain = TChain(O['treename']['fulltrees'])
+    for directory in O['fulltrees']:
+        print '<<< Enter directory', directory
+        for filename in listdir(eos+directory+'/'):
+            for i in range(args.files[0], args.files[1]+1):
+                if not filename.endswith(str(i)+'.root'):
+                    continue
+                chain.Add(eos+directory+'/'+filename)
+    histo = TH1I('hist', '', 1001, -0.5, 1000.5)
+    cond = 'LS >= ' + str(args.ls[0]) + ' && LS <= ' + str(args.ls[1])
+    chain.Draw('nCluster>>hist', cond, 'goff')
+    print histo.GetMean(), '+-', histo.GetMeanError()
