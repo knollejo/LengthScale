@@ -39,3 +39,6 @@ def main():
     cond = 'LS >= ' + str(args.ls[0]) + ' && LS <= ' + str(args.ls[1])
     chain.Draw('nCluster>>hist', cond, 'goff')
     print histo.GetMean(), '+-', histo.GetMeanError()
+
+if __name__ == '__main__':
+    main()
