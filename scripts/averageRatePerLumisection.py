@@ -12,8 +12,6 @@ def main():
                         'ReRecoOct2015', 'ReRecoDec2015', 'PromptReco2016', \
                         '2015ReRecoJan2017', '2016ReRecoJan2017'], \
                         help='specify data-taking period and reconstruction')
-    parser.add_argument('-n', nargs=1, default=1, type=int, help='Specify '+ \
-                        'the number of ZeroBias datasets to be included')
     parser.add_argument('-ls', nargs=2, type=int, help='Specify a range '+ \
                         'in lumisections')
     parser.add_argument('-files', nargs=2, type=int, help='Specify a range '+ \
@@ -26,7 +24,6 @@ def main():
     from os import listdir
     from ROOT import TChain, TH1I
     getattr(config, 'PCC'+args.dataset)()
-    O['minitrees'] = O['minitrees'][:args.n[0]]
     chain = TChain(O['treename']['minitrees'])
     for directory in O['minitrees']:
         print '<<< Enter directory', directory
