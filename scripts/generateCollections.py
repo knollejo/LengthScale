@@ -1,5 +1,5 @@
 from sys import path as __SYSPATH__, argv as __ARGV__
-__SYSPATH__.append('/afs/cern.ch/user/j/joknolle/lsc')
+__SYSPATH__.append('/afs/cern.ch/user/j/joknolle/LengthScale')
 __ARGV__.append('-b')
 
 from argparse import ArgumentParser
