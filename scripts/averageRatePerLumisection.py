@@ -16,6 +16,9 @@ def main():
                         'in lumisections')
     parser.add_argument('-files', nargs=2, type=int, help='Specify a range '+ \
                         'in file numbers')
+    parser.add_argument('-run', nargs=1, required=True, type=int, \
+                        help='Specify the run number for the selection of '+ \
+                        'the lumisections')
     args = parser.parse_args()
 
     from importlib import import_module
@@ -33,7 +36,8 @@ def main():
                     continue
                 chain.Add(eos+directory+'/'+filename)
     histo = TH1I('hist', '', 1001, -0.5, 1000.5)
-    cond = 'LS >= ' + str(args.ls[0]) + ' && LS <= ' + str(args.ls[1])
+    cond = 'run == ' + str(args.run[0]) + ' && LS >= ' + str(args.ls[0]) + \
+           ' && LS <= ' + str(args.ls[1])
     chain.Draw('nCluster>>hist', cond, 'goff')
     print histo.GetMean(), '+-', histo.GetMeanError()
 
