@@ -217,7 +217,8 @@ def plotPerDirectionBx(options):
         canvas.Close()
     closeRootFile(f, name)
 
-def numberClustersPerDirectionBx(scan, fitted='', combine=False, all=False):
+def numberClustersPerDirectionBx(scan, fitted='', combine=False, all=False, \
+                                 final=False):
     """Save number of clusters directional plots to PDF files"""
     options = {'name': 'nCluster', 'scan': scan, 'fitted': fitted, \
                'optfit': 111, 'fit': 'pol1', 'restitle': '[abs.]', \
@@ -228,10 +229,11 @@ def numberClustersPerDirectionBx(scan, fitted='', combine=False, all=False):
         options['crossings'] = O['crossings'][:]
         if combine:
             options['crossings'].append('all')
+    if final:
+        options['final'] = final
     plotPerDirectionBx(options)
 
-def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=False, \
-                                 final=False):
+def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=False):
     """Save number of vertices directional plots to PDF files"""
     options = {'name': 'nVtx', 'scan': scan, 'fitted': fitted, \
                'optfit': 111, 'fit': 'pol1', 'restitle': '[abs.]', \
@@ -242,8 +244,6 @@ def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=False, \
         options['crossings'] = O['crossings'][:]
         if combine:
             options['crossings'].append('all')
-    if final:
-        options['final'] = final
     plotPerDirectionBx(options)
 
 def vertexPositionPerDirectionBx(scan, fitted='', combine=False, \
