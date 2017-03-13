@@ -162,6 +162,7 @@ def plotPerDirectionBx(options):
             graph.GetFunction(options['fit']).SetLineColor(2+2*j)
         graphs.GetYaxis().SetTitle(options['ytitle'])
         leg = TLegend(0.8, 0.72, 0.99, 0.88)
+        leg.SetHeader(options['scan']+' scan')
         leg.SetBorderSize(1)
         leg.SetFillColor(0)
         for j, graph in enumerate(graphs.GetListOfGraphs()):
