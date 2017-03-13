@@ -196,7 +196,7 @@ def plotPerDirectionBx(options):
             #entry.SetMarkerStyle(20)
             #entry.SetMarkerColor(1+i)
         leg.Draw()
-        if(options['final']):
+        if('final' in options):
             graphs.SetTitle('')
             text = TLatex()
             text.SetNDC()
@@ -230,7 +230,8 @@ def numberClustersPerDirectionBx(scan, fitted='', combine=False, all=False):
             options['crossings'].append('all')
     plotPerDirectionBx(options)
 
-def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=True):
+def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=False, \
+                                 final=False):
     """Save number of vertices directional plots to PDF files"""
     options = {'name': 'nVtx', 'scan': scan, 'fitted': fitted, \
                'optfit': 111, 'fit': 'pol1', 'restitle': '[abs.]', \
@@ -241,6 +242,8 @@ def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=True):
         options['crossings'] = O['crossings'][:]
         if combine:
             options['crossings'].append('all')
+    if final:
+        options['final'] = final
     plotPerDirectionBx(options)
 
 def vertexPositionPerDirectionBx(scan, fitted='', combine=False, \
