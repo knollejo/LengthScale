@@ -166,7 +166,9 @@ def plotPerDirectionBx(options):
         leg.SetFillColor(0)
         for j, graph in enumerate(graphs.GetListOfGraphs()):
             entry = leg.AddEntry(graph, ('forward', 'backward')[j], 'LPE')
-            entry.SetLineColor(entry.GetMarkerColor())
+            entry.SetMarkerStyle(21)
+            entry.SetMarkerColor(2+2*j)
+            entry.SetLineColor(2+2*j)
         leg.Draw()
         if('final' in options):
             text = TLatex()
