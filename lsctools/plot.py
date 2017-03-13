@@ -1,7 +1,7 @@
 from config import options as O
 from tools import openRootFileR, closeRootFile, plotName, plotPath, \
                   drawSignature
-from ROOT import TCanvas, gStyle, TPad, gPad, TLine
+from ROOT import TCanvas, gStyle, TPad, gPad, TLine, TLatex, TLegend
 
 def plotPerBxStep(options):
     """Save histograms (per BX and step) to PDF files"""
@@ -152,8 +152,8 @@ def plotPerDirectionBx(options):
             graph.SetMarkerColor(2+2*j)
             stats = graph.GetListOfFunctions().FindObject('stats')
             stats.SetTextColor(2+2*j)
-            stats.SetX1NDC(0.1+0.5*j)
-            stats.SetX2NDC(0.40+0.5*j)
+            stats.SetX1NDC(0.1+0.307*j)
+            stats.SetX2NDC(0.386+0.306*j)
             stats.SetY1NDC(0.72)
             stats.SetY2NDC(0.88)
             graph.GetFunction(options['fit']).SetLineColor(2+2*j)
@@ -189,7 +189,30 @@ def plotPerDirectionBx(options):
             pad.Update()
 
         canvas.cd()
-        drawSignature(filename)
+        leg = TLegend(0.713, 0.72, 0.999, 0.88)
+        leg.SetBorderSize(1)
+        for j, graph in enumerate(graphs.GetListOfGraphs()):
+            entry = leg.AddEntry(graph, ('forward', 'backward')[j], 'LP')
+            #entry.SetMarkerStyle(20)
+            #entry.SetMarkerColor(1+i)
+        leg.Draw()
+        if(options['final']):
+            graphs.SetTitle('')
+            text = TLatex()
+            text.SetNDC()
+            text.SetTextFont(62)
+            text.SetTextSize(0.0375)
+            text.SetTextAlign(31)
+            text.DrawLatex(0.999,0.92,O['plotsig'])
+            text.SetTextAlign()
+            if options['final'] == 'wip':
+                text.DrawLatex(0.15,0.92,'#bf{#scale[0.75]{#it{Work in Progress}}}')
+            else:
+                text.DrawLatex(0.15,0.92,'CMS #bf{#scale[0.75]{#it{Preliminary}}}')
+        else:
+            drawSignature(filename)
+        canvas.Modified()
+        canvas.Update()
         canvas.Print(filepath)
         canvas.Close()
     closeRootFile(f, name)
