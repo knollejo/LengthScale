@@ -172,9 +172,9 @@ def plotPerDirectionBx(options):
             text = TLatex()
             text.SetNDC()
             text.SetTextFont(62)
-            text.SetTextSize(0.0375)
+            text.SetTextSize(0.05)
             text.SetTextAlign(31)
-            text.DrawLatex(0.999,0.92,O['plotsig'])
+            text.DrawLatex(0.99,0.92,O['plotsig'])
             text.SetTextAlign()
             if options['final'] == 'wip':
                 text.DrawLatex(0.15,0.92,'#bf{#scale[0.75]{#it{Work in Progress}}}')
