@@ -155,19 +155,31 @@ def plotPerDirectionBx(options):
             graph.SetMarkerColor(2+2*j)
             stats = graph.GetListOfFunctions().FindObject('stats')
             stats.SetTextColor(2+2*j)
-            stats.SetX1NDC(0.1+0.307*j)
-            stats.SetX2NDC(0.386+0.306*j)
+            stats.SetX1NDC(0.1+0.35*j)
+            stats.SetX2NDC(0.43+0.35*j)
             stats.SetY1NDC(0.72)
             stats.SetY2NDC(0.88)
             graph.GetFunction(options['fit']).SetLineColor(2+2*j)
         graphs.GetYaxis().SetTitle(options['ytitle'])
-        leg = TLegend(0.713, 0.72, 0.999, 0.88)
+        leg = TLegend(0.8, 0.72, 0.99, 0.88)
         leg.SetBorderSize(1)
+        leg.SetFillColor(0)
         for j, graph in enumerate(graphs.GetListOfGraphs()):
-            entry = leg.AddEntry(graph, ('forward', 'backward')[j], 'LP')
-            #entry.SetMarkerStyle(20)
-            #entry.SetMarkerColor(1+i)
+            entry = leg.AddEntry(graph, ('forward', 'backward')[j], 'LPE')
+            entry.SetLineColor(entry.GetMarkerColor())
         leg.Draw()
+        if('final' in options):
+            text = TLatex()
+            text.SetNDC()
+            text.SetTextFont(62)
+            text.SetTextSize(0.0375)
+            text.SetTextAlign(31)
+            text.DrawLatex(0.999,0.92,O['plotsig'])
+            text.SetTextAlign()
+            if options['final'] == 'wip':
+                text.DrawLatex(0.15,0.92,'#bf{#scale[0.75]{#it{Work in Progress}}}')
+            else:
+                text.DrawLatex(0.15,0.92,'CMS #bf{#scale[0.75]{#it{Preliminary}}}')
 
         pad2.cd()
         gPad.SetMargin(0.1, 0.01, 0.3, 0.0)
@@ -199,20 +211,7 @@ def plotPerDirectionBx(options):
             pad.Update()
 
         canvas.cd()
-        if('final' in options):
-            graphs.SetTitle('')
-            text = TLatex()
-            text.SetNDC()
-            text.SetTextFont(62)
-            text.SetTextSize(0.0375)
-            text.SetTextAlign(31)
-            text.DrawLatex(0.999,0.92,O['plotsig'])
-            text.SetTextAlign()
-            if options['final'] == 'wip':
-                text.DrawLatex(0.15,0.92,'#bf{#scale[0.75]{#it{Work in Progress}}}')
-            else:
-                text.DrawLatex(0.15,0.92,'CMS #bf{#scale[0.75]{#it{Preliminary}}}')
-        else:
+        if not 'final' in options:
             drawSignature(filename)
         canvas.Modified()
         canvas.Update()
