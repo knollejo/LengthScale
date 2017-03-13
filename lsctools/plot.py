@@ -134,6 +134,9 @@ def plotPerDirectionBx(options):
         print '<<< Save plot:', filepath
         graphs = f.Get(plotname)
         residuals = f.Get(plotname+'_residuals')
+        if 'final' in options:
+            graphs.SetTitle('')
+            residuals.SetTitle('')
 
         gStyle.SetOptFit(options['optfit'])
         canvas = TCanvas()
@@ -158,6 +161,13 @@ def plotPerDirectionBx(options):
             stats.SetY2NDC(0.88)
             graph.GetFunction(options['fit']).SetLineColor(2+2*j)
         graphs.GetYaxis().SetTitle(options['ytitle'])
+        leg = TLegend(0.713, 0.72, 0.999, 0.88)
+        leg.SetBorderSize(1)
+        for j, graph in enumerate(graphs.GetListOfGraphs()):
+            entry = leg.AddEntry(graph, ('forward', 'backward')[j], 'LP')
+            #entry.SetMarkerStyle(20)
+            #entry.SetMarkerColor(1+i)
+        leg.Draw()
 
         pad2.cd()
         gPad.SetMargin(0.1, 0.01, 0.3, 0.0)
@@ -189,13 +199,6 @@ def plotPerDirectionBx(options):
             pad.Update()
 
         canvas.cd()
-        leg = TLegend(0.713, 0.72, 0.999, 0.88)
-        leg.SetBorderSize(1)
-        for j, graph in enumerate(graphs.GetListOfGraphs()):
-            entry = leg.AddEntry(graph, ('forward', 'backward')[j], 'LP')
-            #entry.SetMarkerStyle(20)
-            #entry.SetMarkerColor(1+i)
-        leg.Draw()
         if('final' in options):
             graphs.SetTitle('')
             text = TLatex()
