@@ -25,11 +25,14 @@ def reducedChain(fileset, scan=''):
         chain.Add(filename)
     return chain
 
-def miniCondition(scan, bx, step):
+def miniCondition(scan, bx, step, all=False):
     """Create condition that event in a minitree belongs to step and BX"""
-    return 'timeStamp >= ' + str(O['begin'][scan][step]) + \
-           ' && timeStamp <= ' + str(O['end'][scan][step]) + \
-           ' && BXid == ' + str(bx)
+    cond = 'timeStamp >= ' + str(O['begin'][scan][step]) + \
+           ' && timeStamp <= ' + str(O['end'][scan][step])
+    if all:
+        return cond
+    else:
+        return cond + ' && BXid == ' + str(bx)
 
 def doPerBxStep(options):
     """Extract data from ROOT files and sort by bunch crossing and step"""
@@ -109,20 +112,29 @@ def numberClustersPerBxStep(scan, combine=False, alternative=False, all=False):
             options['method'] = 'LS'
         combinePerStep(options)
     else:
-        def condition2(s, bx, step):
+        options['fileset'] = 'minitrees'
+        options['field'] = lambda s: 'nCluster'
+        def condition2(s, bx, step, all=False):
             cond = '(LS == ' + str(O['LS'][s][step][0])
             for ls in O['LS'][s][step][1:]:
                 cond += ' || LS == ' + str(ls)
             cond += ')'
-            return cond + ' && BXid == ' + str(bx)
+            if all:
+                return cond
+            else:
+                return cond + ' && BXid == ' + str(bx)
         if alternative:
-            options['condition'] = condition2
+            condition = condition2
             options['method'] = 'LS'
         else:
-            options['condition'] = miniCondition
-        options['fileset'] = 'minitrees'
-        options['field'] = lambda s: 'nCluster'
-        doPerBxStep(options)
+            condition = miniCondition
+        if all:
+            options['condition'] = lambda s, step: condition(s, None, step, \
+                                                             all=True)
+            doPerStep(options)
+        else:
+            options['condition'] = condition
+            doPerBxStep(options)
 
 def numberVerticesPerBxStep(scan, combine=False, all=False):
     """Extract vertex number from ROOT files sorted by BX and step"""

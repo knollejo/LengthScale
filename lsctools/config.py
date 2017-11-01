@@ -198,6 +198,37 @@ def VdM2016():
            zip(posBeam1[scanname], posBeam2[scanname])] for scanname in \
            options['scans']]))
 
+def VdM2016DorosPositions():
+    """Set beam positions measured by DOROS of 2016 Van der Meer scan program"""
+    dorosX1 = [[-232.79, 4.23, -141.917, 2.2625], \
+               [-140.787, 5.177, -47.5415, 2.75], \
+               [-46.2245, 5.864, 48.4053, 3.1235], \
+               [47.7269, 5.7695, 144, 2.7225], \
+               [141.538, 6.717, 238.746, 2.9265], \
+               [237.043, 6.7575, 141.331, 2.929], \
+               [143.814, 6.018, 45.3501, 2.4675], \
+               [50.141, 5.558, -49.826, 2.498], \
+               [-43.334, 5.62, -144.065, 2.202], \
+               [-137.27, 5.296, -240.707, 2.2515]]
+    dorosY1 = [[0.5415, -237.129, -3.1365, -143.403], \
+               [0.3695, -143.827, -1.629, -48.572], \
+               [0.942, -48.957, -1.37, 47.6725], \
+               [0.9355, 45.617, -1.7015, 143.037], \
+               [0.726, 140.072, -2.0495, 238.757], \
+               [1.983, 237.563, -2.4065, 140.93], \
+               [1.032, 143.748, -1.308, 45.466], \
+               [-0.4285, 49.429, -1.234, -50.3495], \
+               [-0.5, -45.5584, -0.755, -146.688], \
+               [-1.3935, -139.405, -0.459, -241.569]]
+    if 'nominalPos' not in options:
+        options['nominalPos'] = {}
+    if 'nominalDif' not in options:
+        options['nominalDif'] = {}
+    options['nominalPos']['X1'] = [(a+c)/2. for a,b,c,d in dorosX1]
+    options['nominalDif']['X1'] = [(a-c)/2. for a,b,c,d in dorosX1]
+    options['nominalPos']['Y1'] = [(b+d)/2. for a,b,c,d in dorosY1]
+    options['nominalDif']['Y1'] = [(b-d)/2. for a,b,c,d in dorosY1]
+
 def PCCPromptReco2016():
     """Set parameters of 2016 PCC Prompt Reco"""
     print '<<< Initialize PCC PromptReco 2016'
@@ -227,13 +258,16 @@ def PCC2016ReRecoJan2017():
     PCC()
 
     options['fulltrees'] = ['/comm_luminosity/PCC/VdM/May2016Scans/ZeroBias' \
-                            +str(i)+'/PCC_Run2016B-17Jan2017-v1_ZeroBias' \
-                            +str(i)+'/170130_0'+str(time)+'/0000' for i, time \
-                            in zip([1, 2, 3, 4, 6, 8], [84827, 84841, 84855, \
-                            84911, 84929, 84943])]
-    options['minitrees'] = []
-    options['dataset'] = ['2016_rereco_jan17_part', \
-                          '2016 ReReco Jan 2017 (partial)']
+                            +str(i)+'/PCC_Run2016B-17Jan2017-v'+str(v)+'_' \
+                            +'ZeroBias'+str(i)+'/170'+time+'/0000' for i, \
+                            v, time in ((1, 1, '130_084827'), (2, 1, \
+                            '130_084841'), (3, 1, '130_084855'), (4, 1, \
+                            '130_084911'), (5, 4, '213_002332'), (6, 1, \
+                            '130_084929'), (7, 3, '213_002401'), (8, 1, \
+                            '130_084943'))]
+    options['minitrees'] = [s+'_FPix_Feb27' for s in options['fulltrees']]
+    options['dataset'] = ['2016_rereco_jan17', \
+                          '2016 ReReco Jan 2017']
 
 def HD5Files2016():
     """Set parameters of 2016 data that is stored in HD5 files"""

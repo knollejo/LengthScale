@@ -48,7 +48,8 @@ def plotPerBxStep(options):
             canvas.Close()
     closeRootFile(f, name)
 
-def numberClustersPerBxStep(scan, fit='', combine=False, all=False):
+def numberClustersPerBxStep(scan, fit='', combine=False, alternative=False, \
+                            all=False):
     """Save cluster number histograms to PDF files"""
     def plotZoom(hist):
         pad = TPad('pad', '', 0.2, 0.55, 0.6, 0.89)
@@ -68,6 +69,8 @@ def numberClustersPerBxStep(scan, fit='', combine=False, all=False):
                'logx': 0, 'logy': 1, 'xtitle': 'Number of Pixel Clusters (per event)', \
                'ytitle': 'Number of Events', 'optstat': 101110, 'optfit': 111, \
                'extra': fit, 'custom': plotZoom}
+    if alternative:
+        options['method'] = 'LS'
     if all:
         options['crossings'] = ['all']
     else:
@@ -223,8 +226,8 @@ def plotPerDirectionBx(options):
         canvas.Close()
     closeRootFile(f, name)
 
-def numberClustersPerDirectionBx(scan, fitted='', combine=False, all=False, \
-                                 final=False):
+def numberClustersPerDirectionBx(scan, fitted='', combine=False, \
+                                 alternative=False, all=False, final=False):
     """Save number of clusters directional plots to PDF files"""
     options = {'name': 'nCluster', 'scan': scan, 'fitted': fitted, \
                'optfit': 111, 'fit': 'pol1', 'restitle': '[abs.]', \
@@ -235,6 +238,8 @@ def numberClustersPerDirectionBx(scan, fitted='', combine=False, all=False, \
         options['crossings'] = O['crossings'][:]
         if combine:
             options['crossings'].append('all')
+    if alternative:
+        options['method'] = 'LS'
     if final:
         options['final'] = final
     plotPerDirectionBx(options)

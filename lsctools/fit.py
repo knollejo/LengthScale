@@ -29,7 +29,8 @@ def fitPerBxStep(options):
     closeRootFile(g, newname)
     closeRootFile(f, oldname)
 
-def numberClusters(scan, fitmethod='F', combine=False, all=False):
+def numberClusters(scan, fitmethod='F', combine=False, alternative=False, \
+                   all=False):
     """Fit number of clusters with a Gaussian in a range"""
     def getRange(hist):
         hist.GetXaxis().SetRange(1, 30)
@@ -45,6 +46,8 @@ def numberClusters(scan, fitmethod='F', combine=False, all=False):
         options['crossings'] = O['crossings'][:]
         if combine:
             options['crossings'].append('all')
+    if alternative:
+        options['method'] = 'LS'
     fitPerBxStep(options)
 
 def vertexPosition(scan, fitmethod='F', combine=False, alternative=False, \

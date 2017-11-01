@@ -11,10 +11,17 @@ def scale(s=1.0):
 def collectPerDirectionBx(options):
     """Fit data in both directions of a scan"""
     nSteps = len(O['nominalPos'][options['scan']])
-    for i in range(nSteps):
+    for i in range(nSteps-1):
         if O['nominalPos'][options['scan']][i+1] == \
            O['nominalPos'][options['scan']][i]:
             break
+    else:
+        for i in range(nSteps-1):
+            if abs(O['nominalPos'][options['scan']][i+1] - \
+                   O['nominalPos'][options['scan']][i]) < 10.0:
+                break
+        else:
+            raise RuntimeError('Could not find change of direction.')
     oldname = options['scan'] + '_' + options['name'] + options['fitted']
     if 'newname' in options:
         newname = options['scan'] + '_' + options['newname'] + \
@@ -70,7 +77,8 @@ def collectPerDirectionBx(options):
     closeRootFile(g, newname)
     closeRootFile(f, oldname)
 
-def numberClusters(scan, fitted='', truncated=False, combine=False):
+def numberClusters(scan, fitted='', truncated=False, combine=False, \
+                   alternative=False, all=False):
     """Fit pixel cluster number in both directions of a scan"""
     options = {'name': 'nCluster', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
                'y': scale(), 'e': scale(), 'fitted': fitted}
@@ -99,6 +107,8 @@ def numberClusters(scan, fitted='', truncated=False, combine=False):
         options['custom'] = custom
     else:
         options['custom'] = False
+    if alternative:
+        options['method'] = 'LS'
     collectPerDirectionBx(options)
 
 def numberVertices(scan, combine=False, all=False):
