@@ -1,5 +1,6 @@
 from sys import path as __SYSPATH__, argv as __ARGV__
-__SYSPATH__.append('/afs/cern.ch/user/j/joknolle/LengthScale')
+from os.path import dirname
+__SYSPATH__.append(dirname(__file__)+'/..')
 __ARGV__.append('-b')
 
 from argparse import ArgumentParser
@@ -48,6 +49,8 @@ def main():
                         'of transverse position of reconstructed vertices')
     parser.add_argument('-perLs', action='store_true', help='use only full '+ \
                         'lumisections', dest='alternative')
+    parser.add_argument('-final', action='store_true', help='create plots with '+ \
+                        '"CMS Preliminary" and without technical information')
     args = parser.parse_args()
 
     from importlib import import_module
@@ -89,19 +92,19 @@ def main():
                         if args.alternative:
                             getattr(plot, action+'PerDirectionBx')(scan, \
                                     fitted=fitted[0], combine=args.combined, \
-                                    alternative=True, all=allbx)
+                                    alternative=True, all=allbx, final=args.final)
                         else:
                             getattr(plot, action+'PerDirectionBx')(scan, \
                                     fitted=fitted[0], combine=args.combined, \
-                                    all=allbx)
+                                    all=allbx, final=args.final)
                 else:
                     if args.alternative:
                         getattr(plot, action+'PerDirectionBx')(scan, \
                                 combine=args.combined, alternative=True, \
-                                all=allbx)
+                                all=allbx, final=args.final)
                     else:
                         getattr(plot, action+'PerDirectionBx')(scan, \
-                                combine=args.combined, all=allbx)
+                                combine=args.combined, all=allbx, final=args.final)
 
 if __name__ == '__main__':
     main()
