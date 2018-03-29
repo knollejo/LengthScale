@@ -226,7 +226,6 @@ def plotPerDirectionBx(options):
         residuals.GetXaxis().SetTickSize(0.151)
         residuals.GetYaxis().SetTitle('')
         residuals.GetYaxis().SetNdivisions(305)
-        residuals.GetYaxis().SetRangeUser(-0.9,0.9)
         residuals.GetYaxis().SetTickSize(0.019)
         residuals.GetYaxis().SetLabelSize(0.2)
         residuals.GetYaxis().SetLabelOffset(0.01)
@@ -238,9 +237,9 @@ def plotPerDirectionBx(options):
 
         canvas.cd()
         text.SetTextFont(42)
-        text.SetTextSize(0.04)
+        text.SetTextSize(0.05)
         text.SetTextAngle(90.0)
-        text.DrawLatex(0.035,0.0,'Residuals '+options['restitle'])
+        text.DrawLatex(0.035,0.0,'Resid. '+options['restitle'])
 
         if not 'final' in options:
             drawSignature(filename)
