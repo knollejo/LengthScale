@@ -10,7 +10,7 @@ def main():
     parser.add_argument('-b', action='store_true', help='enable batch mode')
     parser.add_argument('--dataset', required=True, choices=['PromptReco2015', \
                         'ReRecoOct2015', 'ReRecoDec2015', 'PromptReco2016', \
-                        '2015ReRecoJan2017', '2016ReRecoJan2017'], \
+                        '2015ReRecoJan2017', '2016ReRecoJan2017', 'PromptReco2017'], \
                         help='specify data-taking period and reconstruction')
     parser.add_argument('-X1', dest='scans', action='append_const', const='X1', \
                         help='apply to LSC scan X1')
