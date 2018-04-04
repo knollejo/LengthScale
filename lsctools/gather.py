@@ -148,20 +148,14 @@ def numberVerticesPerBxStep(scan, combine=False, all=False):
         options['field'] = lambda s: 'nVtx'
         doPerBxStep(options)
 
-def vertexPositionPerBxStep(scan, combine=False, alternative=False, all=False):
-    """Extract vertex position from ROOT files sorted by BX and step"""
-    options = {'min': -1e3, 'max': 3e3, 'bin': 250, 'histo': TH1F, \
-               'name': 'vtxPos', 'scan': scan}
+def vertexTemplatePerBxStep(options, combine=False, alternative=False, \
+                            all=False, field=None):
+    """Template for extraction of vertex data from ROOT files by BX and step"""
     if combine:
         if alternative:
             options['method'] = 'LS'
         combinePerStep(options)
     else:
-        def field(s):
-            if 'X' in scan:
-                return 'vtx_x*1e4'
-            else:
-                return 'vtx_y*1e4'
         options['fileset'] = 'fulltrees'
         options['field'] = field
         if all:
@@ -198,6 +192,48 @@ def vertexPositionPerBxStep(scan, combine=False, alternative=False, all=False):
             else:
                 options['condition'] = condition1
             doPerBxStep(options)
+
+def vertexPositionPerBxStep(scan, combine=False, alternative=False, all=False):
+    """Extract vertex position from ROOT files sorted by BX and step"""
+    options = {'min': -1e3, 'max': 3e3, 'bin': 250, 'histo': TH1F, \
+               'name': 'vtxPos', 'scan': scan}
+    if combine:
+        field = None
+    else:
+        def field(s):
+            if 'X' in s:
+                return 'vtx_x*1e4'
+            else:
+                return 'vtx_y*1e4'
+    vertexTemplatePerBxStep(options, combine, alternative, all, field)
+
+def vertexPositionTrPerBxStep(scan, combine=False, alternative=False, all=False):
+    """Extract transverse vertex position from ROOT files sorted by BX and step"""
+    options = {'min': -1e3, 'max': 3e3, 'bin': 250, 'histo': TH1F, \
+               'name': 'vtxPosTr', 'scan': scan}
+    if combine:
+        field = None
+    else:
+        def field(s):
+            if 'X' in s:
+                return 'vtx_y*1e4'
+            else:
+                return 'vtx_x*1e4'
+    vertexTemplatePerBxStep(options, combine, alternative, all, field)
+
+def vertexDistancePerBxStep(scan, combine=False, alternative=False, all=False):
+    """Extract vertex distance from ROOT files sorted by BX and step"""
+    options = {'min': -1e3, 'max': 3e3, 'bin': 250, 'histo': TH1F, \
+               'name': 'vtxDist', 'scan': scan}
+    if combine:
+        field = None
+    else:
+        def field(s):
+            if 'X' in s:
+                return 'TMath::Sign(sqrt(vtx_x^2+vtx_y^2)*1e4,vtx_x)'
+            else:
+                return 'TMath::Sign(sqrt(vtx_x^2+vtx_y^2)*1e4,vtx_y)'
+    vertexTemplatePerBxStep(options, combine, alternative, all, field)
 
 def countsPerBxStep(scan, combine=False, alternative=False, all=False):
     """Extract BCM1f counts from ROOT files sorted by BX and step"""

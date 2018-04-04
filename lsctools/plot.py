@@ -93,13 +93,12 @@ def numberVerticesPerBxStep(scan, combine=False, all=False):
             options['crossings'].append('all')
     plotPerBxStep(options)
 
-def vertexPositionPerBxStep(scan, fit='', combine=False, alternative=False, \
-                            all=False):
-    """Save vertex position histograms to PDF files"""
-    options = {'name': 'vtxPos', 'scan': scan, 'xmin': -1e3, 'xmax':3e3, \
-               'logx': 0, 'logy': 0, 'xtitle': 'Measured Vertex Position [#mum]', \
-               'ytitle': 'Number of Events','optstat': 1110, 'optfit': 111,
-               'extra': fit}
+def vertexTemplatePerBxStep(scan, name, xtitle, fit='', combine=False, \
+                            alternative=False, all=False):
+    """Template for saving vertex position histograms to PDF files"""
+    options = {'name': name, 'scan': scan, 'xmin': -1e3, 'xmax': 3e3, \
+               'logx': 0, 'logy': 0, 'xtitle': xtitle, 'extra': fit, \
+               'ytitle': 'Number of Events', 'optstat': 1110, 'optfit': 111}
     if alternative:
         options['method'] = 'LS'
     if all:
@@ -109,6 +108,27 @@ def vertexPositionPerBxStep(scan, fit='', combine=False, alternative=False, \
         if combine:
             options['crossings'].append('all')
     plotPerBxStep(options)
+
+def vertexPositionPerBxStep(scan, fit='', combine=False, alternative=False, \
+                            all=False):
+    """Save vertex position histograms to PDF files"""
+    name = 'vtxPos'
+    xtitle = 'Measured Vertex Position [#mum]'
+    vertexTemplatePerBxStep(scan, name, xtitle, fit, combine, alternative, all)
+
+def vertexPositionTrPerBxStep(scan, fit='', combine=False, alternative=False, \
+                            all=False):
+    """Save transverse vertex position histograms to PDF files"""
+    name = 'vtxPosTr'
+    xtitle = 'Measured Transverse Vertex Position [#mum]'
+    vertexTemplatePerBxStep(scan, name, xtitle, fit, combine, alternative, all)
+
+def vertexDistancePerBxStep(scan, fit='', combine=False, alternative=False, \
+                            all=False):
+    """Save vertex distance histograms to PDF files"""
+    name = 'vtxDist'
+    xtitle = 'Measured Distance to Zero [#mum]'
+    vertexTemplatePerBxStep(scan, name, xtitle, fit, combine, alternative, all)
 
 def countsPerBxStep(scan, fit='', combine=False, all=False):
     """Save counts histograms to PDF files"""
@@ -194,7 +214,7 @@ def plotPerDirectionBx(options):
             residual.SetMarkerStyle(21)
             residual.SetMarkerColor(2+2*j)
         residuals.Draw("AP")
-        residuals.GetXaxis().SetTitle('Nominal Position [#mum]')
+        residuals.GetXaxis().SetTitle(O['nominalTitle'])
         residuals.GetYaxis().SetTitle('Residuals '+options['restitle'])
         residuals.GetXaxis().SetTitleOffset(3)
         residuals.GetXaxis().SetLabelOffset(0.02)
@@ -208,7 +228,7 @@ def plotPerDirectionBx(options):
         for axis in [graphs.GetYaxis(), residuals.GetXaxis(), \
                      residuals.GetYaxis()]:
             axis.SetTitleFont(133)
-            axis.SetTitleSize(16)
+            axis.SetTitleSize(14)
             axis.SetLabelFont(133)
             axis.SetLabelSize(12)
             axis.CenterTitle()
@@ -257,12 +277,11 @@ def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=False):
             options['crossings'].append('all')
     plotPerDirectionBx(options)
 
-def vertexPositionPerDirectionBx(scan, fitted='', combine=False, \
-                                 alternative=False, all=False):
-    """Save vertex position directional plots to PDF files"""
-    options = {'name': 'vtxPos', 'scan': scan, 'fitted': fitted, 'optfit': 111, \
-               'fit': 'pol1', 'ytitle': 'Measured Vertex Position [#mum]', \
-               'restitle': '[#mum]'}
+def vertexTemplatePerDirectionBx(scan, name, ytitle, fitted='', combine=False, \
+                                 alternative=False, all=False, final=False):
+    """Template to save vertex results to PDF files"""
+    options = {'name': name, 'scan': scan, 'fitted': fitted, 'optfit': 111, \
+               'fit': 'pol1', 'ytitle': ytitle, 'restitle': '[#mum]'}
     if all:
         options['crossings'] = ['all']
     else:
@@ -271,7 +290,33 @@ def vertexPositionPerDirectionBx(scan, fitted='', combine=False, \
             options['crossings'].append('all')
     if alternative:
         options['method'] = 'LS'
+    if final:
+        options['final'] = final
     plotPerDirectionBx(options)
+
+def vertexPositionPerDirectionBx(scan, fitted='', combine=False, \
+                                 alternative=False, all=False, final=False):
+    """Save vertex position directional plots to PDF files"""
+    name = 'vtxPos'
+    ytitle = 'Measured Vertex Position [#mum]'
+    vertexTemplatePerDirectionBx(scan, name, ytitle, fitted, combine, \
+                                 alternative, all, final)
+
+def vertexPositionTrPerDirectionBx(scan, fitted='', combine=False, \
+                                 alternative=False, all=False, final=False):
+    """Save transverse vertex position directional plots to PDF files"""
+    name = 'vtxPosTr'
+    ytitle = 'Measured Transverse Vertex Position [#mum]'
+    vertexTemplatePerDirectionBx(scan, name, ytitle, fitted, combine, \
+                                 alternative, all, final)
+
+def vertexDistancePerDirectionBx(scan, fitted='', combine=False, \
+                                 alternative=False, all=False, final=False):
+    """Save vertex distance directional plots to PDF files"""
+    name = 'vtxDist'
+    ytitle = 'Measured Distance to Zero [#mum]'
+    vertexTemplatePerDirectionBx(scan, name, ytitle, fitted, combine, \
+                                 alternative, all, final)
 
 def vertexPositionSigmaPerDirectionBx(scan, fitted='F', combine=False, \
                                       all=False):

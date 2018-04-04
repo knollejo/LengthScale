@@ -1,4 +1,6 @@
-options = {}
+from math import copysign
+
+options = {'nominalTitle': 'Nominal Position [#mum]'}
 EOSPATH = '/eos/cms/store/group'
 OUTPATH = '/afs/cern.ch/user/j/joknolle/LengthScale/results'
 OWNPATH = '/afs/cern.ch/work/j/joknolle/store'
@@ -78,7 +80,6 @@ def VdM2015():
 def PCCPromptReco2015():
     """Set parameters of 2015 PCC Prompt Reco"""
     print '<<< Initialize PCC PromptReco 2015'
-    options.clear()
     VdM2015()
     PCC()
 
@@ -93,7 +94,6 @@ def PCCPromptReco2015():
 def PCCReRecoOct2015():
     """Set parameters of October 2015 PCC ReReco"""
     print '<<< Initialize PCC ReReco Oct 2015'
-    options.clear()
     VdM2015()
     PCC()
 
@@ -108,7 +108,6 @@ def PCCReRecoOct2015():
 def PCCReRecoDec2015():
     """Set parameters of December 2015 PCC ReReco"""
     print '<<< Initialize PCC ReReco Dec 2015'
-    options.clear()
     VdM2015()
     PCC()
 
@@ -123,7 +122,6 @@ def PCCReRecoDec2015():
 def PCC2015ReRecoJan2017():
     """Set parameters of January 2017 ReReco of 2015 PCC"""
     print '<<< Initialize PCC 2015 ReReco January 2017'
-    options.clear()
     VdM2015()
     PCC()
 
@@ -224,15 +222,27 @@ def VdM2016DorosPositions():
         options['nominalPos'] = {}
     if 'nominalDif' not in options:
         options['nominalDif'] = {}
-    options['nominalPos']['X1'] = [(a+c)/2. for a,b,c,d in dorosX1]
-    options['nominalDif']['X1'] = [(a-c)/2. for a,b,c,d in dorosX1]
-    options['nominalPos']['Y1'] = [(b+d)/2. for a,b,c,d in dorosY1]
-    options['nominalDif']['Y1'] = [(b-d)/2. for a,b,c,d in dorosY1]
+    def xpos(x, y):
+        return copysign((x**2+y**2)**0.5, x)
+    def ypos(x, y):
+        return copysign((x**2+y**2)**0.5, y)
+    options['nominalPos']['X1'] = [xpos((a+c)/2.,(b+d)/2.) for a,b,c,d in dorosX1]
+    options['nominalDif']['X1'] = [xpos(a-c,b-d) for a,b,c,d in dorosX1]
+    options['nominalPos']['Y1'] = [ypos((a+c)/2.,(b+d)/2.) for a,b,c,d in dorosY1]
+    options['nominalDif']['Y1'] = [ypos(a-c,b-d) for a,b,c,d in dorosY1]
+    # options['nominalPos']['X1'] = [(a+c)/2. for a,b,c,d in dorosX1]
+    # options['nominalDif']['X1'] = [a-c for a,b,c,d in dorosX1]
+    # options['nominalPos']['Y1'] = [(b+d)/2. for a,b,c,d in dorosY1]
+    # options['nominalDif']['X1'] = [b-d for a,b,c,d in dorosY1]
+    # options['nominalPos']['X1y'] = [(b+d)/2. for a,b,c,d in dorosX1]
+    # options['nominalDif']['X1y'] = [b-d for a,b,c,d in dorosX1]
+    # options['nominalPos']['Y1x'] = [(a+c)/2. for a,b,c,d in dorosY1]
+    # options['nominalDif']['Y1x'] = [a-c for a,b,c,d in dorosY1]
+    options['nominalTitle'] = 'Position Measured by DOROS [#mum]'
 
 def PCCPromptReco2016():
     """Set parameters of 2016 PCC Prompt Reco"""
     print '<<< Initialize PCC PromptReco 2016'
-    options.clear()
     VdM2016()
     PCC()
 
@@ -253,7 +263,6 @@ def PCCPromptReco2016():
 def PCC2016ReRecoJan2017():
     """Set parameters of January 2017 ReReco of 2016 PCC"""
     print '<<< Initialize PCC 2016 ReReco January 2017'
-    options.clear()
     VdM2016()
     PCC()
 
@@ -278,7 +287,6 @@ def HD5Files2016():
 def BCM1f2016():
     """Set parameters of 2016 BCM1f data"""
     print '<<< Initialize 2016 data of BCM1f'
-    options.clear()
     VdM2016()
     BCM1f()
     HD5Files2016()
@@ -286,7 +294,6 @@ def BCM1f2016():
 def PLT2016():
     """Set parameters of 2016 PLT data"""
     print '<<< Initialize 2016 data of PLT'
-    options.clear()
     VdM2016()
     PLT()
     HD5Files2016()

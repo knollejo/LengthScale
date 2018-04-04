@@ -50,10 +50,10 @@ def numberClusters(scan, fitmethod='F', combine=False, alternative=False, \
         options['method'] = 'LS'
     fitPerBxStep(options)
 
-def vertexPosition(scan, fitmethod='F', combine=False, alternative=False, \
+def vertexTemplate(scan, name, fitmethod='F', combine=False, alternative=False, \
                    all=False):
-    """Fit vertex position with a Gaussian (standard or log-likelihood)"""
-    options = {'name': 'vtxPos', 'scan': scan, 'fit': 'gaus'}
+    """Template for fit of vertex data"""
+    options = {'name': name, 'scan': scan, 'fit': 'gaus'}
     if all:
         options['crossings'] = ['all']
     else:
@@ -78,3 +78,18 @@ def vertexPosition(scan, fitmethod='F', combine=False, alternative=False, \
     if alternative:
         options['method'] = 'LS'
     fitPerBxStep(options)
+
+def vertexPosition(scan, fitmethod='F', combine=False, alternative=False, \
+                   all=False):
+    """Fit vertex position with a Gaussian (standard or log-likelihood)"""
+    vertexTemplate(scan, 'vtxPos', fitmethod, combine, alternative, all)
+
+def vertexPositionTr(scan, fitmethod='F', combine=False, alternative=False, \
+                   all=False):
+    """Fit transverse vertex position with a Gaussian (standard or log-likelihood)"""
+    vertexTemplate(scan, 'vtxPosTr', fitmethod, combine, alternative, all)
+
+def vertexDistance(scan, fitmethod='F', combine=False, alternative=False, \
+                   all=False):
+    """Fit vertex distance with a Gaussian (standard or log-likelihood)"""
+    vertexTemplate(scan, 'vtxDist', fitmethod, combine, alternative, all)

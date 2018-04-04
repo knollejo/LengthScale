@@ -22,6 +22,10 @@ def collectPerDirectionBx(options):
                 break
         else:
             raise RuntimeError('Could not find change of direction.')
+    if 'nominalPos' in options:
+        nominalPos = options['nominalPos']
+    else:
+        nominalPos = O['nominalPos'][options['scan']]
     oldname = options['scan'] + '_' + options['name'] + options['fitted']
     if 'newname' in options:
         newname = options['scan'] + '_' + options['newname'] + \
@@ -55,19 +59,16 @@ def collectPerDirectionBx(options):
         for n, rnge in zip([i+1, nSteps-i-1], [lambda l: l[:i+1], \
                                                lambda l: l[i+1:]]):
             graph = TGraphErrors(n, \
-                    array('d', [options['x'](a) for a in \
-                          rnge(O['nominalPos'][options['scan']])]), \
+                    array('d', [options['x'](a) for a in rnge(nominalPos)]), \
                     array('d', [options['y'](a) for a in rnge(average)]), \
                     array('d', [0]*n), \
                     array('d', [options['e'](a) for a in rnge(averror)]))
             graph.Fit(options['fit'])
             residual = TGraphErrors(n, \
-                       array('d', [options['x'](a) for a in \
-                             rnge(O['nominalPos'][options['scan']])]), \
+                       array('d', [options['x'](a) for a in rnge(nominalPos)]), \
                        array('d', [options['y'](a) - graph.GetFunction( \
                              options['fit']).Eval(options['x'](b)) for a, b \
-                             in zip(rnge(average), \
-                             rnge(O['nominalPos'][options['scan']]))]),
+                             in zip(rnge(average), rnge(nominalPos))]),
                        array('d', [0]*n), \
                        array('d', [options['e'](a) for a in rnge(averror)]))
             graphs.Add(graph)
@@ -123,11 +124,13 @@ def numberVertices(scan, combine=False, all=False):
             options['crossings'].append('all')
     collectPerDirectionBx(options)
 
-def vertexPosition(scan, fitted='', combine=False, alternative=False, \
-                   all=False):
-    """Fit vertex positions in both directions of a scan"""
-    options = {'name': 'vtxPos', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
+def vertexTemplate(scan, name, fitted='', combine=False, alternative=False, \
+                   all=False, nominalPos=None):
+    """Template for fit of vertex positions in both directions of a scan"""
+    options = {'name': name, 'scan': scan, 'fit': 'pol1', 'x': scale(), \
                'y': scale(), 'e': scale(), 'fitted': fitted}
+    if nominalPos is not None:
+        options['nominalPos'] = nominalPos
     if all:
         options['crossings'] = ['all']
     else:
@@ -145,6 +148,26 @@ def vertexPosition(scan, fitted='', combine=False, alternative=False, \
     if alternative:
         options['method'] = 'LS'
     collectPerDirectionBx(options)
+
+def vertexPosition(scan, fitted='', combine=False, alternative=False, \
+                   all=False):
+    """Fit vertex positions in both directions of a scan"""
+    vertexTemplate(scan, 'vtxPos', fitted, combine, alternative, all)
+
+def vertexPositionTr(scan, fitted='', combine=False, alternative=False, \
+                   all=False):
+    """Fit transverse vertex positions in both directions of a scan"""
+    if 'X' in scan:
+        nominalPos = O['nominalPos'][scan+'y']
+    else:
+        nominalPos = O['nominalPos'][scan+'x']
+    vertexTemplate(scan, 'vtxPosTr', fitted, combine, alternative, all, \
+                   nominalPos=nominalPos)
+
+def vertexDistance(scan, fitted='', combine=False, alternative=False, \
+                   all=False):
+    """Fit vertex distances in both directions of a scan"""
+    vertexTemplate(scan, 'vtxDist', fitted, combine, alternative, all)
 
 def vertexPositionSigma(scan, fitted='F', combine=False, all=False):
     """Fit sigma of vertex positions in both directions of a scan"""
