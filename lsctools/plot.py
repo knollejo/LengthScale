@@ -162,86 +162,110 @@ def plotPerDirectionBx(options):
             residuals.SetTitle('')
 
         gStyle.SetOptFit(options['optfit'])
-        canvas = TCanvas()
-        canvas.cd()
-        pad1 = TPad('pad1', 'pad1', 0, 0.3, 1, 1)
-        pad2 = TPad('pad2', 'pad2', 0, 0, 1, 0.3)
-        pad1.Draw()
-        pad2.Draw()
+        canvas = TCanvas(plotname+'_canvas', '', 700, 600)
 
-        pad1.cd()
-        gPad.SetMargin(0.1, 0.01, 0.0, 0.3)
+        canvas.cd()
+        canvas.SetMargin(0.13, 0.03, 0.33, 0.05)
+
         graphs.Draw('AP')
         gPad.Update()
+        text = TLatex()
+        text.SetNDC()
         for j, graph in enumerate(graphs.GetListOfGraphs()):
             graph.SetMarkerStyle(21)
             graph.SetMarkerColor(2+2*j)
+            graph.GetFunction(options['fit']).SetLineColor(2+2*j)
             stats = graph.GetListOfFunctions().FindObject('stats')
             stats.SetTextColor(2+2*j)
-            stats.SetX1NDC(0.1+0.35*j)
-            stats.SetX2NDC(0.43+0.35*j)
-            stats.SetY1NDC(0.72)
-            stats.SetY2NDC(0.88)
-            graph.GetFunction(options['fit']).SetLineColor(2+2*j)
-        graphs.GetYaxis().SetTitle(options['ytitle'])
-        leg = TLegend(0.8, 0.72, 0.99, 0.88)
-        leg.SetHeader(options['scan']+' scan')
-        leg.SetBorderSize(1)
-        leg.SetFillColor(0)
-        for j, graph in enumerate(graphs.GetListOfGraphs()):
-            entry = leg.AddEntry(0, ('forward', 'backward')[j], 'LPE')
-            entry.SetMarkerStyle(21)
-            entry.SetMarkerColor(2+2*j)
-            entry.SetLineColor(2+2*j)
-            entry.SetTextColor(2+2*j)
-        leg.Draw()
-        if('final' in options):
-            text = TLatex()
-            text.SetNDC()
-            text.SetTextFont(62)
-            text.SetTextSize(0.05)
-            text.SetTextAlign(31)
-            text.DrawLatex(0.99,0.92,O['plotsig'])
-            text.SetTextAlign()
-            if options['final'] == 'wip':
-                text.DrawLatex(0.15,0.92,'#bf{#scale[0.75]{#it{Work in Progress}}}')
+            stats.SetBorderSize(0)
+            stats.SetTextSize(0.04)
+            inverted = graph.GetFunction(options['fit']).GetParameter('p1')<0.0
+            text.SetTextFont(42)
+            text.SetTextSize(0.04)
+            text.SetTextColor(2+2*j)
+            if inverted and j==0:
+                text.DrawLatex(0.18,0.54,options['scan']+' scan forward')
+                stats.SetX1NDC(0.16)
+                stats.SetX2NDC(0.53)
+                stats.SetY1NDC(0.38)
+                stats.SetY2NDC(0.53)
+            elif inverted and j==1:
+                text.DrawLatex(0.61,0.9,options['scan']+' scan backward')
+                stats.SetX1NDC(0.59)
+                stats.SetX2NDC(0.96)
+                stats.SetY1NDC(0.74)
+                stats.SetY2NDC(0.89)
+            elif j==0:
+                text.DrawLatex(0.18,0.9,options['scan']+' scan forward')
+                stats.SetX1NDC(0.16)
+                stats.SetX2NDC(0.53)
+                stats.SetY1NDC(0.74)
+                stats.SetY2NDC(0.89)
             else:
-                text.DrawLatex(0.15,0.92,'CMS #bf{#scale[0.75]{#it{Preliminary}}}')
+                text.DrawLatex(0.61,0.54,options['scan']+' scan backward')
+                stats.SetX1NDC(0.59)
+                stats.SetX2NDC(0.96)
+                stats.SetY1NDC(0.38)
+                stats.SetY2NDC(0.53)
+        graphs.GetXaxis().SetTitle('Nominal Position [#mum]')
+        graphs.GetYaxis().SetTitle(options['ytitle'])
+        graphs.GetYaxis().SetTitleOffset(1.3)
+        if('final' in options):
+            text.SetTextColor(1)
+            text.SetTextFont(42)
+            text.SetTextSize(0.04)
+            text.SetTextAlign(31)
+            text.DrawLatex(0.97,0.96,O['plotsig'])
+            text.SetTextAlign(11)
+            if options['final'] == 'wip':
+                text.SetTextFont(52)
+                text.SetTextSize(0.04)
+                text.DrawLatex(0.13,0.96,'Work in Progress')
+            else:
+                text.SetTextFont(62)
+                text.SetTextSize(0.05)
+                text.DrawLatex(0.13,0.96,'CMS')
+                text.SetTextFont(52)
+                text.SetTextSize(0.04)
+                text.DrawLatex(0.22,0.96,'Preliminary')
+        for axis in [graphs.GetYaxis(), graphs.GetXaxis()]:
+            axis.SetTitleSize(0.05)
+            axis.SetLabelSize(0.04)
+            axis.SetLabelOffset(0.01)
+            axis.CenterTitle()
 
-        pad2.cd()
-        gPad.SetMargin(0.1, 0.01, 0.3, 0.0)
+        pad = TPad('pad', 'pad', 0, 0, 1, 0.2)
+        pad.Draw()
+        pad.cd()
+        pad.SetMargin(0.13, 0.03, 0.01, 0.01)
         for j, residual in enumerate(residuals.GetListOfGraphs()):
             residual.SetMarkerStyle(21)
             residual.SetMarkerColor(2+2*j)
         residuals.Draw("AP")
-        residuals.GetXaxis().SetTitle(O['nominalTitle'])
-        residuals.GetYaxis().SetTitle('Residuals '+options['restitle'])
-        residuals.GetXaxis().SetTitleOffset(3)
-        residuals.GetXaxis().SetLabelOffset(0.02)
+        residuals.GetXaxis().SetTitle('')
+        residuals.GetXaxis().SetLabelSize(0.0)
+        residuals.GetXaxis().SetTickSize(0.151)
+        residuals.GetYaxis().SetTitle('Resid. '+options['restitle'])
         residuals.GetYaxis().SetNdivisions(305)
-        gPad.Update()
-        line = TLine(pad2.GetUxmin(), 0.0, pad2.GetUxmax(), 0.0)
+        residuals.GetYaxis().SetTickSize(0.019)
+        residuals.GetYaxis().SetLabelSize(0.2)
+        residuals.GetYaxis().SetLabelOffset(0.01)
+        pad.Update()
+        line = TLine(pad.GetUxmin(), 0.0, pad.GetUxmax(), 0.0)
         line.SetLineColor(14)
         line.SetLineStyle(3)
         line.Draw()
 
-        for axis in [graphs.GetYaxis(), residuals.GetXaxis(), \
-                     residuals.GetYaxis()]:
-            axis.SetTitleFont(133)
-            axis.SetTitleSize(14)
-            axis.SetLabelFont(133)
-            axis.SetLabelSize(12)
-            axis.CenterTitle()
-
-        for pad in [pad1, pad2]:
-            pad.Modified()
-            pad.Update()
-
         canvas.cd()
+        text.SetTextFont(42)
+        text.SetTextSize(0.05)
+        text.SetTextAngle(90.0)
+        text.DrawLatex(0.035,0.0,'Resid. '+options['restitle'])
+
         if not 'final' in options:
             drawSignature(filename)
-        canvas.Modified()
-        canvas.Update()
+        # canvas.Modified()
+        # canvas.Update()
         canvas.Print(filepath)
         canvas.Close()
     closeRootFile(f, name)
@@ -264,7 +288,8 @@ def numberClustersPerDirectionBx(scan, fitted='', combine=False, \
         options['final'] = final
     plotPerDirectionBx(options)
 
-def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=False):
+def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=False, \
+                                 final=False):
     """Save number of vertices directional plots to PDF files"""
     options = {'name': 'nVtx', 'scan': scan, 'fitted': fitted, \
                'optfit': 111, 'fit': 'pol1', 'restitle': '[abs.]', \
@@ -275,6 +300,8 @@ def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=False):
         options['crossings'] = O['crossings'][:]
         if combine:
             options['crossings'].append('all')
+    if final:
+        options['final'] = final
     plotPerDirectionBx(options)
 
 def vertexTemplatePerDirectionBx(scan, name, ytitle, fitted='', combine=False, \
@@ -319,7 +346,7 @@ def vertexDistancePerDirectionBx(scan, fitted='', combine=False, \
                                  alternative, all, final)
 
 def vertexPositionSigmaPerDirectionBx(scan, fitted='F', combine=False, \
-                                      all=False):
+                                      all=False, final=False):
     """Save sigma of vertex position directional plots to PDF files"""
     options = {'name': 'vtxPosSig', 'scan': scan, 'fitted': fitted, \
                'optfit': 111, 'fit': 'pol1', 'restitle': '[#mum]', \
@@ -330,9 +357,11 @@ def vertexPositionSigmaPerDirectionBx(scan, fitted='F', combine=False, \
         options['crossings'] = O['crossings'][:]
         if combine:
             options['crossings'].append('all')
+    if final:
+        options['final'] = final
     plotPerDirectionBx(options)
 
-def countsPerDirectionBx(scan, fitted='', combine=False, all=False):
+def countsPerDirectionBx(scan, fitted='', combine=False, all=False, final=False):
     """Save counts directional plots to PDF files"""
     options = {'name': 'counts', 'scan': scan, 'fitted': fitted, 'optfit': 111, \
                'fit': 'pol1', 'restitle': '[abs.]', 'ytitle': 'Counts'}
@@ -342,6 +371,8 @@ def countsPerDirectionBx(scan, fitted='', combine=False, all=False):
         options['crossings'] = O['crossings'][:]
         if combine:
             options['crossings'].append('all')
+    if final:
+        options['final'] = final
     plotPerDirectionBx(options)
 
 def plotPerLumiSection(options):

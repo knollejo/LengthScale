@@ -1,5 +1,6 @@
 from sys import path as __SYSPATH__, argv as __ARGV__
-__SYSPATH__.append('/afs/cern.ch/user/j/joknolle/LengthScale')
+from os.path import dirname
+__SYSPATH__.append(dirname(__file__)+'/..')
 __ARGV__.append('-b')
 
 from argparse import ArgumentParser
@@ -9,7 +10,7 @@ def main():
     parser.add_argument('-b', action='store_true', help='enable batch mode')
     parser.add_argument('--dataset', required=True, choices=['PromptReco2015', \
                         'ReRecoOct2015', 'ReRecoDec2015', 'PromptReco2016', \
-                        '2015ReRecoJan2017', '2016ReRecoJan2017'], \
+                        '2015ReRecoJan2017', '2016ReRecoJan2017', 'PromptReco2017'], \
                         help='specify data-taking period and reconstruction')
     parser.add_argument('-X1', dest='scans', action='append_const', const='X1', \
                         help='apply to LSC scan X1')
@@ -48,8 +49,8 @@ def main():
                         'of transverse position of reconstructed vertices')
     parser.add_argument('-perLs', action='store_true', help='use only full '+ \
                         'lumisections', dest='alternative')
-    parser.add_argument('-final', action='store_true', help='plot with '+ \
-                        'CMS label')
+    parser.add_argument('-final', action='store_true', help='create plots with '+ \
+                        '"CMS Preliminary" and without technical information')
     args = parser.parse_args()
 
     from importlib import import_module

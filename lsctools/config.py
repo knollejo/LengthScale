@@ -297,3 +297,62 @@ def PLT2016():
     VdM2016()
     PLT()
     HD5Files2016()
+
+def VdM2017():
+    """Set common parameters of 2017 Van der Meer scan program"""
+    options['scans'] = ['X1', 'Y1']
+    options['runs'] = {'X1': 300050, 'Y1': 300050}
+    options['fill'] = 6016
+    options['lumisections'] = {'X1': [8, 60], 'Y1': [68, 122]}
+    options['crossings'] = [41, 281, 872, 1783, 2063]
+    options['plotsig'] = 'Fill 6016 (2017, 13 TeV)'
+
+    options['begin'] = {
+        'X1': [1501261174, 1501261289, 1501261406, 1501261521, 1501261636, \
+               1501261766, 1501261881, 1501261996, 1501262111, 1501262226], \
+        'Y1': [1501262584, 1501262705, 1501262822, 1501262938, 1501263055, \
+               1501263188, 1501263306, 1501263422, 1501263539, 1501263657] \
+    }
+    options['end'] = {
+        'X1': [1501261247, 1501261362, 1501261477, 1501261592, 1501261707, \
+               1501261837, 1501261952, 1501262067, 1501262182, 1501262297], \
+        'Y1': [1501262659, 1501262777, 1501262893, 1501263010, 1501263126, \
+               1501263259, 1501263377, 1501263493, 1501263611, 1501263728] \
+    }
+
+    options['LS'] = {
+        'X1': [[11, 12], [16, 17], [21, 22], [26, 27], [31, 32], \
+               [36, 37], [41, 42], [46, 47], [51, 52], [56, 57]], \
+        'Y1': [[72, 73], [77, 78], [82, 83], [87, 88], [92, 93], \
+               [97, 98], [102, 103], [107, 108], [112, 113], [117, 118]] \
+    }
+
+    posBeam1 = [-246.043, -147.626, -49.209, +49.209, +147.626, \
+                +285.410, +186.993, +88.576, -9.842, -108.259]
+    posBeam2 = [-108.259, -9.842, +88.576, +186.993, +285.410, \
+                +147.626, +49.209, -49.209, -147.626, -246.043]
+    options['nominalPos'] = dict(zip(options['scans'], [[(a+b)/2. for a,b in \
+           zip(posBeam1, posBeam2)] for scanname in options['scans']]))
+    options['nominalDif'] = dict(zip(options['scans'], [[b-a for a,b in \
+           zip(posBeam1, posBeam2)] for scanname in options['scans']]))
+
+def PCCPromptReco2017():
+    """Set parameters of 2017 PCC Prompt Reco"""
+    print '<<< Initialize PCC PromptReco 2017'
+    VdM2017()
+    PCC()
+
+    options['fulltrees'] = [
+        '/comm_luminosity/PCC/ForLumiComputation/2017/VdMFills/6016/ZeroBias' \
+        +str(i)+'/crab_CMSSW_9_2_6_ZeroBias'+str(i)+'_splitPerBXTrue/18032' \
+        +time+'/0000' for i, time in enumerate(['8_174419', '7_173243', \
+        '7_193215', '7_193232', '8_174508', '7_193252', '8_174601'], start=1) \
+    ]
+    options['minitrees'] = [
+        '/comm_luminosity/PCC/ForLumiComputation/2017/VdMFills/6016/ZeroBias' \
+        +str(i)+'/crab_CMSSW_9_2_6_ZeroBias'+str(i)+'_splitPerBXTrue/17080' \
+        +time+'/0000/minituples_v2_NoLayer1WithVetoModules/merged' for i, time \
+        in enumerate(['4_183112', '4_183143', '4_183203', '4_183220', '4_183235' \
+        '3_140851', '4_183310', '4_183328'], start=1) \
+    ]
+    options['dataset'] = ['promptreco17', 'Prompt Reco 2017']
