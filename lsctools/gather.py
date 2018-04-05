@@ -136,17 +136,38 @@ def numberClustersPerBxStep(scan, combine=False, alternative=False, all=False):
             options['condition'] = condition
             doPerBxStep(options)
 
-def numberVerticesPerBxStep(scan, combine=False, all=False):
+def numberVerticesPerBxStep(scan, combine=False, alternative=False, all=False):
     """Extract vertex number from ROOT files sorted by BX and step"""
     options = {'min': -0.5, 'max': 9.5, 'bin': 10, 'histo': TH1I, \
                'name': 'nVtx', 'scan': scan}
     if combine:
+        if alternative:
+            options['method'] = 'LS'
         combinePerStep(options)
     else:
-        options['condition'] = miniCondition
         options['fileset'] = 'minitrees'
         options['field'] = lambda s: 'nVtx'
-        doPerBxStep(options)
+        def condition2(s, bx, step, all=False):
+            cond = '(LS == ' + str(O['LS'][s][step][0])
+            for ls in O['LS'][s][step][1:]:
+                cond += ' || LS == ' + str(ls)
+            cond += ')'
+            if all:
+                return cond
+            else:
+                return cond + ' && BXid == ' + str(bx)
+        if alternative:
+            condition = condition2
+            options['method'] = 'LS'
+        else:
+            condition = miniCondition
+        if all:
+            options['condition'] = lambda s, step: condition(s, None, step, \
+                                                             all=True)
+            doPerStep(options)
+        else:
+            options['condition'] = condition
+            doPerBxStep(options)
 
 def vertexTemplatePerBxStep(options, combine=False, alternative=False, \
                             all=False, field=None):

@@ -99,7 +99,7 @@ def plotName(title, timestamp=True):
 
 def plotPath(title, check=True, timestamp=True):
     """Give path to plot file"""
-    return plotDir(check) + '/' + plotName(title) + '.C'
+    return plotDir(check) + '/' + plotName(title) + '.pdf'
 
 def plotTitle(title=''):
     """Give title for a plot"""

@@ -344,15 +344,16 @@ def PCCPromptReco2017():
 
     options['fulltrees'] = [
         '/comm_luminosity/PCC/ForLumiComputation/2017/VdMFills/6016/ZeroBias' \
-        +str(i)+'/crab_CMSSW_9_2_6_ZeroBias'+str(i)+'_splitPerBXTrue/18032' \
-        +time+'/0000' for i, time in enumerate(['8_174419', '7_173243', \
-        '7_193215', '7_193232', '8_174508', '7_193252', '8_174601'], start=1) \
+        +str(i)+'/crab_CMSSW_9_2_6_ZeroBias'+str(i)+'_splitPerBXTrue/' \
+        +str(time)+'/0000' for i, time in enumerate(['180328_174419', \
+        '180327_173243', '180327_193215', '180327_193232', '170804_183235', \
+        '180328_174508', '180327_193252', '180328_174601'], start=1) \
     ]
     options['minitrees'] = [
         '/comm_luminosity/PCC/ForLumiComputation/2017/VdMFills/6016/ZeroBias' \
         +str(i)+'/crab_CMSSW_9_2_6_ZeroBias'+str(i)+'_splitPerBXTrue/17080' \
         +time+'/0000/minituples_v2_NoLayer1WithVetoModules/merged' for i, time \
-        in enumerate(['4_183112', '4_183143', '4_183203', '4_183220', '4_183235' \
+        in enumerate(['4_183112', '4_183143', '4_183203', '4_183220', '4_183235', \
         '3_140851', '4_183310', '4_183328'], start=1) \
     ]
     options['dataset'] = ['promptreco17', 'Prompt Reco 2017']
