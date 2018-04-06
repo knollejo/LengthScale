@@ -1,8 +1,9 @@
 from math import copysign
+from os.path import dirname
 
 options = {'nominalTitle': 'Nominal Position [#mum]'}
 EOSPATH = '/eos/cms/store/group'
-OUTPATH = '/afs/cern.ch/user/j/joknolle/LengthScale/results'
+OUTPATH = dirname(__file__)+'/../results'
 OWNPATH = '/afs/cern.ch/work/j/joknolle/store'
 
 def PCC():

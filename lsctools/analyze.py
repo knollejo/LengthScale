@@ -112,7 +112,7 @@ def numberClusters(scan, fitted='', truncated=False, combine=False, \
         options['method'] = 'LS'
     collectPerDirectionBx(options)
 
-def numberVertices(scan, combine=False, all=False):
+def numberVertices(scan, combine=False, all=False, alternative=False):
     """Fit vertex number in both directions of a scan"""
     options = {'name': 'nVtx', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
                'y': scale(), 'e': scale(), 'fitted': '', 'custom': False}
@@ -122,6 +122,8 @@ def numberVertices(scan, combine=False, all=False):
         options['crossings'] = O['crossings'][:]
         if combine:
             options['crossings'].append('all')
+    if alternative:
+        options['method'] = 'LS'
     collectPerDirectionBx(options)
 
 def vertexTemplate(scan, name, fitted='', combine=False, alternative=False, \

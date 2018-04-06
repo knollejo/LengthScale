@@ -79,12 +79,14 @@ def numberClustersPerBxStep(scan, fit='', combine=False, alternative=False, \
             options['crossings'].append('all')
     plotPerBxStep(options)
 
-def numberVerticesPerBxStep(scan, combine=False, all=False):
+def numberVerticesPerBxStep(scan, combine=False, all=False, alternative=False):
     """Save vertex number histograms to PDF files"""
     options = {'name': 'nVtx', 'scan': scan, 'xmin': -0.5, 'xmax': 6.5, 'logx': 0, \
                'logy': 1, 'xtitle': 'Number of Vertices (per event)', \
                'ytitle': 'Number of Events', 'optstat': 1110, 'optfit': 0, \
                'extra': ''}
+    if alternative:
+        options['method'] = 'LS'
     if all:
         options['crossings'] = ['all']
     else:
@@ -245,7 +247,6 @@ def plotPerDirectionBx(options):
         residuals.GetXaxis().SetTitle('')
         residuals.GetXaxis().SetLabelSize(0.0)
         residuals.GetXaxis().SetTickSize(0.151)
-        residuals.GetYaxis().SetTitle('Resid. '+options['restitle'])
         residuals.GetYaxis().SetNdivisions(305)
         residuals.GetYaxis().SetTickSize(0.019)
         residuals.GetYaxis().SetLabelSize(0.2)
@@ -289,7 +290,7 @@ def numberClustersPerDirectionBx(scan, fitted='', combine=False, \
     plotPerDirectionBx(options)
 
 def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=False, \
-                                 final=False):
+                                 final=False, alternative=False):
     """Save number of vertices directional plots to PDF files"""
     options = {'name': 'nVtx', 'scan': scan, 'fitted': fitted, \
                'optfit': 111, 'fit': 'pol1', 'restitle': '[abs.]', \
@@ -300,6 +301,8 @@ def numberVerticesPerDirectionBx(scan, fitted='', combine=False, all=False, \
         options['crossings'] = O['crossings'][:]
         if combine:
             options['crossings'].append('all')
+    if alternative:
+        options['method'] = 'LS'
     if final:
         options['final'] = final
     plotPerDirectionBx(options)

@@ -1,5 +1,6 @@
 from sys import path as __SYSPATH__, argv as __ARGV__
-__SYSPATH__.append('/afs/cern.ch/user/j/joknolle/LengthScale')
+from os.path import dirname
+__SYSPATH__.append(dirname(__file__)+'/..')
 __ARGV__.append('-b')
 
 from argparse import ArgumentParser
@@ -105,8 +106,12 @@ def main():
                             getattr(plot, action+'PerBxStep')(scan, fit=method, \
                                     combine=args.combined, all=allbx)
                 else:
-                    getattr(plot, action+'PerBxStep')(scan, \
-                            combine=args.combined, all=allbx)
+                    if args.alternative:
+                        getattr(plot, action+'PerBxStep')(scan, alternative=True, \
+                                combine=args.combined, all=allbx)
+                    else:
+                        getattr(plot, action+'PerBxStep')(scan, \
+                                combine=args.combined, all=allbx)
 
 if __name__ == '__main__':
     main()
