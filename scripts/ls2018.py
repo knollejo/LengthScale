@@ -41,7 +41,7 @@ config.options['LS'] = {
 }
 posBeam1 = [-246.048, -147.629, -49.2096, 49.2096, 147.629,
             285.415, 186.996, 88.5772, -9.84191, -108.261]
-posBeam2 = [-108.261, -9.84191, -88.5772, 186.996, 285.415,
+posBeam2 = [-108.261, -9.84191, 88.5772, 186.996, 285.415,
             147.629, 49.2096, -49.2096, -147.629, -246.048]
 config.options['nominalPos'] = dict(zip(config.options['scans'], [[
     (a+b)/2. for a,b in zip(posBeam1, posBeam2)
@@ -51,14 +51,45 @@ config.options['nominalDif'] = dict(zip(config.options['scans'], [[
 ] for scanname in config.options['scans']]))
 
 run = {
-    'prepare': True,
+    'prepare': False,
     'gather': False,
-    'fit': False,
-    'analyze': False,
-    'plot': False,
+    'fit': True,
+    'analyze': True,
+    'plot': True,
 }
+scans = ('X1', 'Y1')
 
 # Find ROOT files (needs to be executed only once)
 if run['prepare']:
     from lsctools import prepare
     prepare.findRootFiles('fulltrees')
+
+# Prepare data from ROOT files
+if run['gather']:
+    from lsctools import gather
+    for scan in scans:
+        gather.vertexPositionPerBxStep(scan, alternative=False, all=True)
+        gather.vertexPositionPerBxStep(scan, alternative=True, all=True)
+
+# Fit data at each scan step
+if run['fit']:
+    from lsctools import fit
+    for scan in scans:
+        fit.vertexPosition(scan, fitmethod='L', alternative=False, all=True)
+        fit.vertexPosition(scan, fitmethod='L', alternative=True, all=True)
+
+# Analyze full scan
+if run['analyze']:
+    from lsctools import analyze
+    for scan in scans:
+        analyze.vertexPosition(scan, fitted='L', alternative=False, all=True)
+        analyze.vertexPosition(scan, fitted='L', alternative=True, all=True)
+
+# Plot all results
+if run['plot']:
+    from lsctools import plot
+    for scan in scans:
+        plot.vertexPositionPerBxStep(scan, fit='L', alternative=False, all=True)
+        plot.vertexPositionPerBxStep(scan, fit='L', alternative=True, all=True)
+        plot.vertexPositionPerDirectionBx(scan, fitted='L', alternative=False, all=True, final='wip')
+        plot.vertexPositionPerDirectionBx(scan, fitted='L', alternative=True, all=True, final='wip')
