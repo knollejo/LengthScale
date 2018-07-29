@@ -36,7 +36,7 @@ config.options['end'] = {
 config.options['LS'] = {
     'X1': [[332], [337], [342], [347], [352],
            [358], [363], [368], [373], [378]],
-    'Y1': [[392], [397], [402], [407], [412],
+    'Y1': [[392], [397], [402], [407], [413],
            [418], [423], [428], [433], [438]],
 }
 posBeam1 = [-246.048, -147.629, -49.2096, 49.2096, 147.629,
@@ -57,7 +57,7 @@ run = {
     'analyze': True,
     'plot': True,
 }
-scans = ('X1', 'Y1')
+scans = ('Y1',)# 'X1')
 
 # Find ROOT files (needs to be executed only once)
 if run['prepare']:
@@ -83,7 +83,9 @@ if run['analyze']:
     from lsctools import analyze
     for scan in scans:
         analyze.vertexPosition(scan, fitted='L', alternative=False, all=True)
+        analyze.vertexPosition(scan, alternative=False, all=True)
         analyze.vertexPosition(scan, fitted='L', alternative=True, all=True)
+        analyze.vertexPosition(scan, alternative=True, all=True)
 
 # Plot all results
 if run['plot']:
@@ -93,3 +95,5 @@ if run['plot']:
         plot.vertexPositionPerBxStep(scan, fit='L', alternative=True, all=True)
         plot.vertexPositionPerDirectionBx(scan, fitted='L', alternative=False, all=True, final='wip')
         plot.vertexPositionPerDirectionBx(scan, fitted='L', alternative=True, all=True, final='wip')
+        plot.vertexPositionPerDirectionBx(scan, alternative=False, all=True, final='wip')
+        plot.vertexPositionPerDirectionBx(scan, alternative=True, all=True, final='wip')
