@@ -62,13 +62,16 @@ def doPerStep(options):
     name = options['scan'] + '_' + options['name']
     if 'method' in options:
         name += '_' + options['method']
-    cond = O['bxname'][options['fileset']] + ' == ' + str(O['crossings'][0])
-    if O['crossings'][1:]:
-        cond = '(' + cond
-        for bx in O['crossings']:
-            cond += ' || ' + O['bxname'][options['fileset']] + ' == ' + str(bx)
-        cond += ')'
-    cond = ' && ' + cond
+    if len(O['crossings']):
+        cond = O['bxname'][options['fileset']] + ' == ' + str(O['crossings'][0])
+        if O['crossings'][1:]:
+            cond = '(' + cond
+            for bx in O['crossings']:
+                cond += ' || ' + O['bxname'][options['fileset']] + ' == ' + str(bx)
+            cond += ')'
+        cond = ' && ' + cond
+    else:
+        cond = ''
     f = openRootFileU(name)
     for step in range(len(O['nominalPos'][options['scan']])):
         print '<<< Analyze:', options['scan'], 'step', step
@@ -183,13 +186,13 @@ def vertexTemplatePerBxStep(options, combine=False, alternative=False, \
             def condition1(s, step):
                 return 'timeStamp_begin >= ' + str(O['begin'][s][step]) + \
                        ' && timeStamp_begin <= ' + str(O['end'][s][step]) + \
-                       ' && vtx_isGood'
+                       ' && ' + O['vtxisgood']
             def condition2(s, step):
                 cond = '(LS == ' + str(O['LS'][s][step][0])
                 for ls in O['LS'][s][step][1:]:
                     cond += ' || LS == ' + str(ls)
                 cond += ')'
-                return cond + ' && vtx_isGood'
+                return cond + ' && ' + O['vtxisgood']
             if alternative:
                 options['condition'] = condition2
                 options['method'] = 'LS'
@@ -200,13 +203,13 @@ def vertexTemplatePerBxStep(options, combine=False, alternative=False, \
             def condition1(s, bx, step):
                 return 'timeStamp_begin >= ' + str(O['begin'][s][step]) + \
                        ' && timeStamp_begin <= ' + str(O['end'][s][step]) + \
-                       ' && vtx_isGood && bunchCrossing == ' + str(bx)
+                       ' && ' + O['vtxisgood'] + ' && bunchCrossing == ' + str(bx)
             def condition2(s, bx, step):
                 cond = '(LS == ' + str(O['LS'][s][step][0])
                 for ls in O['LS'][s][step][1:]:
                     cond += ' || LS == ' + str(ls)
                 cond += ')'
-                return cond + ' && vtx_isGood && bunchCrossing == ' + str(bx)
+                return cond + ' && ' + O['vtxisgood'] + ' && bunchCrossing == ' + str(bx)
             if alternative:
                 options['condition'] = condition2
                 options['method'] = 'LS'

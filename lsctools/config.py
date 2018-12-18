@@ -13,6 +13,7 @@ def PCC():
     options['timename'] = {'fulltrees': 'timeStamp_begin', \
                            'minitrees': 'timeStamp'}
     options['bxname'] = {'fulltrees': 'bunchCrossing', 'minitrees': 'BXid'}
+    options['vtxisgood'] = 'vtx_isGood'
 
 def BCM1f():
     """Set common parameters of BCM1f data sets"""
