@@ -47,7 +47,7 @@ def collectPerDirectionBx(options):
                                 timestamp=False)
             hist = f.Get(histname)
             if options['custom']:
-                average[step], averror[step] = options['custom'](hist)
+                average[step], averror[step] = options['custom'](hist, step)
             else:
                 average[step] = hist.GetMean()
                 averror[step] = hist.GetMeanError()
@@ -90,7 +90,7 @@ def numberClusters(scan, fitted='', truncated=False, combine=False, \
         if combine:
             options['crossings'].append('all')
     if truncated:
-        def custom(hist):
+        def custom(hist, step):
             hist.GetXaxis().SetRange(1, 30)
             mini = hist.GetXaxis().GetBinCenter(hist.GetMinimumBin())
             hist.GetXaxis().SetRange(int(mini), 100)
@@ -101,7 +101,7 @@ def numberClusters(scan, fitted='', truncated=False, combine=False, \
         options['newname'] = 'nClusterT'
         options['fitted'] = ''
     elif fitted:
-        def custom(hist):
+        def custom(hist, step):
             average = hist.GetFunction('gaus').GetParameter(1)
             averror = hist.GetFunction('gaus').GetParError(1)
             return average, averror
@@ -127,10 +127,10 @@ def numberVertices(scan, combine=False, all=False, alternative=False):
     collectPerDirectionBx(options)
 
 def vertexTemplate(scan, name, fitted='', combine=False, alternative=False, \
-                   all=False, nominalPos=None):
+                   all=False, nominalPos=None, newname=None):
     """Template for fit of vertex positions in both directions of a scan"""
     options = {'name': name, 'scan': scan, 'fit': 'pol1', 'x': scale(), \
-               'y': scale(), 'e': scale(), 'fitted': fitted}
+               'y': scale(), 'e': scale(), 'fitted': fitted, 'newname': newname}
     if nominalPos is not None:
         options['nominalPos'] = nominalPos
     if all:
@@ -140,7 +140,7 @@ def vertexTemplate(scan, name, fitted='', combine=False, alternative=False, \
         if combine:
             options['crossings'].append('all')
     if fitted and not 'LS' in fitted:
-        def custom(hist):
+        def custom(hist, step):
             average = hist.GetFunction('gaus').GetParameter(1)
             averror = hist.GetFunction('gaus').GetParError(1)
             return average, averror
@@ -173,7 +173,7 @@ def vertexDistance(scan, fitted='', combine=False, alternative=False, \
 
 def vertexPositionSigma(scan, fitted='F', combine=False, all=False):
     """Fit sigma of vertex positions in both directions of a scan"""
-    def custom(hist):
+    def custom(hist, step):
         average = hist.GetFunction('gaus').GetParameter(2)
         averror = hist.GetFunction('gaus').GetParError(2)
         return average, averror
@@ -186,6 +186,26 @@ def vertexPositionSigma(scan, fitted='F', combine=False, all=False):
         options['crossings'] = O['crossings'][:]
         if combine:
             options['crossings'].append('all')
+    collectPerDirectionBx(options)
+
+def vertexPositionDiff(scan, fitted='', combine=False, all=False, alternative=False):
+    """Fit difference between vertex and nominal positions"""
+    def custom(hist, step):
+        average = hist.GetFunction('gaus').GetParameter(1) \
+                  -O['nominalPos'][scan][step]
+        averror = hist.GetFunction('gaus').GetParError(1)
+        return average, averror
+    options = {'name': 'vtxPos', 'scan': scan, 'fit': 'pol1', 'x': scale(), \
+               'y': scale(), 'e': scale(), 'fitted': fitted, \
+               'custom': custom, 'newname': 'vtxPosDiff'}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
+    if alternative:
+        options['method'] = 'LS'
     collectPerDirectionBx(options)
 
 def counts(scan, combine=False, alternative=False, all=False):

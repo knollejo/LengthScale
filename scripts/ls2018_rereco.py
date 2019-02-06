@@ -13,14 +13,15 @@ config.options['crossings'] = [265, 865, 1780, 2192, 3380]
 config.options['plotsig'] = 'Fill 6868 (2018, 13 TeV)'
 config.options['fulltrees'] = [
     '/comm_luminosity/PCC/ForLumiComputation/2018/NormalFills/'+
-    '6847_And_6854_And_6868/ZeroBias'+str(i)+'/crab_CMSSW_10_1_7_ZeroBias'+
-    str(i)+'_splitPerBXTrue/180716_1'+str(time)+'/0000' for (i, time) in
-    enumerate([85816, 85835, 85857, 85923, 85943, 90006, 90034, 90100], start=1)
+    '6847_And_6854_And_6868/ZeroBias'+str(i)+'/crab_CMSSW_10_3_2_ZeroBias'+
+    str(i)+'_splitPerBXTrue/190'+time+'/0000' for (i, time) in
+    [(1, '130_015032'), (2, '130_015051'), (3, '203_194352'), (4, '130_015127'),
+     (5, '203_194427'), (7, '203_194457'), (8, '130_015238')]
 ]
 config.options['minitrees'] = [
     s+'/minituples_v1' for s in config.options['fulltrees']
 ]
-config.options['dataset'] = ['promptreco18', 'Prompt Reco 2018']
+config.options['dataset'] = ['rereco18', 'ReReco 2018']
 config.options['begin'] = {
     'X1': [1530413319, 1530413436, 1530413552, 1530413667, 1530413784,
            1530413915, 1530414041, 1530414157, 1530414274, 1530414389],
@@ -50,14 +51,28 @@ config.options['nominalDif'] = dict(zip(config.options['scans'], [[
     b-a for a,b in zip(posBeam1, posBeam2)
 ] for scanname in config.options['scans']]))
 
+orbitdrift_data = {
+    'X1': [-177.130080608747, -78.6351726999212,
+           19.8599452089047, 118.35383134208,
+           216.84921984279, 216.934524916233,
+           118.597374070843, 20.2535857959023,
+           -78.0894807033885, -176.433639570213],
+    'Y1': [-177.122924370675, -78.6031787149918,
+           19.9167769406919, 118.435197503295,
+           216.955098158979, 217.068173047776,
+           118.74967370346, 20.4305209637562,
+           -77.8884600782537, -176.20680442257],
+}
+
 run = {
     'prepare': False,
     'gather': False,
-    'fit': True,
+    'fit': False,
     'analyze': True,
     'plot': True,
 }
 scans = ('Y1', 'X1')
+orbitdrift = True
 
 # Find ROOT files (needs to be executed only once)
 if run['prepare']:
@@ -81,19 +96,31 @@ if run['fit']:
 # Analyze full scan
 if run['analyze']:
     from lsctools import analyze
+    if orbitdrift:
+        def analyze_vertexPosition(scan, fitted='', combine=False, alternative=False, all=False):
+            analyze.vertexTemplate(scan, 'vtxPos', fitted, combine, alternative, all,
+                                   nominalPos=orbitdrift_data[scan], newname='vtxPosOD')
+    else:
+        analyze_vertexPosition = analyze.vertexPosition
     for scan in scans:
-        analyze.vertexPosition(scan, fitted='L', alternative=False, all=True)
-        analyze.vertexPosition(scan, alternative=False, all=True)
-        analyze.vertexPosition(scan, fitted='L', alternative=True, all=True)
-        analyze.vertexPosition(scan, alternative=True, all=True)
+        analyze_vertexPosition(scan, fitted='L', alternative=False, all=True)
+        analyze_vertexPosition(scan, alternative=False, all=True)
+        analyze_vertexPosition(scan, fitted='L', alternative=True, all=True)
+        analyze_vertexPosition(scan, alternative=True, all=True)
 
 # Plot all results
 if run['plot']:
     from lsctools import plot
     for scan in scans:
-        plot.vertexPositionPerBxStep(scan, fit='L', alternative=False, all=True)
-        plot.vertexPositionPerBxStep(scan, fit='L', alternative=True, all=True)
-        plot.vertexPositionPerDirectionBx(scan, fitted='L', alternative=False, all=True, final='wip')
-        plot.vertexPositionPerDirectionBx(scan, fitted='L', alternative=True, all=True, final='wip')
-        plot.vertexPositionPerDirectionBx(scan, alternative=False, all=True, final='wip')
-        plot.vertexPositionPerDirectionBx(scan, alternative=True, all=True, final='wip')
+        # plot.vertexPositionPerBxStep(scan, fit='L', alternative=False, all=True)
+        # plot.vertexPositionPerBxStep(scan, fit='L', alternative=True, all=True)
+        if orbitdrift:
+            fittedTrue='ODL'
+            fittedFalse='OD'
+        else:
+            fittedTrue='L'
+            fittedFalse=None
+        plot.vertexPositionPerDirectionBx(scan, fitted=fittedTrue, alternative=False, all=True, final='wip')
+        plot.vertexPositionPerDirectionBx(scan, fitted=fittedTrue, alternative=True, all=True, final='wip')
+        plot.vertexPositionPerDirectionBx(scan, fitted=fittedFalse, alternative=False, all=True, final='wip')
+        plot.vertexPositionPerDirectionBx(scan, fitted=fittedFalse, alternative=True, all=True, final='wip')

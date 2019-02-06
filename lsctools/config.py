@@ -277,8 +277,9 @@ def PCC2016ReRecoJan2017():
                             '130_084929'), (7, 3, '213_002401'), (8, 1, \
                             '130_084943'))]
     options['minitrees'] = [s+'_FPix_Feb27' for s in options['fulltrees']]
-    options['dataset'] = ['2016_rereco_jan17', \
-                          '2016 ReReco Jan 2017']
+    # options['dataset'] = ['2016_rereco_jan17', \
+    #                       '2016 ReReco Jan 2017']
+    options['dataset'] = ['2016_rereco_jan17_part', '2016 ReReco Jan 2017 (partial)']
 
 def HD5Files2016():
     """Set parameters of 2016 data that is stored in HD5 files"""

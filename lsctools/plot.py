@@ -364,6 +364,23 @@ def vertexPositionSigmaPerDirectionBx(scan, fitted='F', combine=False, \
         options['final'] = final
     plotPerDirectionBx(options)
 
+def vertexPositionDiffPerDirectionBx(scan, fitted='F', combine=False, \
+                                     all=False, final=False, alternative=False):
+    options = {'name': 'vtxPosDiff', 'scan': scan, 'fitted': fitted, \
+               'optfit': 111, 'fit': 'pol1', 'restitle': '[#mum]', \
+               'ytitle': 'Measured #minus Nominal Position [#mum]'}
+    if all:
+        options['crossings'] = ['all']
+    else:
+        options['crossings'] = O['crossings'][:]
+        if combine:
+            options['crossings'].append('all')
+    if alternative:
+        options['method'] = 'LS'
+    if final:
+        options['final'] = final
+    plotPerDirectionBx(options)
+
 def countsPerDirectionBx(scan, fitted='', combine=False, all=False, final=False):
     """Save counts directional plots to PDF files"""
     options = {'name': 'counts', 'scan': scan, 'fitted': fitted, 'optfit': 111, \

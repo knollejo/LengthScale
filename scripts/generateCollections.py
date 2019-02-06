@@ -47,6 +47,8 @@ def main():
     parser.add_argument('-vtxPosSig', dest='actions', action='append_const', \
                         const='vertexPositionSigma', help='evaluate sigma '+ \
                         'of transverse position of reconstructed vertices')
+    parser.add_argument('-vtxPosDiff', dest='actions', action='append_const', \
+                        const='vertexPositionDiff')
     parser.add_argument('-perLs', action='store_true', help='use only full '+ \
                         'lumisections', dest='alternative')
     parser.add_argument('-final', action='store_true', help='create plots with '+ \
