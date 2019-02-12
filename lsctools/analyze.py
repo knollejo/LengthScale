@@ -27,12 +27,12 @@ def collectPerDirectionBx(options):
     else:
         nominalPos = O['nominalPos'][options['scan']]
     oldname = options['scan'] + '_' + options['name'] + options['fitted']
-    if 'newname' in options:
+    if options.get('newname', False):
         newname = options['scan'] + '_' + options['newname'] + \
                   options['fitted']
     else:
         newname = oldname
-    if 'method' in options:
+    if options.get('method', False):
         oldname += '_' + options['method']
         newname += '_' + options['method']
     newname += '_collected'
