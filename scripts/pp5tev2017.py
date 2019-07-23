@@ -9,40 +9,52 @@ config.options['scans'] = ['X1', 'Y1']
 config.options['runs'] = {'X1': 306553, 'Y1': 306553}
 config.options['fill'] = 6381
 config.options['lumisections'] = {'X1': [496, 535], 'Y1': [550, 590]}
-config.options['crossings'] = [265, 865, 1780, 2192, 3380]
-config.options['plotsig'] = 'Fill 6868 (2018, 13 TeV)'
-config.options['fulltrees'] = [
-    '/comm_luminosity/PCC/ForLumiComputation/2018/NormalFills/'+
-    '6847_And_6854_And_6868/ZeroBias'+str(i)+'/crab_CMSSW_10_1_7_ZeroBias'+
-    str(i)+'_splitPerBXTrue/180716_1'+str(time)+'/0000' for (i, time) in
-    enumerate([85816, 85835, 85857, 85923, 85943, 90006, 90034, 90100], start=1)
-]
-config.options['minitrees'] = [
-    s+'/minituples_v1' for s in config.options['fulltrees']
-]
-config.options['dataset'] = ['promptreco18', 'Prompt Reco 2018']
+config.options['crossings'] = [183, 1536, 2366, 3295, 3309]
+config.options['plotsig'] = 'Fill 6381 (2017, 5 TeV)'
+if True: #ReReco
+    config.options['fulltrees'] = [
+        '/comm_luminosity/PCC/ForLumiComputation/2017/VdMFills/6381/'+
+        'HIZeroBias'+str(i)+'/crab_CMSSW_9_4_4_HIZeroBias'+str(i)+
+        '_splitPerBXTrue/180'+time+'/0000' for (i, time) in enumerate([
+            '318_112731', '318_112757', '327_100708', '319_101305',
+            '327_100801', '327_100827', '327_100853', '314_121031',
+            '415_202559', '316_140727', '318_112825',
+        ], start=1)
+    ]
+    config.options['minitrees'] = []
+    config.options['dataset'] = ['data5tev2017', '5TeV 2017']
+else: #Prompt
+    config.options['fulltrees'] = [
+        '/comm_luminosity/PCC/ForLumiComputation/2017/VdMFills/6381/'+
+        'HIZeroBias'+str(i)+'/crab_CMSSW_9_2_6_HIZeroBias'+str(i)+
+        '_splitPerBXTrue/180305_143'+str(time)+'/0000' for (i, time)
+        in enumerate([159, 319, 338, 404, 425, 450, 517, 538, 557,
+        218, 236, 259], start=1)
+    ]
+    config.options['minitrees'] = []
+    config.options['dataset'] = ['prompt5tev2017', 'Prompt 5TeV 2017']
 config.options['begin'] = {
-    'X1': [1530413319, 1530413436, 1530413552, 1530413667, 1530413784,
-           1530413915, 1530414041, 1530414157, 1530414274, 1530414389],
-    'Y1': [1530414711, 1530414829, 1530414947, 1530415063, 1530415181,
-           1530415314, 1530415432, 1530415548, 1530415666, 1530415784],
+    'X1': [1510482174, 1510482266, 1510482358, 1510482449, 1510482543,
+           1510482636, 1510482729, 1510482821, 1510482913, 1510483004],
+    'Y1': [1510483439, 1510483530, 1510483624, 1510483715, 1510483807,
+           1510483902, 1510483994, 1510484085, 1510484177, 1510484269],
 }
 config.options['end'] = {
-    'X1': [1530413388, 1530413504, 1530413621, 1530413736, 1530413853,
-           1530413984, 1530414110, 1530414225, 1530414342, 1530414457],
-    'Y1': [1530414779, 1530414897, 1530415015, 1530415132, 1530415250,
-           1530415382, 1530415500, 1530415618, 1530415735, 1530415853],
+    'X1': [1510482242, 1510482334, 1510482426, 1510482519, 1510482611,
+           1510482706, 1510482798, 1510482889, 1510482981, 1510483074],
+    'Y1': [1510483508, 1510483600, 1510483692, 1510483784, 1510483876,
+           1510483970, 1510484062, 1510484154, 1510484246, 1510484338],
 }
 config.options['LS'] = {
-    'X1': [[332], [337], [342], [347], [352],
-           [358], [363], [368], [373], [378]],
-    'Y1': [[392], [397], [402], [407], [413],
-           [418], [423], [428], [433], [438]],
+    'X1': [[497, 498], [501, 502], [505, 506], [509, 510], [513, 514],
+           [517, 518], [521, 522], [525, 526], [529, 530], [533, 534]],
+    'Y1': [[551, 552], [555, 556], [559, 560], [563, 564], [567, 568],
+           [571, 572], [575, 576], [579, 580], [583, 584], [587, 588]],
 }
-posBeam1 = [-246.048, -147.629, -49.2096, 49.2096, 147.629,
-            285.415, 186.996, 88.5772, -9.84191, -108.261]
-posBeam2 = [-108.261, -9.84191, 88.5772, 186.996, 285.415,
-            147.629, 49.2096, -49.2096, -147.629, -246.048]
+posBeam1 = [-159.489, -95.693, -31.898, 31.898, 95.693,
+            185.007, 121.211, 57.416, -6.380, -70.175]
+posBeam2 = [-70.175, -6.380, 57.416, 121.211, 185.077,
+            95.693, 31.898, -31.898, -95.693, -159.489]
 config.options['nominalPos'] = dict(zip(config.options['scans'], [[
     (a+b)/2. for a,b in zip(posBeam1, posBeam2)
 ] for scanname in config.options['scans']]))
@@ -57,7 +69,7 @@ run = {
     'analyze': True,
     'plot': True,
 }
-scans = ('Y1',)# 'X1')
+scans = ('X1', 'Y1')
 
 # Find ROOT files (needs to be executed only once)
 if run['prepare']:
@@ -76,24 +88,30 @@ if run['fit']:
     from lsctools import fit
     for scan in scans:
         fit.vertexPosition(scan, fitmethod='L', alternative=False, all=True)
+        # fit.vertexPosition(scan, fitmethod='F', alternative=False, all=True)
         fit.vertexPosition(scan, fitmethod='L', alternative=True, all=True)
+        # fit.vertexPosition(scan, fitmethod='F', alternative=True, all=True)
 
 # Analyze full scan
 if run['analyze']:
     from lsctools import analyze
     for scan in scans:
         analyze.vertexPosition(scan, fitted='L', alternative=False, all=True)
+        # analyze.vertexPosition(scan, fitted='F', alternative=False, all=True)
         analyze.vertexPosition(scan, alternative=False, all=True)
         analyze.vertexPosition(scan, fitted='L', alternative=True, all=True)
+        # analyze.vertexPosition(scan, fitted='F', alternative=True, all=True)
         analyze.vertexPosition(scan, alternative=True, all=True)
 
 # Plot all results
 if run['plot']:
     from lsctools import plot
     for scan in scans:
-        plot.vertexPositionPerBxStep(scan, fit='L', alternative=False, all=True)
-        plot.vertexPositionPerBxStep(scan, fit='L', alternative=True, all=True)
+        # plot.vertexPositionPerBxStep(scan, fit='L', alternative=False, all=True)
+        # plot.vertexPositionPerBxStep(scan, fit='L', alternative=True, all=True)
         plot.vertexPositionPerDirectionBx(scan, fitted='L', alternative=False, all=True, final='wip')
+        # plot.vertexPositionPerDirectionBx(scan, fitted='F', alternative=False, all=True, final='wip')
         plot.vertexPositionPerDirectionBx(scan, fitted='L', alternative=True, all=True, final='wip')
+        # plot.vertexPositionPerDirectionBx(scan, fitted='F', alternative=True, all=True, final='wip')
         plot.vertexPositionPerDirectionBx(scan, alternative=False, all=True, final='wip')
         plot.vertexPositionPerDirectionBx(scan, alternative=True, all=True, final='wip')
