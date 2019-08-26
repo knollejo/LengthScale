@@ -53,7 +53,7 @@ config.options['LS'] = {
 }
 posBeam1 = [-159.489, -95.693, -31.898, 31.898, 95.693,
             185.007, 121.211, 57.416, -6.380, -70.175]
-posBeam2 = [-70.175, -6.380, 57.416, 121.211, 185.077,
+posBeam2 = [-70.175, -6.380, 57.416, 121.211, 185.007,
             95.693, 31.898, -31.898, -95.693, -159.489]
 config.options['nominalPos'] = dict(zip(config.options['scans'], [[
     (a+b)/2. for a,b in zip(posBeam1, posBeam2)
